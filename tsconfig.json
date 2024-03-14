@@ -9,6 +9,9 @@
       ],
       "@context/*": [
         "context/*"
+      ],
+      "@navigation/*": [
+        "navigation/*"
       ]
     },
   }

@@ -2,8 +2,8 @@ import { SessionContext } from "@context/session/sessionContext";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useContext, useEffect } from "react";
-import HomeScreen from "@screens/home";
 import LoginScreen from "@screens/login";
+import TabBarContainer from "@navigation/tabBarContainer";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,22 +26,19 @@ export default function RootContainer() {
         },
       });
     }
-  });
+  }, []);
   return (
     <NavigationContainer>
       <Stack.Navigator>
         {session.connected ? (
           <>
-            <Stack.Screen name="login" component={LoginScreen} />
-            {/* <Stack.Screen name="signup" component={} />
-            <Stack.Screen name="forgotPassword" component={} /> */}
+            <Stack.Screen name="tabBar" component={TabBarContainer} />
           </>
         ) : (
           <>
-            <Stack.Screen name="home" component={HomeScreen} />
-            {/* <Stack.Screen name="office" component={} />
-            <Stack.Screen name="famCup" component={} />
-            <Stack.Screen name="menu" component={} /> */}
+            <Stack.Screen name="login" component={LoginScreen} />
+            {/* <Stack.Screen name="signup" component={} />
+            <Stack.Screen name="forgotPassword" component={} /> */}
           </>
         )}
       </Stack.Navigator>

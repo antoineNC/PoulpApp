@@ -5,7 +5,7 @@ type SessionType = {
 };
 type SessionActionType = {
   type: "RESTORE_TOKEN" | "SIGN_IN" | "SIGN_OUT";
-  session: { user?: UserType; token?: string };
+  session: { token?: string; user?: UserType };
 };
 
 type UserType = {
