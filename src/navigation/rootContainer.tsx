@@ -32,7 +32,11 @@ export default function RootContainer() {
       <Stack.Navigator>
         {session.connected ? (
           <>
-            <Stack.Screen name="tabBar" component={TabBarContainer} />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="tabBar"
+              component={TabBarContainer}
+            />
           </>
         ) : (
           <>
