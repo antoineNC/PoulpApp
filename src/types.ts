@@ -28,3 +28,15 @@ type OfficeType = {
 type AdminType = {
   name: string;
 };
+
+type TabParamList = {
+  homeContainer: undefined;
+  officeContainer: undefined;
+  famCupContainer: undefined;
+  menuContainer: undefined;
+};
+
+type HomeParamList = {
+  home: undefined;
+  calendar: undefined;
+};
