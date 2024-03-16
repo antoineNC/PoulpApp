@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useContext, useEffect } from "react";
 import LoginScreen from "@screens/auth/login";
 import TabBarContainer from "@navigation/tabBarContainer";
+import { getPosts } from "firebase/api";
 
 const Stack = createNativeStackNavigator();
 

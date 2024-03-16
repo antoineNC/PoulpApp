@@ -3,6 +3,8 @@ import CalendarScreen from "@screens/home/calendar";
 import HomeScreen from "@screens/home/home";
 import { colors } from "theme";
 import { MaterialBottomTabScreenProps } from "react-native-paper";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { Pressable } from "react-native";
 
 type Props = MaterialBottomTabScreenProps<TabParamList>;
 const Stack = createNativeStackNavigator();
@@ -17,7 +19,18 @@ export default function HomeContainer({ route }: Props) {
             <Stack.Screen
               name="home"
               component={HomeScreen}
-              options={{ title: "Fil d'actualité" }}
+              options={{
+                title: "Fil d'actualité",
+                headerRight: ({ tintColor }) => (
+                  <Pressable style={{ alignSelf: "center" }}>
+                    <Ionicons
+                      name="calendar-sharp"
+                      size={30}
+                      color={tintColor}
+                    />
+                  </Pressable>
+                ),
+              }}
             />
             <Stack.Screen name="calendar" component={CalendarScreen} />
           </>
@@ -25,21 +38,33 @@ export default function HomeContainer({ route }: Props) {
       case "officeContainer":
         return (
           <>
-            <Stack.Screen name="office" component={HomeScreen} />
+            <Stack.Screen
+              name="offices"
+              component={HomeScreen}
+              options={{ title: "Bureaux" }}
+            />
             <Stack.Screen name="updateOffice" component={CalendarScreen} />
           </>
         );
       case "famCupContainer":
         return (
           <>
-            <Stack.Screen name="score" component={HomeScreen} />
+            <Stack.Screen
+              name="score"
+              component={HomeScreen}
+              options={{ title: "Tableau des scores" }}
+            />
             <Stack.Screen name="feed" component={CalendarScreen} />
           </>
         );
       case "menuContainer":
         return (
           <>
-            <Stack.Screen name="profile" component={HomeScreen} />
+            <Stack.Screen
+              name="profile"
+              component={HomeScreen}
+              options={{ title: "Menu" }}
+            />
             <Stack.Screen name="allSubs" component={CalendarScreen} />
           </>
         );
