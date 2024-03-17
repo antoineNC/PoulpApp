@@ -1,10 +1,10 @@
+import { Pressable } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { MaterialBottomTabScreenProps } from "react-native-paper";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import CalendarScreen from "@screens/home/calendar";
 import HomeScreen from "@screens/home/home";
 import { colors } from "theme";
-import { MaterialBottomTabScreenProps } from "react-native-paper";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { Pressable } from "react-native";
 
 type Props = MaterialBottomTabScreenProps<TabParamList>;
 const Stack = createNativeStackNavigator();

@@ -1,9 +1,7 @@
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import Ionicons from "react-native-vector-icons/Ionicons";
+
 import HomeContainer from "@navigation/subStacks/homeContainer";
-// import OfficeContainer from "@navigation/subStacks/officeContainer";
-// import FamCupContainer from "@navigation/subStacks/famCupContainer";
-// import MenuContainer from "@navigation/subStacks/menuContainer";
 
 const MainTab = createMaterialBottomTabNavigator<TabParamList>();
 

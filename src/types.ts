@@ -1,31 +1,22 @@
-type SessionType = {
-  connected: boolean;
-  token?: string;
-  user?: UserType;
-};
-type SessionActionType = {
-  type: "RESTORE_TOKEN" | "SIGN_IN" | "SIGN_OUT";
-  session: { token?: string; user?: UserType };
-};
-
 type UserType = {
   id: string;
   mail: string;
-  access: "ALL" | "OFFICE" | "RESTRICTED";
-  infos: EtuType | OfficeType | AdminType;
+  role: Role;
 };
 
-type EtuType = {
+type Role = "admin" | "office" | "student";
+
+type EtuType = UserType & {
   lastName: string;
   firstName: string;
   // ...
 };
-type OfficeType = {
+type OfficeType = UserType & {
   name: string;
-  clubs: string;
+  clubs: Array<string>;
   // ...
 };
-type AdminType = {
+type AdminType = UserType & {
   name: string;
 };
 

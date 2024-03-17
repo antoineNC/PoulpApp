@@ -1,36 +1,18 @@
-import { SessionContext } from "@context/session/sessionContext";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useContext, useEffect } from "react";
-import LoginScreen from "@screens/auth/login";
+import { useUnit } from "effector-react";
+
 import TabBarContainer from "@navigation/tabBarContainer";
-import { getPosts } from "firebase/api";
+import LoginScreen from "@screens/auth/login";
+import { $sessionStore } from "store/sessionStore";
 
 const Stack = createNativeStackNavigator();
 
 export default function RootContainer() {
-  const { session, setSession } = useContext(SessionContext);
-  const token = true;
-  useEffect(() => {
-    if (token) {
-      // const user = getUser();
-      setSession({
-        type: "RESTORE_TOKEN",
-        session: {
-          token: "token",
-          user: {
-            id: "admin",
-            mail: "admin@mail.com",
-            access: "ALL",
-            infos: { name: "admin" },
-          },
-        },
-      });
-    }
-  }, []);
+  const connected = useUnit($sessionStore);
   return (
     <NavigationContainer>
-      {session.connected ? (
+      {connected ? (
         <TabBarContainer />
       ) : (
         <Stack.Navigator>
