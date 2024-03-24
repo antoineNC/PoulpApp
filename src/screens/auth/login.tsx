@@ -1,10 +1,11 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import CustomField from "components/formField";
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
-import { TouchableOpacity, Text } from "react-native";
+import { View } from "react-native";
 import { Button } from "react-native-paper";
 
-type FormValues = {
+type FieldNames = {
   mail: string;
   password: string;
 };
@@ -12,25 +13,35 @@ type FormValues = {
 export default function LoginScreen({
   navigation,
 }: NativeStackScreenProps<AuthParamList>) {
-  const { control, handleSubmit } = useForm<FormValues>();
+  const submitRef = useRef<View>(null);
+  const values: FormFieldProps<FieldNames> = [
+    { name: "mail", required: true },
+    { name: "password", required: true },
+  ];
+  const { control, handleSubmit, setFocus } = useForm<FieldNames>();
 
   const onSubmit = (data: { mail: string; password: string }) =>
     console.log(data);
   return (
     <>
-      <CustomField<FormValues>
-        control={control}
-        name="mail"
-        label="Email"
-        required
-      />
-      <CustomField<FormValues>
-        control={control}
-        name="password"
-        label="Mot de passe"
-        required
-      />
+      {values.map((field, index) => (
+        <CustomField<FieldNames>
+          key={index}
+          index={index}
+          lastInput={index === values.length - 1}
+          control={control}
+          name={field.name}
+          label={field.name}
+          required={field.required}
+          setFocus={(index) => {
+            index < values.length
+              ? setFocus(values[index].name)
+              : submitRef.current?.focus();
+          }}
+        />
+      ))}
       <Button
+        ref={submitRef}
         mode="contained"
         children="Se connecter"
         onPress={handleSubmit(onSubmit)}

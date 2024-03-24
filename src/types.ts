@@ -20,6 +20,7 @@ type AdminType = UserType & {
   name: string;
 };
 
+// Navigation
 type TabParamList = {
   homeContainer: undefined;
   officeContainer: undefined;
@@ -30,8 +31,14 @@ type AuthParamList = {
   login: undefined;
   signup: undefined;
 };
-
 type HomeParamList = {
   home: undefined;
   calendar: undefined;
 };
+
+// Form
+type FormFieldProps<T> = {
+  name: keyof T;
+  required: boolean;
+  confirm?: boolean;
+}[];

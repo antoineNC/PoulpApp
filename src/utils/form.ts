@@ -1,24 +1,30 @@
 import { FieldValues, RegisterOptions } from "react-hook-form";
+import { KeyboardTypeOptions } from "react-native";
 
-export function getProps<T extends FieldValues>(
+type Params<T extends FieldValues> = {
+  label: string;
+  secureTextEntry?: boolean;
+  keyboardType?: KeyboardTypeOptions;
+  rules?: Omit<RegisterOptions<T>, keyof FieldValues>;
+};
+
+const regEx_mail = /^[\w\-\.]+@ensc\.fr$/gm;
+const regEx_name = /^[a-z ,.'-]+$/i;
+
+export function getFieldProps<T extends FieldValues>(
   name: string,
   required?: boolean,
   repeat?: string
-): {
-  label: string;
-  rules?: Omit<RegisterOptions<T>, keyof FieldValues>;
-} {
-  const props = required
-    ? { rules: { required: "Ce champs est obligatoire" } }
-    : {};
+): Params<T> {
+  const rules = required ? { required: "Ce champs est obligatoire" } : {};
   switch (name) {
     case "firstName":
       return {
         label: "Prénom",
         rules: {
-          ...props.rules,
+          ...rules,
           pattern: {
-            value: /^[a-z ,.'-]+$/i,
+            value: regEx_name,
             message:
               "Prénom invalide, certains caractères ne sont pas pris en compte",
           },
@@ -28,9 +34,9 @@ export function getProps<T extends FieldValues>(
       return {
         label: "Nom",
         rules: {
-          ...props.rules,
+          ...rules,
           pattern: {
-            value: /^[a-z ,.'-]+$/i,
+            value: regEx_name,
             message:
               "Nom invalide, certains caractères ne sont pas pris en compte",
           },
@@ -38,12 +44,12 @@ export function getProps<T extends FieldValues>(
       };
     case "mail":
       return {
-        ...props,
         label: "Email",
+        keyboardType: "email-address",
         rules: {
-          ...props.rules,
+          ...rules,
           pattern: {
-            value: /^[\w\-\.]+@ensc\.fr$/gm,
+            value: regEx_mail,
             message: "L'email est invalide",
           },
         },
@@ -51,8 +57,9 @@ export function getProps<T extends FieldValues>(
     case "password":
       return {
         label: "Mot de passe",
+        secureTextEntry: true,
         rules: {
-          ...props.rules,
+          ...rules,
           minLength: {
             value: 4,
             message: "Il faut au moins 4 caractères",
@@ -62,8 +69,9 @@ export function getProps<T extends FieldValues>(
     case "repeatPassword":
       return {
         label: "Confirmer mot de passe",
+        secureTextEntry: true,
         rules: {
-          ...props.rules,
+          ...rules,
           validate: (value: string) =>
             value === repeat || "Le mot de passe ne correspond pas",
         },
@@ -71,7 +79,7 @@ export function getProps<T extends FieldValues>(
     case "code":
       return {
         label: "Code ENSC",
-        rules: props.rules,
+        rules: rules,
       };
     default:
       return { label: "", rules: {} };
