@@ -1,7 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import CustomField from "components/formField";
 import { useForm } from "react-hook-form";
-import { TouchableOpacity, Text } from "react-native";
 import { Button } from "react-native-paper";
 
 type FormValues = {
@@ -13,54 +12,38 @@ type FormValues = {
   code: string;
 };
 
+type FieldProps = {
+  name: keyof FormValues;
+  required: boolean;
+  confirm?: boolean;
+};
+
 export default function SignupScreen({
   navigation,
 }: NativeStackScreenProps<AuthParamList>) {
-  const { control, handleSubmit } = useForm<FormValues>();
-
-  const onSubmit = (data: { mail: string; password: string }) =>
-    console.log(data);
+  const values: FieldProps[] = [
+    { name: "firstName", required: true },
+    { name: "lastName", required: true },
+    { name: "mail", required: true },
+    { name: "password", required: true },
+    { name: "repeatPassword", required: true, confirm: true },
+    { name: "code", required: true },
+  ];
+  const { control, handleSubmit, watch } = useForm<FormValues>();
+  const pwd = watch("password");
+  const onSubmit = (data: any) => console.log(data);
 
   return (
     <>
-      <CustomField<FormValues>
-        control={control}
-        name="firstName"
-        label="Prénom"
-        required
-      />
-      <CustomField<FormValues>
-        control={control}
-        name="lastName"
-        label="Nom"
-        required
-      />
-      <CustomField<FormValues>
-        control={control}
-        name="mail"
-        label="Email"
-        required
-      />
-      <CustomField<FormValues>
-        control={control}
-        name="password"
-        label="Mot de passe"
-        required
-      />
-
-      <CustomField<FormValues>
-        control={control}
-        name="repeatPassword"
-        label="Confirmation du mot de passe"
-        required
-      />
-
-      <CustomField<FormValues>
-        control={control}
-        name="code"
-        label="Code ENSC"
-        required
-      />
+      {values.map((field) => (
+        <CustomField<FormValues>
+          control={control}
+          name={field.name}
+          label={field.name}
+          required={field.required}
+          repeat={field.confirm ? pwd : undefined}
+        />
+      ))}
       <Button
         mode="contained"
         children="S'inscrire"
