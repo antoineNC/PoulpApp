@@ -15,6 +15,7 @@ import {
   updateDoc,
   query,
   where,
+  DocumentData,
 } from "firebase/firestore";
 
 import app from "firebase/firebaseConfig";
@@ -22,9 +23,6 @@ import app from "firebase/firebaseConfig";
 const auth = getAuth(app);
 const db = getFirestore(app);
 const userCollection = collection(db, "Users");
-// const adminCollection = collection(db, "Admins");
-// const officeCollection = collection(db, "Bureau");
-// const studentCollection = collection(db, "Etudiant");
 const postCollection = collection(db, "Post");
 const bureauCollection = collection(db, "Bureau");
 
@@ -38,7 +36,7 @@ const login = async ({
 }: {
   email: string;
   password: string;
-}) => {
+}): Promise<DocumentData> => {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -50,7 +48,8 @@ const login = async ({
     if (!docSnap.exists()) {
       throw Error("Informations incorrectes.");
     }
-    return docSnap.data();
+    const user = { id: userId, ...docSnap.data() };
+    return user;
   } catch (e: any) {
     throw Error(e);
   }

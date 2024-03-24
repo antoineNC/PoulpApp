@@ -5,7 +5,7 @@ import { config } from "@gluestack-ui/config";
 
 import RootContainer from "navigation/rootContainer";
 import { subscribeUserState } from "firebase/firebaseUtils";
-import { logoutStores, setUser } from "utils/user";
+import { logoutUser, setUser } from "utils/user";
 
 export default function App() {
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function App() {
         if (user) {
           await setUser(user);
         } else {
-          logoutStores;
+          logoutUser();
         }
       } catch (e: any) {
         throw Error(e);

@@ -13,7 +13,7 @@ export default function TabBarContainer() {
         component={TabScreenContainer}
         options={{
           title: "Accueil",
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ color }) => (
             <Ionicons name="home" size={20} color={color} />
           ),
         }}
@@ -23,7 +23,7 @@ export default function TabBarContainer() {
         component={TabScreenContainer}
         options={{
           title: "Bureaux",
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ color }) => (
             <Ionicons name="albums" size={20} color={color} />
           ),
         }}
@@ -33,7 +33,7 @@ export default function TabBarContainer() {
         component={TabScreenContainer}
         options={{
           title: "Coupe des Familles",
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ color }) => (
             <Ionicons name="trophy" size={20} color={color} />
           ),
         }}
@@ -43,7 +43,7 @@ export default function TabBarContainer() {
         component={TabScreenContainer}
         options={{
           title: "Menu",
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ color }) => (
             <Ionicons name="menu" size={20} color={color} />
           ),
         }}

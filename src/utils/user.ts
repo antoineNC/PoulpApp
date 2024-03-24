@@ -1,6 +1,7 @@
+import { useUnit } from "effector-react";
 import { User } from "firebase/auth";
 
-import { getUserRole, login } from "firebase/firebaseUtils";
+import { getUserRole, login, signout } from "firebase/firebaseUtils";
 import { actionSession } from "store/sessionStore";
 import {
   actionAdmin,
@@ -50,9 +51,10 @@ export const setUser = async (user: User) => {
   }
 };
 
-export const logoutStores = () => {
-  actionSession.logout;
-  actionStudent.logout;
-  actionOffice.logout;
-  actionAdmin.logout;
+export const logoutUser = () => {
+  actionSession.logout();
+  actionStudent.logout();
+  actionOffice.logout();
+  actionAdmin.logout();
+  signout();
 };

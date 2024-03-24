@@ -11,7 +11,7 @@ const Stack = createNativeStackNavigator();
 
 export default function RootContainer() {
   const connected = useUnit($sessionStore);
-  // const connected = false;
+  console.log(connected);
   return (
     <NavigationContainer>
       {connected ? (
