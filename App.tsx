@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { config } from "@gluestack-ui/config";
 
 import RootContainer from "navigation/rootContainer";
 import { subscribeUserState } from "firebase/firebaseUtils";
@@ -21,8 +23,10 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <RootContainer />
+    <SafeAreaProvider style={{ flex: 1 }}>
+      <GluestackUIProvider config={config}>
+        <RootContainer />
+      </GluestackUIProvider>
     </SafeAreaProvider>
   );
 }

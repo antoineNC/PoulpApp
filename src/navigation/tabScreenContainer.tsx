@@ -9,7 +9,7 @@ import { colors } from "theme";
 type Props = MaterialBottomTabScreenProps<TabParamList>;
 const Stack = createNativeStackNavigator();
 
-export default function HomeContainer({ route }: Props) {
+export default function TabScreenContainer({ route }: Props) {
   const tabName = route.name;
   const renderScreens = (name: string) => {
     switch (name) {

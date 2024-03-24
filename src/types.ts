@@ -26,6 +26,10 @@ type TabParamList = {
   famCupContainer: undefined;
   menuContainer: undefined;
 };
+type AuthParamList = {
+  login: undefined;
+  signup: undefined;
+};
 
 type HomeParamList = {
   home: undefined;

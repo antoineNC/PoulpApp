@@ -1,7 +1,7 @@
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-import HomeContainer from "@navigation/subStacks/homeContainer";
+import TabScreenContainer from "@navigation/tabScreenContainer";
 
 const MainTab = createMaterialBottomTabNavigator<TabParamList>();
 
@@ -10,7 +10,7 @@ export default function TabBarContainer() {
     <MainTab.Navigator>
       <MainTab.Screen
         name="homeContainer"
-        component={HomeContainer}
+        component={TabScreenContainer}
         options={{
           title: "Accueil",
           tabBarIcon: ({ focused, color }) => (
@@ -20,7 +20,7 @@ export default function TabBarContainer() {
       />
       <MainTab.Screen
         name="officeContainer"
-        component={HomeContainer}
+        component={TabScreenContainer}
         options={{
           title: "Bureaux",
           tabBarIcon: ({ focused, color }) => (
@@ -30,7 +30,7 @@ export default function TabBarContainer() {
       />
       <MainTab.Screen
         name="famCupContainer"
-        component={HomeContainer}
+        component={TabScreenContainer}
         options={{
           title: "Coupe des Familles",
           tabBarIcon: ({ focused, color }) => (
@@ -40,7 +40,7 @@ export default function TabBarContainer() {
       />
       <MainTab.Screen
         name="menuContainer"
-        component={HomeContainer}
+        component={TabScreenContainer}
         options={{
           title: "Menu",
           tabBarIcon: ({ focused, color }) => (

@@ -22,7 +22,9 @@ export const setUser = async (user: User) => {
         break;
     }
     actionSession.login;
-  } catch (e: any) {}
+  } catch (e: any) {
+    throw Error(e);
+  }
 };
 
 export const logoutStores = () => {
