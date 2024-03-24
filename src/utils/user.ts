@@ -1,10 +1,33 @@
 import { User } from "firebase/auth";
 
-import { getUserRole } from "firebase/firebaseUtils";
+import { getUserRole, login } from "firebase/firebaseUtils";
 import { actionSession } from "store/sessionStore";
-import { actionAdmin } from "store/users/adminStore";
-import { actionOffice } from "store/users/officeStore";
-import { actionStudent } from "store/users/studentStore";
+import {
+  actionAdmin,
+  actionOffice,
+  actionStudent,
+} from "store/users/userStore";
+
+export const loginUser = async (props: { email: string; password: string }) => {
+  try {
+    const userData = await login(props);
+    const userRole: Role = userData.role;
+    switch (userRole) {
+      case "admin":
+        actionAdmin.login(userData as AdminType);
+        break;
+      case "office":
+        actionOffice.login(userData as OfficeType);
+        break;
+      case "student":
+        actionStudent.login(userData as EtuType);
+        break;
+    }
+    actionSession.login();
+  } catch (e: any) {
+    throw Error(e);
+  }
+};
 
 export const setUser = async (user: User) => {
   try {
@@ -12,13 +35,13 @@ export const setUser = async (user: User) => {
     const userRole: Role = userData.role;
     switch (userRole) {
       case "admin":
-        actionStudent.restore(userData as EtuType);
+        actionAdmin.restore(userData as AdminType);
         break;
       case "office":
         actionOffice.restore(userData as OfficeType);
         break;
       case "student":
-        actionAdmin.restore(userData as AdminType);
+        actionStudent.restore(userData as EtuType);
         break;
     }
     actionSession.login;

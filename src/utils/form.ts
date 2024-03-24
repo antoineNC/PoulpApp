@@ -3,6 +3,7 @@ import { KeyboardTypeOptions } from "react-native";
 
 type Params<T extends FieldValues> = {
   label: string;
+  autoCapitalize?: boolean;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
   rules?: Omit<RegisterOptions<T>, keyof FieldValues>;
@@ -10,6 +11,9 @@ type Params<T extends FieldValues> = {
 
 const regEx_mail = /^[\w\-\.]+@ensc\.fr$/gm;
 const regEx_name = /^[a-z ,.'-]+$/i;
+const errorTxt = {
+  required: "Ce champs est obligatoire",
+};
 
 export function getFieldProps<T extends FieldValues>(
   name: string,
@@ -42,10 +46,11 @@ export function getFieldProps<T extends FieldValues>(
           },
         },
       };
-    case "mail":
+    case "email":
       return {
         label: "Email",
         keyboardType: "email-address",
+        autoCapitalize: true,
         rules: {
           ...rules,
           pattern: {

@@ -8,7 +8,7 @@ import { Button } from "react-native-paper";
 type FieldNames = {
   firstName: string;
   lastName: string;
-  mail: string;
+  email: string;
   password: string;
   repeatPassword: string;
   code: string;
@@ -21,7 +21,7 @@ export default function SignupScreen({
   const values: FormFieldProps<FieldNames> = [
     { name: "firstName", required: true },
     { name: "lastName", required: true },
-    { name: "mail", required: true },
+    { name: "email", required: true },
     { name: "password", required: true },
     { name: "repeatPassword", required: true, confirm: true },
     { name: "code", required: true },

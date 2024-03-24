@@ -10,8 +10,8 @@ import SignupScreen from "@screens/auth/signup";
 const Stack = createNativeStackNavigator();
 
 export default function RootContainer() {
-  // const connected = useUnit($sessionStore);
-  const connected = false;
+  const connected = useUnit($sessionStore);
+  // const connected = false;
   return (
     <NavigationContainer>
       {connected ? (

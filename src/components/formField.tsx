@@ -16,11 +16,8 @@ type FieldProps<T extends FieldValues> = TextInputProps & {
 
 function FormField<T extends FieldValues>(props: FieldProps<T>) {
   const { control, name, required, repeat, index, lastInput, setFocus } = props;
-  const { label, keyboardType, secureTextEntry, rules } = getFieldProps<T>(
-    name,
-    required,
-    repeat
-  );
+  const { label, keyboardType, secureTextEntry, autoCapitalize, rules } =
+    getFieldProps<T>(name, required, repeat);
   const [hide, setHide] = useState(true);
   return (
     <Controller
@@ -41,10 +38,10 @@ function FormField<T extends FieldValues>(props: FieldProps<T>) {
             value={value}
             error={invalid}
             autoFocus={index === 0}
-            blurOnSubmit={lastInput ? true : false}
-            onSubmitEditing={() => setFocus(index + 1)}
             enterKeyHint={lastInput ? "done" : "next"}
+            blurOnSubmit={lastInput ? true : false}
             keyboardType={keyboardType || "default"}
+            autoCapitalize={autoCapitalize ? "none" : "sentences"}
             secureTextEntry={secureTextEntry ? hide : false}
             right={
               secureTextEntry ? (
@@ -61,6 +58,7 @@ function FormField<T extends FieldValues>(props: FieldProps<T>) {
                 )
               ) : null
             }
+            onSubmitEditing={() => setFocus(index + 1)}
           />
           {error && <Text>{error.message}</Text>}
         </>

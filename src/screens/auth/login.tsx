@@ -4,9 +4,10 @@ import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 import { Button } from "react-native-paper";
+import { loginUser } from "utils/user";
 
 type FieldNames = {
-  mail: string;
+  email: string;
   password: string;
 };
 
@@ -15,13 +16,14 @@ export default function LoginScreen({
 }: NativeStackScreenProps<AuthParamList>) {
   const submitRef = useRef<View>(null);
   const values: FormFieldProps<FieldNames> = [
-    { name: "mail", required: true },
+    { name: "email", required: true },
     { name: "password", required: true },
   ];
   const { control, handleSubmit, setFocus } = useForm<FieldNames>();
 
-  const onSubmit = (data: { mail: string; password: string }) =>
-    console.log(data);
+  const onSubmit = (data: FieldNames) => {
+    loginUser(data);
+  };
   return (
     <>
       {values.map((field, index) => (
