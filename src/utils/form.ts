@@ -13,6 +13,12 @@ const regEx_mail = /^[\w\-\.]+@ensc\.fr$/gm;
 const regEx_name = /^[a-z ,.'-]+$/i;
 const errorTxt = {
   required: "Ce champs est obligatoire",
+  invalidMail: "L'email est invalide",
+  invalidFirstName:
+    "Prénom invalide, certains caractères ne sont pas pris en compte",
+  invalidLastName: "Nom invalide, certains caractères ne sont pas traités",
+  minLenghtPwd: "La longueur minimum est de 4 caractères",
+  confirmPwd: "Les mot de passe ne correspondent pas",
 };
 
 export function getFieldProps<T extends FieldValues>(
@@ -20,7 +26,7 @@ export function getFieldProps<T extends FieldValues>(
   required?: boolean,
   repeat?: string
 ): Params<T> {
-  const rules = required ? { required: "Ce champs est obligatoire" } : {};
+  const rules = required ? { required: errorTxt.required } : {};
   switch (name) {
     case "firstName":
       return {
@@ -29,8 +35,7 @@ export function getFieldProps<T extends FieldValues>(
           ...rules,
           pattern: {
             value: regEx_name,
-            message:
-              "Prénom invalide, certains caractères ne sont pas pris en compte",
+            message: errorTxt.invalidFirstName,
           },
         },
       };
@@ -41,8 +46,7 @@ export function getFieldProps<T extends FieldValues>(
           ...rules,
           pattern: {
             value: regEx_name,
-            message:
-              "Nom invalide, certains caractères ne sont pas pris en compte",
+            message: errorTxt.invalidLastName,
           },
         },
       };
@@ -55,7 +59,7 @@ export function getFieldProps<T extends FieldValues>(
           ...rules,
           pattern: {
             value: regEx_mail,
-            message: "L'email est invalide",
+            message: errorTxt.invalidMail,
           },
         },
       };
@@ -67,7 +71,7 @@ export function getFieldProps<T extends FieldValues>(
           ...rules,
           minLength: {
             value: 4,
-            message: "Il faut au moins 4 caractères",
+            message: errorTxt.minLenghtPwd,
           },
         },
       };
@@ -77,8 +81,7 @@ export function getFieldProps<T extends FieldValues>(
         secureTextEntry: true,
         rules: {
           ...rules,
-          validate: (value: string) =>
-            value === repeat || "Le mot de passe ne correspond pas",
+          validate: (value: string) => value === repeat || errorTxt.confirmPwd,
         },
       };
     case "code":
