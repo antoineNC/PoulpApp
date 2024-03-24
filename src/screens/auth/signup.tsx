@@ -1,5 +1,7 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import CustomField from "components/formField";
 import { useForm } from "react-hook-form";
+import { TouchableOpacity, Text } from "react-native";
 import { Button } from "react-native-paper";
 
 type FormValues = {
@@ -11,7 +13,9 @@ type FormValues = {
   code: string;
 };
 
-export default function SignupScreen() {
+export default function SignupScreen({
+  navigation,
+}: NativeStackScreenProps<AuthParamList>) {
   const { control, handleSubmit } = useForm<FormValues>();
 
   const onSubmit = (data: { mail: string; password: string }) =>
@@ -47,7 +51,7 @@ export default function SignupScreen() {
       <CustomField<FormValues>
         control={control}
         name="repeatPassword"
-        label="Mot de passe"
+        label="Confirmation du mot de passe"
         required
       />
 
@@ -57,7 +61,15 @@ export default function SignupScreen() {
         label="Code ENSC"
         required
       />
-      <Button children="Se connecter" onPress={handleSubmit(onSubmit)} />
+      <Button
+        mode="contained"
+        children="S'inscrire"
+        onPress={handleSubmit(onSubmit)}
+      />
+      <Button
+        children="T'as déjà un compte ? Connecte-toi"
+        onPress={() => navigation.navigate("login")}
+      />
     </>
   );
 }

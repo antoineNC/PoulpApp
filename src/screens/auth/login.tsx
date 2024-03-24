@@ -1,13 +1,8 @@
-import { NavigationProp } from "@react-navigation/native";
-import {
-  NativeStackNavigationProp,
-  NativeStackScreenProps,
-} from "@react-navigation/native-stack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import CustomField from "components/formField";
 import { useForm } from "react-hook-form";
 import { TouchableOpacity, Text } from "react-native";
 import { Button } from "react-native-paper";
-import { ScreenStackProps } from "react-native-screens";
 
 type FormValues = {
   mail: string;
@@ -35,10 +30,15 @@ export default function LoginScreen({
         label="Mot de passe"
         required
       />
-      <Button children="Se connecter" onPress={handleSubmit(onSubmit)} />
-      <TouchableOpacity onPress={() => navigation.navigate("signup")}>
-        <Text>OUIIIII</Text>
-      </TouchableOpacity>
+      <Button
+        mode="contained"
+        children="Se connecter"
+        onPress={handleSubmit(onSubmit)}
+      />
+      <Button
+        children="Pas de compte ? Inscris-toi ici"
+        onPress={() => navigation.navigate("signup")}
+      />
     </>
   );
 }
