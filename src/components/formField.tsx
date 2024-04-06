@@ -2,7 +2,7 @@ import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { TextInput, TextInputProps } from "react-native-paper";
 import { Text, TextInput as TextInputType } from "react-native";
 import { getFieldProps } from "utils/form";
-import React, { forwardRef, useState } from "react";
+import React, { useState } from "react";
 
 type FieldProps<T extends FieldValues> = TextInputProps & {
   control: Control<T>;

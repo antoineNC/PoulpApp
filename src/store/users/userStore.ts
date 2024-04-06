@@ -19,13 +19,7 @@ const defaultStudent: EtuType = {
 };
 
 const $studentStore = createStore(defaultStudent)
-  .on(actionStudent.login, (_, user) => ({
-    id: user.id,
-    role: "student",
-    mail: user.mail,
-    lastName: user.lastName,
-    firstName: user.firstName,
-  }))
+  .on(actionStudent.login, (_, user) => ({ ...user, role: "student" }))
   .on(actionStudent.updateMail.doneData, (state, mail) => ({ ...state, mail }))
   .on(actionStudent.restore, (_, value) => value)
   .reset(actionStudent.logout);
@@ -41,19 +35,16 @@ const actionOffice = {
 const defaultOffice: OfficeType = {
   id: "",
   role: "office",
+  description: "",
+  logo: "",
   mail: "",
   name: "",
+  members: [""],
   clubs: [""],
 };
 
 const $officeStore = createStore(defaultOffice)
-  .on(actionOffice.login, (_, user) => ({
-    id: user.id,
-    role: "office",
-    mail: user.mail,
-    name: user.name,
-    clubs: user.clubs,
-  }))
+  .on(actionOffice.login, (_, user) => ({ ...user, role: "office" }))
   .on(actionOffice.updateMail.doneData, (state, mail) => ({ ...state, mail }))
   .on(actionOffice.restore, (_, value) => value)
   .reset(actionOffice.logout);
@@ -74,12 +65,7 @@ const defaultAdmin: AdminType = {
 };
 
 const $adminStore = createStore(defaultAdmin)
-  .on(actionAdmin.login, (_, user) => ({
-    id: user.id,
-    role: "office",
-    mail: user.mail,
-    name: user.name,
-  }))
+  .on(actionAdmin.login, (_, user) => ({ ...user, role: "admin" }))
   .on(actionAdmin.updateMail.doneData, (state, mail) => ({ ...state, mail }))
   .on(actionAdmin.restore, (_, value) => value)
   .reset(actionAdmin.logout);

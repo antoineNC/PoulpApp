@@ -13,6 +13,9 @@ type EtuType = UserType & {
 };
 type OfficeType = UserType & {
   name: string;
+  description: string;
+  logo: string;
+  members: Array<string>;
   clubs: Array<string>;
   // ...
 };

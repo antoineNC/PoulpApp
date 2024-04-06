@@ -1,3 +1,4 @@
+import { CODE_ENSC } from "data";
 import { FieldValues, RegisterOptions } from "react-hook-form";
 import { KeyboardTypeOptions } from "react-native";
 
@@ -17,6 +18,7 @@ const errorTxt = {
   invalidFirstName:
     "Prénom invalide, certains caractères ne sont pas pris en compte",
   invalidLastName: "Nom invalide, certains caractères ne sont pas traités",
+  invalidCode: "Code invalide. Demandez le code de l'année au BDE.",
   minLenghtPwd: "La longueur minimum est de 4 caractères",
   confirmPwd: "Les mot de passe ne correspondent pas",
 };
@@ -87,7 +89,13 @@ export function getFieldProps<T extends FieldValues>(
     case "code":
       return {
         label: "Code ENSC",
-        rules: rules,
+        rules: {
+          ...rules,
+          pattern: {
+            value: CODE_ENSC,
+            message: errorTxt.invalidCode,
+          },
+        },
       };
     default:
       return { label: "", rules: {} };

@@ -1,7 +1,6 @@
-import { useUnit } from "effector-react";
 import { User } from "firebase/auth";
 
-import { getUserRole, login, signout } from "firebase/firebaseUtils";
+import { getUserRole, login, signout, signup } from "firebase/firebaseUtils";
 import { actionSession } from "store/sessionStore";
 import {
   actionAdmin,
@@ -25,6 +24,31 @@ export const loginUser = async (props: { email: string; password: string }) => {
         break;
     }
     actionSession.login();
+  } catch (e: any) {
+    throw Error(e);
+  }
+};
+
+export const signupUser = async (props: {
+  firstname: string;
+  lastName: string;
+  email: string;
+  password: string;
+}) => {
+  try {
+    const userData = await signup(props);
+    const userRole: Role = userData.role;
+    switch (userRole) {
+      case "admin":
+        actionAdmin.login(userData as AdminType);
+        break;
+      case "office":
+        actionOffice.login(userData as OfficeType);
+        break;
+      case "student":
+        actionStudent.login(userData as EtuType);
+        break;
+    }
   } catch (e: any) {
     throw Error(e);
   }

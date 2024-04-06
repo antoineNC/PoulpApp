@@ -1,9 +1,12 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import CustomField from "components/formField";
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { TextInput, View } from "react-native";
 import { Button } from "react-native-paper";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import Spinner from "react-native-loading-spinner-overlay";
+
+import CustomField from "components/formField";
+import { colors } from "theme";
+import { signupUser } from "utils/user";
 
 type FieldNames = {
   firstName: string;
@@ -17,7 +20,7 @@ type FieldNames = {
 export default function SignupScreen({
   navigation,
 }: NativeStackScreenProps<AuthParamList>) {
-  const submitRef = React.createRef<View>();
+  const [loading, setLoading] = useState(false);
   const values: FormFieldProps<FieldNames> = [
     { name: "firstName", required: true },
     { name: "lastName", required: true },
@@ -28,10 +31,32 @@ export default function SignupScreen({
   ];
   const { control, handleSubmit, watch, setFocus } = useForm<FieldNames>();
   const pwd = watch("password");
-  const onSubmit = (data: any) => console.log(data);
+
+  const onSubmit = async (data: FieldNames) => {
+    setLoading(true);
+    try {
+      await signupUser({
+        firstname: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+      });
+      setLoading(false);
+    } catch (e) {
+      console.log("erroooooor", e);
+      setLoading(false);
+    }
+  };
 
   return (
     <>
+      {loading && (
+        <Spinner
+          visible={true}
+          textContent={"Connexion..."}
+          textStyle={{ color: colors.white }}
+        />
+      )}
       {values.map((field, index) => {
         return (
           <CustomField<FieldNames>
@@ -42,19 +67,15 @@ export default function SignupScreen({
             name={field.name}
             required={field.required}
             repeat={field.confirm ? pwd : undefined}
-            setFocus={(index) => {
-              index < values.length
-                ? setFocus(values[index].name)
-                : submitRef.current?.focus();
-            }}
+            setFocus={(index) => setFocus(values[index].name)}
           />
         );
       })}
       <Button
-        ref={submitRef}
         mode="contained"
         children="S'inscrire"
         onPress={handleSubmit(onSubmit)}
+        uppercase
       />
       <Button
         children="T'as déjà un compte ? Connecte-toi !"
