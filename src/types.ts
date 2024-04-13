@@ -12,6 +12,7 @@ type EtuType = UserType & {
   // ...
 };
 type OfficeType = UserType & {
+  acronym: string;
   name: string;
   description: string;
   logo: string;
@@ -21,6 +22,24 @@ type OfficeType = UserType & {
 };
 type AdminType = UserType & {
   name: string;
+};
+
+// Posts
+type Post = {
+  id: string;
+  title: string;
+  description: string;
+  editor: string;
+  image: string;
+  tags: Array<string>;
+  createdAt: string;
+  visibleCal: boolean;
+  date: {
+    startDay?: string;
+    startHour?: string;
+    endDay?: string;
+    endHour?: string;
+  };
 };
 
 // Navigation

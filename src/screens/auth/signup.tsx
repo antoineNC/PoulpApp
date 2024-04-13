@@ -67,7 +67,9 @@ export default function SignupScreen({
             name={field.name}
             required={field.required}
             repeat={field.confirm ? pwd : undefined}
-            setFocus={(index) => setFocus(values[index].name)}
+            setFocus={(index) =>
+              index < values.length ? setFocus(values[index].name) : null
+            }
           />
         );
       })}

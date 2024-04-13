@@ -18,9 +18,9 @@ const errorTxt = {
   invalidFirstName:
     "Prénom invalide, certains caractères ne sont pas pris en compte",
   invalidLastName: "Nom invalide, certains caractères ne sont pas traités",
-  invalidCode: "Code invalide. Demandez le code de l'année au BDE.",
   minLenghtPwd: "La longueur minimum est de 4 caractères",
   confirmPwd: "Les mot de passe ne correspondent pas",
+  invalidCode: "Code invalide. Demandez le code de l'année au BDE.",
 };
 
 export function getFieldProps<T extends FieldValues>(

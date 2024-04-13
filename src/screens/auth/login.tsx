@@ -52,7 +52,9 @@ export default function LoginScreen({
           name={field.name}
           label={field.name}
           required={field.required}
-          setFocus={(index) => setFocus(values[index].name)}
+          setFocus={(index) =>
+            index < values.length ? setFocus(values[index].name) : null
+          }
         />
       ))}
       <Button

@@ -1,12 +1,8 @@
 import { User } from "firebase/auth";
 
-import { getUserRole, login, signout, signup } from "firebase/firebaseUtils";
+import { getUserData, login, signout, signup } from "firebase/firebaseUtils";
 import { actionSession } from "store/sessionStore";
-import {
-  actionAdmin,
-  actionOffice,
-  actionStudent,
-} from "store/users/userStore";
+import { actionAdmin, actionOffice, actionStudent } from "store/userStore";
 
 export const loginUser = async (props: { email: string; password: string }) => {
   try {
@@ -56,7 +52,7 @@ export const signupUser = async (props: {
 
 export const setUser = async (user: User) => {
   try {
-    const userData = await getUserRole(user.uid);
+    const userData = await getUserData(user.uid);
     const userRole: Role = userData.role;
     switch (userRole) {
       case "admin":
