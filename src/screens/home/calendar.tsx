@@ -1,5 +1,6 @@
-import { View } from "react-native";
+import { Button } from "react-native-paper";
+import { logoutUser } from "utils/user";
 
 export default function CalendarScreen() {
-  return <View></View>;
+  return <Button onPress={() => logoutUser()} children="LOGOUT" />;
 }

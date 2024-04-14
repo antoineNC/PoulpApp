@@ -1,6 +1,5 @@
 import {
   User,
-  getAuth,
   initializeAuth,
   getReactNativePersistence,
   onAuthStateChanged,
@@ -20,11 +19,13 @@ import {
   where,
   DocumentData,
   setDoc,
-  addDoc,
-} from "firebase/firestore";
+  orderBy,
+  onSnapshot,
+} from "@firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import app from "firebase/firebaseConfig";
+import { fb_Post } from "./firebaseTypes";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -38,6 +39,7 @@ const subscribeUserState = (observer: (user: User | null) => void) => {
   return onAuthStateChanged(auth, (user) => observer(user));
 };
 
+// ===== AUTHENTICATION =====
 const login = async ({
   email,
   password,
@@ -97,20 +99,21 @@ const signup = async ({
   }
 };
 
-const getUserRole = async (uid: string) => {
+const signout = () => {
+  signOut(auth);
+};
+
+const getUserData = async (id: string) => {
   try {
-    const userRef = await getDoc(doc(userCollection, uid));
-    if (userRef.exists()) {
-      const user = userRef.data();
-      return user;
-    } else throw Error("Utilisateur inconnu");
+    const userRef = await getDoc(doc(userCollection, id));
+    if (!userRef.exists()) {
+      throw Error("Utilisateur inconnu");
+    }
+    const userData = userRef.data();
+    return userData;
   } catch (e: any) {
     throw Error(e);
   }
-};
-
-const signout = () => {
-  signOut(auth);
 };
 
 const updateMail = async (id: string, mail: string) => {
@@ -136,14 +139,35 @@ const updateInfo = async (id: string, info: any) => {
   }
 };
 
-const getPosts = async () => {
+// ===== POSTS =====
+const getAllPosts = (setPosts: (state: Post[]) => void) => {
   try {
-    const posts = await getDocs(postCollection);
-    return posts;
+    const q = query(postCollection, orderBy("timeStamp", "desc"));
+    return onSnapshot(q, (snapshot) =>
+      setPosts(
+        snapshot.docs.map((doc) => {
+          const data = doc.data() as fb_Post;
+          const post = {
+            id: doc.id,
+            title: data.title,
+            createdAt: data.timeStamp.seconds,
+            description: data.description,
+            date: data.date,
+            image: data.image,
+            tags: data.tags,
+            visibleCal: data.visibleCal,
+            editor: data.editor,
+          };
+          return post;
+        })
+      )
+    );
   } catch (e: any) {
     throw Error("Une erreur est survenue.\n" + e);
   }
 };
+
+const getNewPosts = () => {};
 
 const getBureaux = async () => {
   try {
@@ -165,9 +189,9 @@ export {
   login,
   signup,
   signout,
-  getUserRole,
+  getUserData,
   updateMail,
   updateInfo,
-  getPosts,
+  getAllPosts,
   getBureaux,
 };

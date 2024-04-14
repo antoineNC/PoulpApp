@@ -32,7 +32,7 @@ type Post = {
   editor: string;
   image: string;
   tags: Array<string>;
-  createdAt: string;
+  createdAt: number;
   visibleCal: boolean;
   date: {
     startDay?: string;
@@ -40,22 +40,6 @@ type Post = {
     endDay?: string;
     endHour?: string;
   };
-};
-
-// Navigation
-type TabParamList = {
-  homeContainer: undefined;
-  officeContainer: undefined;
-  famCupContainer: undefined;
-  menuContainer: undefined;
-};
-type AuthParamList = {
-  login: undefined;
-  signup: undefined;
-};
-type HomeParamList = {
-  home: undefined;
-  calendar: undefined;
 };
 
 // Form

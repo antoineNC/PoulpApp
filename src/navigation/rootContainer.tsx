@@ -3,25 +3,26 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useUnit } from "effector-react";
 
 import TabBarContainer from "@navigation/tabBarContainer";
+import { AuthParamList } from "@navigation/navigation.types";
 import LoginScreen from "@screens/auth/login";
-import { $sessionStore } from "store/sessionStore";
 import SignupScreen from "@screens/auth/signup";
+import { $sessionStore } from "store/sessionStore";
 
-const Stack = createNativeStackNavigator();
+const AuthStack = createNativeStackNavigator<AuthParamList>();
 
 export default function RootContainer() {
   const connected = useUnit($sessionStore);
-  console.log(connected);
+  console.log("CONNECTED:", connected);
   return (
     <NavigationContainer>
       {connected ? (
         <TabBarContainer />
       ) : (
-        <Stack.Navigator>
-          <Stack.Screen name="login" component={LoginScreen} />
-          <Stack.Screen name="signup" component={SignupScreen} />
-          <Stack.Screen name="forgotPassword" component={LoginScreen} />
-        </Stack.Navigator>
+        <AuthStack.Navigator>
+          <AuthStack.Screen name="login" component={LoginScreen} />
+          <AuthStack.Screen name="signup" component={SignupScreen} />
+          <AuthStack.Screen name="forgotPassword" component={LoginScreen} />
+        </AuthStack.Navigator>
       )}
     </NavigationContainer>
   );

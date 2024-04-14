@@ -4,6 +4,7 @@ import { Button } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Spinner from "react-native-loading-spinner-overlay";
 
+import { AuthParamList } from "@navigation/navigation.types";
 import CustomField from "components/formField";
 import { loginUser } from "utils/user";
 import { colors } from "theme";
@@ -29,7 +30,7 @@ export default function LoginScreen({
       await loginUser(data);
       setLoading(false);
     } catch (e) {
-      console.log("erroooooor", e);
+      console.log("LOGIN ERROR:", e);
       setLoading(false);
     }
   };
