@@ -1,6 +1,6 @@
 import { User } from "firebase/auth";
 
-import { getUserData, login, signout, signup } from "firebase/firebaseUtils";
+import { getUserData, login, signout, signup } from "firebase/firebase.utils";
 import { actionSession } from "store/sessionStore";
 import { actionAdmin, actionOffice, actionStudent } from "store/userStore";
 

@@ -1,5 +1,5 @@
 import { createEffect, createEvent, createStore } from "effector";
-import { getAllPosts } from "firebase/firebaseUtils";
+import { getAllPosts } from "firebase/firebase.utils";
 
 const actionPost = {
   getPosts: createEffect("GET_POSTS", {

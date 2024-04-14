@@ -24,8 +24,8 @@ import {
 } from "@firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import app from "firebase/firebaseConfig";
-import { fb_Post } from "./firebaseTypes";
+import app from "firebase/firebase.config";
+import { fb_Post } from "./firebase.types";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -147,16 +147,10 @@ const getAllPosts = (setPosts: (state: Post[]) => void) => {
       setPosts(
         snapshot.docs.map((doc) => {
           const data = doc.data() as fb_Post;
-          const post = {
+          const post: Post = {
             id: doc.id,
-            title: data.title,
             createdAt: data.timeStamp.seconds,
-            description: data.description,
-            date: data.date,
-            image: data.image,
-            tags: data.tags,
-            visibleCal: data.visibleCal,
-            editor: data.editor,
+            ...data,
           };
           return post;
         })
@@ -167,7 +161,30 @@ const getAllPosts = (setPosts: (state: Post[]) => void) => {
   }
 };
 
-const getNewPosts = () => {};
+const getEventPosts = (setPosts: (state: Post[]) => void) => {
+  try {
+    const q = query(
+      postCollection,
+      where("visibleCal", "==", true),
+      orderBy("timeStamp", "desc")
+    );
+    return onSnapshot(q, (snapshot) =>
+      setPosts(
+        snapshot.docs.map((doc) => {
+          const data = doc.data() as fb_Post;
+          const post: Post = {
+            id: doc.id,
+            createdAt: data.timeStamp.seconds,
+            ...data,
+          };
+          return post;
+        })
+      )
+    );
+  } catch (e: any) {
+    throw Error("Une erreur est survenue.\n" + e);
+  }
+};
 
 const getBureaux = async () => {
   try {
@@ -193,5 +210,6 @@ export {
   updateMail,
   updateInfo,
   getAllPosts,
+  getEventPosts,
   getBureaux,
 };

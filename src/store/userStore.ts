@@ -1,6 +1,6 @@
 import { createEffect, createEvent, createStore } from "effector";
 
-import { updateMail } from "firebase/firebaseUtils";
+import { updateMail } from "firebase/firebase.utils";
 
 // ======= STUDENT
 const actionStudent = {

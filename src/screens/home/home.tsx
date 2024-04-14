@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { FlatList, View, Text } from "react-native";
-import { useUnit } from "effector-react";
 
-import { $postStore, actionPost } from "store/postStore";
+import { getAllPosts } from "firebase/firebase.utils";
 
 export default function HomeScreen() {
-  const storedPosts = useUnit($postStore);
-  const [posts, setPosts] = useState<Post[]>(storedPosts);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    actionPost.getPosts((posts) => setPosts(posts));
-    actionPost.setPosts(posts);
+    getAllPosts((posts) => setPosts(posts));
   }, []);
 
   return (
