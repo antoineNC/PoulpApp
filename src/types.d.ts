@@ -1,3 +1,5 @@
+import { fb_Post } from "firebase/firebase.types";
+
 type UserType = {
   id: string;
   mail: string;
@@ -25,21 +27,9 @@ type AdminType = UserType & {
 };
 
 // Posts
-type Post = {
+type Post = fb_Post & {
   id: string;
-  title: string;
-  description: string;
-  editor: string;
-  image: string;
-  tags: Array<string>;
-  createdAt: number;
-  visibleCal: boolean;
-  date: {
-    startDay?: string;
-    startHour?: string;
-    endDay?: string;
-    endHour?: string;
-  };
+  editorLogo: string;
 };
 
 // Form

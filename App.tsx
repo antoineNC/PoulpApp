@@ -5,7 +5,7 @@ import { config } from "@gluestack-ui/config";
 
 import RootContainer from "navigation/rootContainer";
 import { subscribeUserState } from "firebase/firebase.utils";
-import { logoutUser, setUser } from "utils/user";
+import { logoutUser, setUser } from "utils/user.utils";
 
 export default function App() {
   useEffect(() => {

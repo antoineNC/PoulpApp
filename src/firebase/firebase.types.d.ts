@@ -1,9 +1,9 @@
-import { Timestamp } from "firebase/firestore";
+import { DocumentReference, Timestamp } from "firebase/firestore";
 
 export type fb_Post = {
   title: string;
   description: string;
-  editor: string;
+  editor: DocumentReference;
   image: string;
   tags: Array<string>;
   timeStamp: Timestamp;

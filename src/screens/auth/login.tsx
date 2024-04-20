@@ -6,8 +6,9 @@ import Spinner from "react-native-loading-spinner-overlay";
 
 import { AuthParamList } from "@navigation/navigation.types";
 import CustomField from "components/formField";
-import { loginUser } from "utils/user";
+import { loginUser } from "utils/user.utils";
 import { colors } from "theme";
+import { FormFieldProps } from "types";
 
 type FieldNames = {
   email: string;

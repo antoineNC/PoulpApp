@@ -1,6 +1,7 @@
 import { createEffect, createEvent, createStore } from "effector";
 
 import { updateMail } from "firebase/firebase.utils";
+import { AdminType, EtuType, OfficeType } from "types";
 
 // ======= STUDENT
 const actionStudent = {
@@ -60,7 +61,7 @@ const actionAdmin = {
 
 const defaultAdmin: AdminType = {
   id: "",
-  role: "office",
+  role: "admin",
   mail: "",
   name: "",
 };

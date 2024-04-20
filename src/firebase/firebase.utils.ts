@@ -22,10 +22,13 @@ import {
   orderBy,
   onSnapshot,
 } from "@firebase/firestore";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import app from "firebase/firebase.config";
 import { fb_Post } from "./firebase.types";
+import { OfficeType, Post } from "types";
+import { DocumentReference } from "firebase/firestore";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -34,6 +37,9 @@ const db = getFirestore(app);
 const userCollection = collection(db, "Users");
 const postCollection = collection(db, "Post");
 const bureauCollection = collection(db, "Bureau");
+
+const storage = getStorage();
+const assetsRef = ref(storage, "Assets");
 
 const subscribeUserState = (observer: (user: User | null) => void) => {
   return onAuthStateChanged(auth, (user) => observer(user));
@@ -143,19 +149,19 @@ const updateInfo = async (id: string, info: any) => {
 const getAllPosts = (setPosts: (state: Post[]) => void) => {
   try {
     const q = query(postCollection, orderBy("timeStamp", "desc"));
-    return onSnapshot(q, (snapshot) =>
-      setPosts(
-        snapshot.docs.map((doc) => {
-          const data = doc.data() as fb_Post;
-          const post: Post = {
-            id: doc.id,
-            createdAt: data.timeStamp.seconds,
-            ...data,
-          };
-          return post;
-        })
-      )
-    );
+    return onSnapshot(q, async (snapshot) => {
+      const posts = snapshot.docs.map(async (doc) => {
+        const data = doc.data() as fb_Post;
+        const office = await getOneOffice(data.editor);
+        const post: Post = {
+          id: doc.id,
+          editorLogo: office.logo,
+          ...data,
+        };
+        return post;
+      });
+      return setPosts(await Promise.all(posts));
+    });
   } catch (e: any) {
     throw Error("Une erreur est survenue.\n" + e);
   }
@@ -168,36 +174,74 @@ const getEventPosts = (setPosts: (state: Post[]) => void) => {
       where("visibleCal", "==", true),
       orderBy("timeStamp", "desc")
     );
-    return onSnapshot(q, (snapshot) =>
-      setPosts(
-        snapshot.docs.map((doc) => {
-          const data = doc.data() as fb_Post;
-          const post: Post = {
-            id: doc.id,
-            createdAt: data.timeStamp.seconds,
-            ...data,
-          };
-          return post;
-        })
-      )
-    );
+    return onSnapshot(q, async (snapshot) => {
+      const posts = snapshot.docs.map(async (doc) => {
+        const data = doc.data() as fb_Post;
+        const office = await getOneOffice(data.editor);
+        const post: Post = {
+          id: doc.id,
+          editorLogo: office.logo,
+          ...data,
+        };
+        return post;
+      });
+      return setPosts(await Promise.all(posts));
+    });
   } catch (e: any) {
     throw Error("Une erreur est survenue.\n" + e);
   }
 };
 
-const getBureaux = async () => {
+const getOneOffice = async (ref: DocumentReference) => {
+  try {
+    const docSnapshot = await getDoc(ref);
+    if (!docSnapshot.exists()) {
+      throw Error("Ce bureau n'existe pas.");
+    }
+    return docSnapshot.data() as OfficeType;
+  } catch (e: any) {
+    throw Error("Une erreur est survenue.\n" + e);
+  }
+};
+
+const getAllOffice = async () => {
   try {
     const q = query(userCollection, where("role", "==", "office"));
     const querySnapshot = await getDocs(q);
     const bureaux: OfficeType[] = [];
     querySnapshot.forEach((bureau) => {
-      // doc.data() is never undefined for query doc snapshots
       bureaux.push(bureau.data() as OfficeType);
     });
     return bureaux;
   } catch (e: any) {
     throw Error("Une erreur est survenue.\n" + e);
+  }
+};
+
+const getOfficeLogo = async (office: string) => {
+  console.log("OFFICE", office);
+  const logoRef = ref(assetsRef, `/${office.toUpperCase()}.png`);
+  try {
+    const url = await getDownloadURL(logoRef);
+    return url;
+  } catch (error: any) {
+    // A full list of error codes is available at
+    // https://firebase.google.com/docs/storage/web/handle-errors
+    switch (error.code) {
+      case "storage/object-not-found":
+        // File doesn't exist
+        break;
+      case "storage/unauthorized":
+        // User doesn't have permission to access the object
+        break;
+      case "storage/canceled":
+        // User canceled the upload
+        break;
+
+      case "storage/unknown":
+        // Unknown error occurred, inspect the server response
+        break;
+    }
   }
 };
 
@@ -211,5 +255,6 @@ export {
   updateInfo,
   getAllPosts,
   getEventPosts,
-  getBureaux,
+  getAllOffice,
+  getOfficeLogo,
 };
