@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { View, Image } from "react-native";
-import { getEventPosts, getOfficeLogo } from "firebase/firebase.utils";
+import { getEventPosts } from "firebase/firebase.utils";
 import { Agenda, AgendaSchedule } from "react-native-calendars";
 import { Card, Text } from "react-native-paper";
 import { colors } from "theme";
