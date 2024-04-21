@@ -4,9 +4,11 @@ import { Button } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Spinner from "react-native-loading-spinner-overlay";
 
+import { AuthParamList } from "@navigation/navigation.types";
 import CustomField from "components/formField";
 import { colors } from "theme";
-import { signupUser } from "utils/user";
+import { signupUser } from "utils/user.utils";
+import { FormFieldProps } from "types";
 
 type FieldNames = {
   firstName: string;
@@ -43,7 +45,7 @@ export default function SignupScreen({
       });
       setLoading(false);
     } catch (e) {
-      console.log("erroooooor", e);
+      console.log("SIGNUP ERROR:", e);
       setLoading(false);
     }
   };

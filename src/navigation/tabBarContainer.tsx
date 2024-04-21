@@ -1,16 +1,22 @@
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-import TabScreenContainer from "@navigation/tabScreenContainer";
+import {
+  FamCupNavigator,
+  HomeNavigator,
+  MenuNavigator,
+  OfficeNavigator,
+} from "@navigation/tabScreenNavigators";
+import { TabBarParamList } from "@navigation/navigation.types";
 
-const MainTab = createMaterialBottomTabNavigator<TabParamList>();
+const TabBar = createMaterialBottomTabNavigator<TabBarParamList>();
 
 export default function TabBarContainer() {
   return (
-    <MainTab.Navigator>
-      <MainTab.Screen
+    <TabBar.Navigator>
+      <TabBar.Screen
         name="homeContainer"
-        component={TabScreenContainer}
+        component={HomeNavigator}
         options={{
           title: "Accueil",
           tabBarIcon: ({ color }) => (
@@ -18,9 +24,9 @@ export default function TabBarContainer() {
           ),
         }}
       />
-      <MainTab.Screen
+      <TabBar.Screen
         name="officeContainer"
-        component={TabScreenContainer}
+        component={OfficeNavigator}
         options={{
           title: "Bureaux",
           tabBarIcon: ({ color }) => (
@@ -28,9 +34,9 @@ export default function TabBarContainer() {
           ),
         }}
       />
-      <MainTab.Screen
+      <TabBar.Screen
         name="famCupContainer"
-        component={TabScreenContainer}
+        component={FamCupNavigator}
         options={{
           title: "Coupe des Familles",
           tabBarIcon: ({ color }) => (
@@ -38,9 +44,9 @@ export default function TabBarContainer() {
           ),
         }}
       />
-      <MainTab.Screen
+      <TabBar.Screen
         name="menuContainer"
-        component={TabScreenContainer}
+        component={MenuNavigator}
         options={{
           title: "Menu",
           tabBarIcon: ({ color }) => (
@@ -48,6 +54,6 @@ export default function TabBarContainer() {
           ),
         }}
       />
-    </MainTab.Navigator>
+    </TabBar.Navigator>
   );
 }

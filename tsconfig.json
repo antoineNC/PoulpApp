@@ -15,6 +15,9 @@
       ],
       "@navigation/*": [
         "navigation/*"
+      ],
+      "@styledComponents": [
+        "components/styledComponents.tsx"
       ]
     },
   }

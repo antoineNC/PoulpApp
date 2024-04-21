@@ -1,6 +1,5 @@
 import {
   User,
-  getAuth,
   initializeAuth,
   getReactNativePersistence,
   onAuthStateChanged,
@@ -20,11 +19,16 @@ import {
   where,
   DocumentData,
   setDoc,
-  addDoc,
-} from "firebase/firestore";
+  orderBy,
+  onSnapshot,
+} from "@firebase/firestore";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import app from "firebase/firebaseConfig";
+import app from "firebase/firebase.config";
+import { fb_Post } from "./firebase.types";
+import { OfficeType, Post } from "types";
+import { DocumentReference } from "firebase/firestore";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -34,10 +38,14 @@ const userCollection = collection(db, "Users");
 const postCollection = collection(db, "Post");
 const bureauCollection = collection(db, "Bureau");
 
+const storage = getStorage();
+const assetsRef = ref(storage, "Assets");
+
 const subscribeUserState = (observer: (user: User | null) => void) => {
   return onAuthStateChanged(auth, (user) => observer(user));
 };
 
+// ===== AUTHENTICATION =====
 const login = async ({
   email,
   password,
@@ -97,20 +105,21 @@ const signup = async ({
   }
 };
 
-const getUserRole = async (uid: string) => {
+const signout = () => {
+  signOut(auth);
+};
+
+const getUserData = async (id: string) => {
   try {
-    const userRef = await getDoc(doc(userCollection, uid));
-    if (userRef.exists()) {
-      const user = userRef.data();
-      return user;
-    } else throw Error("Utilisateur inconnu");
+    const userRef = await getDoc(doc(userCollection, id));
+    if (!userRef.exists()) {
+      throw Error("Utilisateur inconnu");
+    }
+    const userData = userRef.data();
+    return userData;
   } catch (e: any) {
     throw Error(e);
   }
-};
-
-const signout = () => {
-  signOut(auth);
 };
 
 const updateMail = async (id: string, mail: string) => {
@@ -136,22 +145,71 @@ const updateInfo = async (id: string, info: any) => {
   }
 };
 
-const getPosts = async () => {
+// ===== POSTS =====
+const getAllPosts = (setPosts: (state: Post[]) => void) => {
   try {
-    const posts = await getDocs(postCollection);
-    return posts;
+    const q = query(postCollection, orderBy("timeStamp", "desc"));
+    return onSnapshot(q, async (snapshot) => {
+      const posts = snapshot.docs.map(async (doc) => {
+        const data = doc.data() as fb_Post;
+        const office = await getOneOffice(data.editor);
+        const post: Post = {
+          id: doc.id,
+          editorLogo: office.logo,
+          ...data,
+        };
+        return post;
+      });
+      return setPosts(await Promise.all(posts));
+    });
   } catch (e: any) {
     throw Error("Une erreur est survenue.\n" + e);
   }
 };
 
-const getBureaux = async () => {
+const getEventPosts = (setPosts: (state: Post[]) => void) => {
+  try {
+    const q = query(
+      postCollection,
+      where("visibleCal", "==", true),
+      orderBy("timeStamp", "desc")
+    );
+    return onSnapshot(q, async (snapshot) => {
+      const posts = snapshot.docs.map(async (doc) => {
+        const data = doc.data() as fb_Post;
+        const office = await getOneOffice(data.editor);
+        const post: Post = {
+          id: doc.id,
+          editorLogo: office.logo,
+          ...data,
+        };
+        return post;
+      });
+      return setPosts(await Promise.all(posts));
+    });
+  } catch (e: any) {
+    throw Error("Une erreur est survenue.\n" + e);
+  }
+};
+
+const getOneOffice = async (ref: DocumentReference) => {
+  try {
+    const docSnapshot = await getDoc(ref);
+    if (!docSnapshot.exists()) {
+      throw Error("Ce bureau n'existe pas.");
+    }
+    return docSnapshot.data() as OfficeType;
+  } catch (e: any) {
+    throw Error("Une erreur est survenue.\n" + e);
+  }
+};
+
+const getAllOffice = async () => {
   try {
     const q = query(userCollection, where("role", "==", "office"));
     const querySnapshot = await getDocs(q);
     const bureaux: OfficeType[] = [];
     querySnapshot.forEach((bureau) => {
-      // doc.data() is never undefined for query doc snapshots
       bureaux.push(bureau.data() as OfficeType);
     });
     return bureaux;
@@ -160,14 +218,43 @@ const getBureaux = async () => {
   }
 };
 
+const getOfficeLogo = async (office: string) => {
+  console.log("OFFICE", office);
+  const logoRef = ref(assetsRef, `/${office.toUpperCase()}.png`);
+  try {
+    const url = await getDownloadURL(logoRef);
+    return url;
+  } catch (error: any) {
+    // A full list of error codes is available at
+    // https://firebase.google.com/docs/storage/web/handle-errors
+    switch (error.code) {
+      case "storage/object-not-found":
+        // File doesn't exist
+        break;
+      case "storage/unauthorized":
+        // User doesn't have permission to access the object
+        break;
+      case "storage/canceled":
+        // User canceled the upload
+        break;
+
+      case "storage/unknown":
+        // Unknown error occurred, inspect the server response
+        break;
+    }
+  }
+};
+
 export {
   subscribeUserState,
   login,
   signup,
   signout,
-  getUserRole,
+  getUserData,
   updateMail,
   updateInfo,
-  getPosts,
-  getBureaux,
+  getAllPosts,
+  getEventPosts,
+  getAllOffice,
+  getOfficeLogo,
 };
