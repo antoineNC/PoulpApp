@@ -7,6 +7,7 @@ import { AuthParamList } from "@navigation/navigation.types";
 import LoginScreen from "@screens/auth/login";
 import SignupScreen from "@screens/auth/signup";
 import { $sessionStore } from "store/sessionStore";
+import { colors } from "@theme";
 
 const AuthStack = createNativeStackNavigator<AuthParamList>();
 
@@ -18,9 +19,28 @@ export default function RootContainer() {
       {connected ? (
         <TabBarContainer />
       ) : (
-        <AuthStack.Navigator>
-          <AuthStack.Screen name="login" component={LoginScreen} />
-          <AuthStack.Screen name="signup" component={SignupScreen} />
+        <AuthStack.Navigator
+          screenOptions={{
+            statusBarTranslucent: true,
+            headerTintColor: colors.white,
+            headerTitleAlign: "center",
+            headerStyle: { backgroundColor: colors.primary },
+            headerShadowVisible: false,
+            contentStyle: {
+              backgroundColor: colors.secondary,
+            },
+          }}
+        >
+          <AuthStack.Screen
+            name="login"
+            component={LoginScreen}
+            options={{ title: "Connexion" }}
+          />
+          <AuthStack.Screen
+            name="signup"
+            component={SignupScreen}
+            options={{ title: "Inscription" }}
+          />
           <AuthStack.Screen name="forgotPassword" component={LoginScreen} />
         </AuthStack.Navigator>
       )}

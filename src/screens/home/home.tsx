@@ -5,7 +5,7 @@ import { getAllPosts } from "firebase/firebase.utils";
 import { Post } from "types";
 import { PostDisplay } from "components/postDisplay";
 import { PostItem } from "components/postItem";
-import { Container } from "@styledComponents";
+import { Container } from "styles/styledComponents";
 
 export default function HomeScreen() {
   const [posts, setPosts] = useState<Post[]>([]);

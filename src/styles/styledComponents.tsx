@@ -1,6 +1,6 @@
 import { windowScale } from "data";
 import styled from "styled-components/native";
-import { colors, fontSize } from "theme";
+import { colors, fontSize } from "@theme";
 
 export const Text = styled.Text<{ $size?: string }>`
   color: ${colors.white};

@@ -17,7 +17,18 @@
         "navigation/*"
       ],
       "@styledComponents": [
-        "components/styledComponents.tsx"
+        "styles/styledComponents.tsx"
+      ],
+      "@styles": [
+        "styles/styles.ts"
+      ],
+      "@theme": [
+        "styles/theme.ts"
+      ],
+      "@types": [
+        "types.d.ts",
+        "navigation/navigation.types.ts",
+        "firebase/firebase.types.d.ts"
       ]
     },
   }

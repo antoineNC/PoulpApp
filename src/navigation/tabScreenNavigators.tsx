@@ -15,7 +15,7 @@ import { ScoreScreen } from "@screens/famCup/score";
 import { FeedScreen } from "@screens/famCup/feed";
 import { OfficesScreen } from "@screens/office/offices";
 import { ProfileScreen } from "@screens/menu/profile";
-import { colors } from "theme";
+import { colors } from "@theme";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -28,7 +28,6 @@ const screenOptions = {
   headerStyle: { backgroundColor: colors.primary },
   headerShadowVisible: false,
   contentStyle: {
-    flex: 1,
     backgroundColor: colors.primary,
   },
 };

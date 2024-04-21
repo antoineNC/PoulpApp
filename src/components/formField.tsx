@@ -1,8 +1,10 @@
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { TextInput, TextInputProps } from "react-native-paper";
-import { Text, TextInput as TextInputType } from "react-native";
+import { Text, View } from "react-native";
 import { getFieldProps } from "utils/form.utils";
 import React, { useState } from "react";
+import { colors } from "@theme";
+import { authStyles } from "styles/styles";
 
 type FieldProps<T extends FieldValues> = TextInputProps & {
   control: Control<T>;
@@ -28,7 +30,7 @@ function FormField<T extends FieldValues>(props: FieldProps<T>) {
         field: { onChange, onBlur, value, ref },
         fieldState: { error, invalid },
       }) => (
-        <>
+        <View style={authStyles.formField}>
           <TextInput
             ref={ref}
             mode="outlined"
@@ -59,9 +61,10 @@ function FormField<T extends FieldValues>(props: FieldProps<T>) {
               ) : null
             }
             onSubmitEditing={() => setFocus(index + 1)}
+            style={{ backgroundColor: colors.secondary }}
           />
           {error && <Text>{error.message}</Text>}
-        </>
+        </View>
       )}
     />
   );

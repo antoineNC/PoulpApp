@@ -1,8 +1,8 @@
 import { View, TouchableOpacity } from "react-native";
-import { Text, Image, Body, Row, Title } from "@styledComponents";
-import { colors } from "theme";
-import { Post } from "types";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { Text, Image, Body, Row, Title } from "@styledComponents";
+import { colors } from "@theme";
+import { Post } from "@types";
 
 export const PostDisplay = ({
   item,
