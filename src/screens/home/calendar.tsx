@@ -12,23 +12,21 @@ export default function CalendarScreen() {
     events: AgendaSchedule,
     post: Post
   ): AgendaSchedule => {
-    const { date } = post;
     // formatted from 28/03/2024 to 2024-03-28
-    const keyDate =
-      date.startDay?.slice(6) +
-      "-" +
-      date.startDay?.slice(3, 5) +
-      "-" +
-      date.startDay?.slice(0, 2);
-    const data = {
-      title: post.title,
-      editor: post.editorLogo,
-      tags: post.tags,
-      description: post.description,
-    };
-    if (events[keyDate] !== undefined) {
-      events[keyDate].push(data);
-    } else events[keyDate] = [data];
+    if (post.date.start) {
+      const date = post.date.start.toDate();
+      const dateFormatted = date.toISOString().split("T")[0];
+      const info = {
+        title: post.title,
+        editor: post.editorLogo,
+        tags: post.tags,
+        description: post.description,
+      };
+      if (events[dateFormatted] !== undefined) {
+        events[dateFormatted].push(info);
+      } else events[dateFormatted] = [info];
+    }
+
     return events;
   };
 

@@ -6,12 +6,10 @@ export type fb_Post = {
   editor: DocumentReference;
   image: string;
   tags: Array<string>;
-  timeStamp: Timestamp;
+  createdAt: Timestamp;
   visibleCal: boolean;
   date: {
-    startDay?: string;
-    startHour?: string;
-    endDay?: string;
-    endHour?: string;
+    start?: Timestamp;
+    end?: Timestamp;
   };
 };

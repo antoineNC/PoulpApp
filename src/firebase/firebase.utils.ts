@@ -145,52 +145,7 @@ const updateInfo = async (id: string, info: any) => {
   }
 };
 
-// ===== POSTS =====
-const getAllPosts = (setPosts: (state: Post[]) => void) => {
-  try {
-    const q = query(postCollection, orderBy("timeStamp", "desc"));
-    return onSnapshot(q, async (snapshot) => {
-      const posts = snapshot.docs.map(async (doc) => {
-        const data = doc.data() as fb_Post;
-        const office = await getOneOffice(data.editor);
-        const post: Post = {
-          id: doc.id,
-          editorLogo: office.logo,
-          ...data,
-        };
-        return post;
-      });
-      return setPosts(await Promise.all(posts));
-    });
-  } catch (e: any) {
-    throw Error("Une erreur est survenue.\n" + e);
-  }
-};
-
-const getEventPosts = (setPosts: (state: Post[]) => void) => {
-  try {
-    const q = query(
-      postCollection,
-      where("visibleCal", "==", true),
-      orderBy("timeStamp", "desc")
-    );
-    return onSnapshot(q, async (snapshot) => {
-      const posts = snapshot.docs.map(async (doc) => {
-        const data = doc.data() as fb_Post;
-        const office = await getOneOffice(data.editor);
-        const post: Post = {
-          id: doc.id,
-          editorLogo: office.logo,
-          ...data,
-        };
-        return post;
-      });
-      return setPosts(await Promise.all(posts));
-    });
-  } catch (e: any) {
-    throw Error("Une erreur est survenue.\n" + e);
-  }
-};
+// ===== OFFICE =====
 
 const getOneOffice = async (ref: DocumentReference) => {
   try {
@@ -241,6 +196,54 @@ const getOfficeLogo = async (office: string) => {
         // Unknown error occurred, inspect the server response
         break;
     }
+  }
+};
+
+// ===== POSTS =====
+
+const getAllPosts = (setPosts: (state: Post[]) => void) => {
+  try {
+    const q = query(postCollection, orderBy("createdAt", "desc"));
+    return onSnapshot(q, async (snapshot) => {
+      const posts = snapshot.docs.map(async (doc) => {
+        const data = doc.data() as fb_Post;
+        const office = await getOneOffice(data.editor);
+        const post: Post = {
+          id: doc.id,
+          editorLogo: office.logo,
+          ...data,
+        };
+        return post;
+      });
+      return setPosts(await Promise.all(posts));
+    });
+  } catch (e: any) {
+    throw Error("Une erreur est survenue.\n" + e);
+  }
+};
+
+const getEventPosts = (setPosts: (state: Post[]) => void) => {
+  try {
+    const q = query(
+      postCollection,
+      where("visibleCal", "==", true),
+      orderBy("createdAt", "desc")
+    );
+    return onSnapshot(q, async (snapshot) => {
+      const posts = snapshot.docs.map(async (doc) => {
+        const data = doc.data() as fb_Post;
+        const office = await getOneOffice(data.editor);
+        const post: Post = {
+          id: doc.id,
+          editorLogo: office.logo,
+          ...data,
+        };
+        return post;
+      });
+      return setPosts(await Promise.all(posts));
+    });
+  } catch (e: any) {
+    throw Error("Une erreur est survenue.\n" + e);
   }
 };
 
