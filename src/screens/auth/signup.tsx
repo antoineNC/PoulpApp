@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { View } from "react-native";
 import { useForm } from "react-hook-form";
 import { Button } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -6,12 +7,11 @@ import Spinner from "react-native-loading-spinner-overlay";
 
 import { AuthParamList } from "@navigation/navigation.types";
 import CustomField from "components/formField";
-import { colors } from "@theme";
 import { signupUser } from "utils/user.utils";
 import { FormFieldProps } from "@types";
 import { Container } from "@styledComponents";
-import { View } from "react-native";
 import { authStyles } from "@styles";
+import { colors } from "@theme";
 
 type FieldNames = {
   firstName: string;

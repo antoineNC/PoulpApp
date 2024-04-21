@@ -1,5 +1,5 @@
-import { windowScale } from "data";
 import { StyleSheet } from "react-native";
+import { windowScale } from "data";
 
 export const authStyles = StyleSheet.create({
   container: {

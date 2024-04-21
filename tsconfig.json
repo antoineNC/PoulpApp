@@ -7,11 +7,14 @@
       "@firebase/auth": [
         "../node_modules/@firebase/auth/dist/index.rn.d.ts"
       ],
+      "@firebase": [
+        "firebase/firebase.utils.ts"
+      ],
       "@screens/*": [
         "screens/*"
       ],
       "@context/*": [
-        "context/*"
+        "store/*"
       ],
       "@navigation/*": [
         "navigation/*"
@@ -27,8 +30,6 @@
       ],
       "@types": [
         "types.d.ts",
-        "navigation/navigation.types.ts",
-        "firebase/firebase.types.d.ts"
       ]
     },
   }

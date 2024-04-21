@@ -1,6 +1,6 @@
 import { View } from "react-native";
-import { Text, Image, Body, Title, Row } from "styles/styledComponents";
-import { Post } from "types";
+import { Text, Image, Body, Title, Row } from "@styledComponents";
+import { Post } from "@types";
 
 export const PostItem = ({ item }: { item: Post }) => {
   return (

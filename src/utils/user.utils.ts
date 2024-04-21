@@ -1,9 +1,9 @@
 import { User } from "firebase/auth";
 
-import { getUserData, login, signout, signup } from "firebase/firebase.utils";
-import { actionSession } from "store/sessionStore";
-import { actionAdmin, actionOffice, actionStudent } from "store/userStore";
-import { AdminType, EtuType, OfficeType, Role } from "types";
+import { getUserData, login, signout, signup } from "@firebase";
+import { actionSession } from "@context/sessionStore";
+import { actionAdmin, actionOffice, actionStudent } from "@context/userStore";
+import { AdminType, EtuType, OfficeType, Role } from "@types";
 
 export const loginUser = async (props: { email: string; password: string }) => {
   try {

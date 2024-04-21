@@ -6,7 +6,7 @@ import TabBarContainer from "@navigation/tabBarContainer";
 import { AuthParamList } from "@navigation/navigation.types";
 import LoginScreen from "@screens/auth/login";
 import SignupScreen from "@screens/auth/signup";
-import { $sessionStore } from "store/sessionStore";
+import { $sessionStore } from "@context/sessionStore";
 import { colors } from "@theme";
 
 const AuthStack = createNativeStackNavigator<AuthParamList>();

@@ -11,7 +11,6 @@ type Role = "admin" | "office" | "student";
 type EtuType = UserType & {
   lastName: string;
   firstName: string;
-  // ...
 };
 type OfficeType = UserType & {
   acronym: string;
@@ -20,7 +19,6 @@ type OfficeType = UserType & {
   logo: string;
   members: Array<string>;
   clubs: Array<string>;
-  // ...
 };
 type AdminType = UserType & {
   name: string;

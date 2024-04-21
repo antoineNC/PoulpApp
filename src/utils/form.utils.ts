@@ -1,6 +1,6 @@
-import { CODE_ENSC } from "data";
-import { FieldValues, RegisterOptions } from "react-hook-form";
 import { KeyboardTypeOptions } from "react-native";
+import { FieldValues, RegisterOptions } from "react-hook-form";
+import { CODE_ENSC } from "data";
 
 type Params<T extends FieldValues> = {
   label: string;

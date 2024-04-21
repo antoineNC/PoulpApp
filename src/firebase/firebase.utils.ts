@@ -23,12 +23,12 @@ import {
   onSnapshot,
 } from "@firebase/firestore";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import { DocumentReference } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import app from "firebase/firebase.config";
-import { fb_Post } from "./firebase.types";
-import { OfficeType, Post } from "types";
-import { DocumentReference } from "firebase/firestore";
+import { fb_Post } from "firebase/firebase.types";
+import { OfficeType, Post } from "@types";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),

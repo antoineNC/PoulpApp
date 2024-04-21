@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { FlatList, View, TouchableOpacity, Modal } from "react-native";
 
-import { getAllPosts } from "firebase/firebase.utils";
-import { Post } from "types";
+import { getAllPosts } from "@firebase";
 import { PostDisplay } from "components/postDisplay";
 import { PostItem } from "components/postItem";
-import { Container } from "styles/styledComponents";
+import { Container } from "@styledComponents";
+import { Post } from "@types";
 
 export default function HomeScreen() {
   const [posts, setPosts] = useState<Post[]>([]);

@@ -1,10 +1,10 @@
-import { Control, Controller, FieldValues, Path } from "react-hook-form";
-import { TextInput, TextInputProps } from "react-native-paper";
-import { Text, View } from "react-native";
-import { getFieldProps } from "utils/form.utils";
 import React, { useState } from "react";
+import { Text, View } from "react-native";
+import { TextInput, TextInputProps } from "react-native-paper";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import { getFieldProps } from "utils/form.utils";
 import { colors } from "@theme";
-import { authStyles } from "styles/styles";
+import { authStyles } from "@styles";
 
 type FieldProps<T extends FieldValues> = TextInputProps & {
   control: Control<T>;
