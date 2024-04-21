@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { config } from "@gluestack-ui/config";
 
 import RootContainer from "navigation/rootContainer";
 import { subscribeUserState } from "firebase/firebaseUtils";
-import { logoutStores, setUser } from "utils/user";
+import { logoutUser, setUser } from "utils/user";
 
 export default function App() {
   useEffect(() => {
@@ -12,7 +14,7 @@ export default function App() {
         if (user) {
           await setUser(user);
         } else {
-          logoutStores;
+          logoutUser();
         }
       } catch (e: any) {
         throw Error(e);
@@ -21,8 +23,10 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <RootContainer />
+    <SafeAreaProvider style={{ flex: 1 }}>
+      <GluestackUIProvider config={config}>
+        <RootContainer />
+      </GluestackUIProvider>
     </SafeAreaProvider>
   );
 }

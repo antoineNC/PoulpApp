@@ -1,11 +1,14 @@
 import {
   User,
   getAuth,
+  initializeAuth,
+  getReactNativePersistence,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
   updateEmail,
-} from "firebase/auth";
+  createUserWithEmailAndPassword,
+} from "@firebase/auth";
 import {
   getFirestore,
   collection,
@@ -15,16 +18,19 @@ import {
   updateDoc,
   query,
   where,
+  DocumentData,
+  setDoc,
+  addDoc,
 } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import app from "firebase/firebaseConfig";
 
-const auth = getAuth(app);
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 const db = getFirestore(app);
 const userCollection = collection(db, "Users");
-// const adminCollection = collection(db, "Admins");
-// const officeCollection = collection(db, "Bureau");
-// const studentCollection = collection(db, "Etudiant");
 const postCollection = collection(db, "Post");
 const bureauCollection = collection(db, "Bureau");
 
@@ -38,7 +44,7 @@ const login = async ({
 }: {
   email: string;
   password: string;
-}) => {
+}): Promise<DocumentData> => {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -49,6 +55,41 @@ const login = async ({
     const docSnap = await getDoc(doc(userCollection, userId));
     if (!docSnap.exists()) {
       throw Error("Informations incorrectes.");
+    }
+    const user = { id: userId, ...docSnap.data() };
+    return user;
+  } catch (e: any) {
+    throw Error(e);
+  }
+};
+
+const signup = async ({
+  firstname,
+  lastName,
+  email,
+  password,
+}: {
+  firstname: string;
+  lastName: string;
+  email: string;
+  password: string;
+}): Promise<DocumentData> => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+    await setDoc(doc(userCollection, user.uid), {
+      firstname,
+      lastName,
+      mail: user.email,
+      role: "student",
+    });
+    const docSnap = await getDoc(doc(userCollection, user.uid));
+    if (!docSnap.exists()) {
+      throw Error("Le compte n'a pas bien été enregistré.");
     }
     return docSnap.data();
   } catch (e: any) {
@@ -122,6 +163,7 @@ const getBureaux = async () => {
 export {
   subscribeUserState,
   login,
+  signup,
   signout,
   getUserRole,
   updateMail,

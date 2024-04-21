@@ -5,11 +5,13 @@ import { useUnit } from "effector-react";
 import TabBarContainer from "@navigation/tabBarContainer";
 import LoginScreen from "@screens/auth/login";
 import { $sessionStore } from "store/sessionStore";
+import SignupScreen from "@screens/auth/signup";
 
 const Stack = createNativeStackNavigator();
 
 export default function RootContainer() {
   const connected = useUnit($sessionStore);
+  console.log(connected);
   return (
     <NavigationContainer>
       {connected ? (
@@ -17,7 +19,7 @@ export default function RootContainer() {
       ) : (
         <Stack.Navigator>
           <Stack.Screen name="login" component={LoginScreen} />
-          <Stack.Screen name="signup" component={LoginScreen} />
+          <Stack.Screen name="signup" component={SignupScreen} />
           <Stack.Screen name="forgotPassword" component={LoginScreen} />
         </Stack.Navigator>
       )}
