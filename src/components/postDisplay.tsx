@@ -1,46 +1,54 @@
-import { View, Image, Dimensions } from "react-native";
-import { Text } from "@styledComponents";
+import { View, TouchableOpacity } from "react-native";
+import { Text, Image, Body, Row, Title } from "@styledComponents";
 import { colors } from "theme";
 import { Post } from "types";
-import { windowScale } from "data";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-export const PostDisplay = ({ item }: { item?: Post }) => {
+export const PostDisplay = ({
+  item,
+  toggleModal,
+}: {
+  item?: Post;
+  toggleModal: () => void;
+}) => {
   if (item) {
     return (
       <View
         style={{
           flex: 1,
           backgroundColor: colors.primary,
-          rowGap: 10,
+          opacity: 0.98,
           paddingTop: 15,
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
+        <TouchableOpacity
+          onPress={toggleModal}
+          style={{ alignSelf: "flex-end" }}
         >
-          <Ionicons name="arrow-back-circle-outline" />
+          <Ionicons
+            name="close-circle-outline"
+            size={35}
+            color={colors.white}
+            style={{ alignSelf: "flex-end", marginRight: 15 }}
+          />
+        </TouchableOpacity>
+        <Row style={{ marginBottom: 10 }}>
           <Image
             source={{ uri: item.editorLogo }}
-            width={60}
-            style={{ aspectRatio: 1, marginHorizontal: 10 }}
+            $size={60}
+            style={{ marginHorizontal: 10 }}
           />
           <View>
-            <Text $size="xl">{item.title}</Text>
+            <Title>{item.title}</Title>
             {item.tags.length > 0 && <Text>{item.tags}</Text>}
           </View>
-        </View>
-        <Text style={{ marginHorizontal: 15 }}>{item.description}</Text>
+        </Row>
+        <Body>{item.description}</Body>
         {item.image && (
           <Image
             source={{ uri: item.image }}
             resizeMode="contain"
             resizeMethod="scale"
-            width={windowScale.width}
-            style={{ aspectRatio: 1 }}
           />
         )}
       </View>

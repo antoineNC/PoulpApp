@@ -1,4 +1,4 @@
-import { Pressable } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -44,14 +44,14 @@ export function HomeNavigator({
         options={{
           title: "Fil d'actualité",
           headerRight: ({ tintColor }) => (
-            <Pressable
+            <TouchableOpacity
               style={{ alignSelf: "center" }}
               onPress={() =>
                 navigation.navigate("homeContainer", { screen: "calendar" })
               }
             >
               <Ionicons name="calendar-sharp" size={30} color={tintColor} />
-            </Pressable>
+            </TouchableOpacity>
           ),
         }}
       />

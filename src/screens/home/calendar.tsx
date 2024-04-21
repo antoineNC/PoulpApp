@@ -38,7 +38,7 @@ export default function CalendarScreen() {
       setEvents(events);
     });
   }, []);
-
+  console.log(events);
   return (
     <Agenda
       // The list of items that have to be displayed in agenda. If you want to render item as empty date
