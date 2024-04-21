@@ -219,7 +219,6 @@ const getAllOffice = async () => {
 };
 
 const getOfficeLogo = async (office: string) => {
-  console.log("OFFICE", office);
   const logoRef = ref(assetsRef, `/${office.toUpperCase()}.png`);
   try {
     const url = await getDownloadURL(logoRef);

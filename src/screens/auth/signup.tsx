@@ -47,9 +47,9 @@ export default function SignupScreen({
         password: data.password,
       });
       setLoading(false);
-    } catch (e) {
-      console.log("SIGNUP ERROR:", e);
+    } catch (e: any) {
       setLoading(false);
+      throw Error("Login Error :", e);
     }
   };
 

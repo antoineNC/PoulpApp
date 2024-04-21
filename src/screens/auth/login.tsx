@@ -33,9 +33,9 @@ export default function LoginScreen({
     try {
       await loginUser(data);
       setLoading(false);
-    } catch (e) {
-      console.log("LOGIN ERROR:", e);
+    } catch (e: any) {
       setLoading(false);
+      throw Error("Login Error :", e);
     }
   };
 
