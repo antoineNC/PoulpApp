@@ -1,6 +1,6 @@
 import { DocumentReference, Timestamp } from "firebase/firestore";
 
-export type fb_Post = {
+type fb_Post = {
   title: string;
   description: string;
   editor: DocumentReference;

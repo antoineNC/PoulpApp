@@ -5,7 +5,8 @@ import { getAllPosts } from "@firebase";
 import { PostDisplay } from "components/postDisplay";
 import { PostItem } from "components/postItem";
 import { Container } from "@styledComponents";
-import { Post } from "@types";
+import { Divider } from "react-native-paper";
+import { colors } from "@theme";
 
 export default function HomeScreen() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -33,9 +34,9 @@ export default function HomeScreen() {
         fadingEdgeLength={5}
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => (
-          <View
-            style={{ borderBottomWidth: 0.2, opacity: 0.5, marginVertical: 10 }}
-          ></View>
+          <Divider
+            style={{ backgroundColor: colors.black, marginVertical: 10 }}
+          />
         )}
         ListFooterComponent={() => <View style={{ minHeight: 50 }}></View>}
         renderItem={({ item }) => {

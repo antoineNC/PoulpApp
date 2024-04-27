@@ -6,6 +6,7 @@ import { config } from "@gluestack-ui/config";
 import RootContainer from "navigation/rootContainer";
 import { subscribeUserState } from "firebase/firebase.utils";
 import { logoutUser, setUser } from "utils/user.utils";
+import { setOffices } from "utils/offices.utils";
 
 export default function App() {
   useEffect(() => {
@@ -13,6 +14,7 @@ export default function App() {
       try {
         if (user) {
           await setUser(user);
+          await setOffices();
         } else {
           logoutUser();
         }

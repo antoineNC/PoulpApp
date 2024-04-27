@@ -8,7 +8,6 @@ import Spinner from "react-native-loading-spinner-overlay";
 import { AuthParamList } from "@navigation/navigation.types";
 import CustomField from "components/formField";
 import { signupUser } from "utils/user.utils";
-import { FormFieldProps } from "@types";
 import { Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { colors } from "@theme";

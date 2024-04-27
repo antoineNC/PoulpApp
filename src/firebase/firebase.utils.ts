@@ -27,8 +27,7 @@ import { DocumentReference } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import app from "firebase/firebase.config";
-import { fb_Post } from "firebase/firebase.types";
-import { OfficeType, Post } from "@types";
+import { fb_Post } from "./firebase.types";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -173,31 +172,31 @@ const getAllOffice = async () => {
   }
 };
 
-const getOfficeLogo = async (office: string) => {
-  const logoRef = ref(assetsRef, `/${office.toUpperCase()}.png`);
-  try {
-    const url = await getDownloadURL(logoRef);
-    return url;
-  } catch (error: any) {
-    // A full list of error codes is available at
-    // https://firebase.google.com/docs/storage/web/handle-errors
-    switch (error.code) {
-      case "storage/object-not-found":
-        // File doesn't exist
-        break;
-      case "storage/unauthorized":
-        // User doesn't have permission to access the object
-        break;
-      case "storage/canceled":
-        // User canceled the upload
-        break;
+// const getOfficeLogo = async (office: string) => {
+//   const logoRef = ref(assetsRef, `/${office.toUpperCase()}.png`);
+//   try {
+//     const url = await getDownloadURL(logoRef);
+//     return url;
+//   } catch (error: any) {
+//     // A full list of error codes is available at
+//     // https://firebase.google.com/docs/storage/web/handle-errors
+//     switch (error.code) {
+//       case "storage/object-not-found":
+//         // File doesn't exist
+//         break;
+//       case "storage/unauthorized":
+//         // User doesn't have permission to access the object
+//         break;
+//       case "storage/canceled":
+//         // User canceled the upload
+//         break;
 
-      case "storage/unknown":
-        // Unknown error occurred, inspect the server response
-        break;
-    }
-  }
-};
+//       case "storage/unknown":
+//         // Unknown error occurred, inspect the server response
+//         break;
+//     }
+//   }
+// };
 
 // ===== POSTS =====
 
@@ -258,5 +257,4 @@ export {
   getAllPosts,
   getEventPosts,
   getAllOffice,
-  getOfficeLogo,
 };

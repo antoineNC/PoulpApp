@@ -1,5 +1,3 @@
-import { fb_Post } from "firebase/firebase.types";
-
 type UserType = {
   id: string;
   mail: string;

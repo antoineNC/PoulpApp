@@ -4,7 +4,6 @@ import { Card, Text } from "react-native-paper";
 import { Agenda, AgendaSchedule } from "react-native-calendars";
 import { getEventPosts } from "@firebase";
 import { colors } from "@theme";
-import { Post } from "@types";
 
 export default function CalendarScreen() {
   const [events, setEvents] = useState<AgendaSchedule>({});

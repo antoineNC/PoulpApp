@@ -1,11 +1,10 @@
 import { StyleSheet } from "react-native";
-import { windowScale } from "data";
 
 export const authStyles = StyleSheet.create({
   container: {
     rowGap: 50,
-    justifyContent: "flex-start",
     marginTop: 50,
+    marginHorizontal: 40,
   },
   formList: {
     rowGap: 10,
@@ -13,7 +12,11 @@ export const authStyles = StyleSheet.create({
   buttonContainer: {
     rowGap: 20,
   },
-  formField: {
-    width: windowScale.width * 0.8,
+});
+
+export const officeStyles = StyleSheet.create({
+  container: {
+    marginHorizontal: 20,
+    rowGap: 20,
   },
 });

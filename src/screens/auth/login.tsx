@@ -9,7 +9,6 @@ import { AuthParamList } from "@navigation/navigation.types";
 import CustomField from "components/formField";
 import { loginUser } from "utils/user.utils";
 import { colors } from "@theme";
-import { FormFieldProps } from "@types";
 import { Container } from "@styledComponents";
 import { authStyles } from "@styles";
 
