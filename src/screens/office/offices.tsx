@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Modal, TouchableOpacity } from "react-native";
+import { Alert, FlatList, Modal, TouchableOpacity } from "react-native";
 import { Button, Card } from "react-native-paper";
 import { useUnit } from "effector-react";
 
@@ -19,11 +19,7 @@ export default function OfficesScreen() {
   };
 
   return (
-    <Container
-      key={"officeContainer"}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={officeStyles.container}
-    >
+    <Container>
       <Modal
         visible={modalVisible}
         animationType="fade"
@@ -32,47 +28,52 @@ export default function OfficesScreen() {
       >
         <OfficeDisplay item={displayedOffice} toggleModal={toggleModal} />
       </Modal>
-      {offices.map((office) => (
-        <TouchableOpacity
-          onPress={() => {
-            setDisplayedOffice(office);
-            toggleModal();
-          }}
-        >
-          <Card
-            key={office.id}
-            style={{
-              backgroundColor: colors.primary,
-              borderWidth: 0.5,
-              borderColor: colors.secondary,
+      <FlatList
+        data={offices}
+        contentContainerStyle={{ rowGap: 20, paddingHorizontal: 20 }}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            key={item.id}
+            onPress={() => {
+              setDisplayedOffice(item);
+              toggleModal();
             }}
           >
-            <Card.Title
-              title={
-                <Title>
-                  {office.name} ({office.acronym})
-                </Title>
-              }
-              subtitle={<Text>{office.mail}</Text>}
-              left={() => <Image source={{ uri: office.logo }} $size={80} />}
-              leftStyle={{ width: 80, aspectRatio: 1 }}
-              style={{ height: 100 }}
-            />
-            <Card.Content>
-              <Text>{office.description}</Text>
-            </Card.Content>
-            <Card.Actions>
-              <Button
-                mode="contained"
-                icon="pencil"
-                onPress={() => Alert.alert("kaehdv")}
-              >
-                Modifier
-              </Button>
-            </Card.Actions>
-          </Card>
-        </TouchableOpacity>
-      ))}
+            <Card
+              style={{
+                backgroundColor: colors.primary,
+                borderWidth: 0.5,
+                borderColor: colors.secondary,
+              }}
+            >
+              <Card.Title
+                title={
+                  <Title>
+                    {item.name} ({item.acronym})
+                  </Title>
+                }
+                subtitle={<Text>{item.mail}</Text>}
+                left={() => <Image source={{ uri: item.logo }} $size={80} />}
+                leftStyle={{ width: 80, aspectRatio: 1 }}
+                style={{ height: 100 }}
+              />
+              <Card.Content>
+                <Text>{item.description}</Text>
+              </Card.Content>
+              <Card.Actions>
+                <Button
+                  mode="contained"
+                  icon="pencil"
+                  onPress={() => Alert.alert("kaehdv")}
+                >
+                  Modifier
+                </Button>
+              </Card.Actions>
+            </Card>
+          </TouchableOpacity>
+        )}
+      />
     </Container>
   );
 }

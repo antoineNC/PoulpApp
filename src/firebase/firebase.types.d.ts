@@ -13,3 +13,11 @@ type fb_Post = {
     end?: Timestamp;
   };
 };
+
+type fb_Club = {
+  name: string;
+  description: string;
+  contact: string;
+  logo: string;
+  office: DocumentReference;
+};

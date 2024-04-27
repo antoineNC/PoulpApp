@@ -18,7 +18,11 @@ export const Body = styled(Text)`
   margin: 0px 15px 10px;
 `;
 
-export const Container = styled.ScrollView`
+export const Container = styled.View`
+  flex: 1;
+`;
+
+export const ContainerScroll = styled.ScrollView`
   flex: 1;
 `;
 

@@ -17,6 +17,5 @@ export const authStyles = StyleSheet.create({
 export const officeStyles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
-    rowGap: 20,
   },
 });
