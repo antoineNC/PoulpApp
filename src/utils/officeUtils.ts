@@ -7,3 +7,11 @@ export const setOffices = async () => {
     throw Error("Erreur lors de l'importation des bureaux", e);
   }
 };
+
+export const unloadOffices = () => {
+  try {
+    actionOffice.logout();
+  } catch (e: any) {
+    throw Error(e);
+  }
+};

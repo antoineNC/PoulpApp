@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, View } from "react-native";
 import { TextInput, TextInputProps } from "react-native-paper";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
-import { getFieldProps } from "utils/form.utils";
+import { getFieldProps } from "utils/formUtils";
 import { colors } from "@theme";
 import { authStyles } from "@styles";
 

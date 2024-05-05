@@ -27,7 +27,7 @@ import { DocumentReference } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import app from "firebase/firebase.config";
-import { fb_Post } from "./firebase.types";
+import { fb_Club, fb_Post } from "./firebase.types";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -36,6 +36,7 @@ const db = getFirestore(app);
 const userCollection = collection(db, "Users");
 const postCollection = collection(db, "Post");
 const bureauCollection = collection(db, "Bureau");
+const clubCollection = collection(db, "Club");
 
 const storage = getStorage();
 const assetsRef = ref(storage, "Assets");
@@ -51,54 +52,50 @@ const login = async ({
 }: {
   email: string;
   password: string;
-}): Promise<DocumentData> => {
+}): Promise<string> => {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
-    const userId = userCredential.user.uid;
-    const docSnap = await getDoc(doc(userCollection, userId));
-    if (!docSnap.exists()) {
-      throw Error("Informations incorrectes.");
-    }
-    const user = { id: userId, ...docSnap.data() };
-    return user;
+    return userCredential.user.uid;
   } catch (e: any) {
     throw Error(e);
   }
 };
 
 const signup = async ({
-  firstname,
+  firstName,
   lastName,
   email,
   password,
 }: {
-  firstname: string;
+  firstName: string;
   lastName: string;
   email: string;
   password: string;
-}): Promise<DocumentData> => {
+}): Promise<string> => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
-    const user = userCredential.user;
+    const { user } = userCredential;
     await setDoc(doc(userCollection, user.uid), {
-      firstname,
-      lastName,
+      id: user.uid,
       mail: user.email,
-      role: "student",
+      role: Role.STUDENT_ROLE,
+      firstName,
+      lastName,
+      adhesion: [],
     });
     const docSnap = await getDoc(doc(userCollection, user.uid));
     if (!docSnap.exists()) {
       throw Error("Le compte n'a pas bien été enregistré.");
     }
-    return docSnap.data();
+    return user.uid;
   } catch (e: any) {
     throw Error(e);
   }
@@ -108,14 +105,34 @@ const signout = () => {
   signOut(auth);
 };
 
-const getUserData = async (id: string) => {
+const getRole = (role: string) => {
+  const upperCaseRole = role.toUpperCase();
+  switch (upperCaseRole) {
+    case "STUDENT":
+      return Role.STUDENT_ROLE;
+    case "OFFICE":
+      return Role.OFFICE_ROLE;
+    case "ADMIN":
+      return Role.ADMIN_ROLE;
+    default:
+      return Role.STUDENT_ROLE;
+  }
+};
+
+const getUser = async (id: string): Promise<UserType> => {
   try {
     const userRef = await getDoc(doc(userCollection, id));
     if (!userRef.exists()) {
-      throw Error("Utilisateur inconnu");
+      throw Error("Informations incorrectes.");
     }
     const userData = userRef.data();
-    return userData;
+    const userRole = getRole(userData.role);
+    const user: UserType = {
+      id: id,
+      mail: userData.mail,
+      role: userRole,
+    };
+    return user;
   } catch (e: any) {
     throw Error(e);
   }
@@ -246,12 +263,24 @@ const getEventPosts = (setPosts: (state: Post[]) => void) => {
   }
 };
 
+// ===== CLUBS =====
+
+// const getAllClubs = async () => {
+//   const querySnapshot = await getDocs(clubCollection);
+//   const clubs = querySnapshot.docs.map((doc) => {
+//     const data = doc.data() as fb_Club;
+//     const office = getId(data.office);
+//     return { ...data, office: office };
+//   });
+//   return clubs;
+// };
+
 export {
   subscribeUserState,
   login,
   signup,
   signout,
-  getUserData,
+  getUser,
   updateMail,
   updateInfo,
   getAllPosts,

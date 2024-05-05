@@ -7,7 +7,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 
 import { AuthParamList } from "@navigation/navigation.types";
 import CustomField from "components/formField";
-import { signupUser } from "utils/user.utils";
+import { signupUser } from "utils/userUtils";
 import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { colors } from "@theme";
@@ -40,10 +40,7 @@ export default function SignupScreen({
     setLoading(true);
     try {
       await signupUser({
-        firstname: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        password: data.password,
+        ...data,
       });
       setLoading(false);
     } catch (e: any) {

@@ -12,7 +12,7 @@ import { colors } from "@theme";
 const AuthStack = createNativeStackNavigator<AuthParamList>();
 
 export default function RootContainer() {
-  const connected = useUnit($sessionStore);
+  const { connected } = useUnit($sessionStore);
   console.log("CONNECTED:", connected);
   return (
     <NavigationContainer>
