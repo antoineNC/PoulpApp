@@ -8,7 +8,7 @@ export const actionSession = {
 const defaultSession: SessionType = {
   user: { id: "", mail: "" },
   role: "STUDENT_ROLE",
-  connected: false,
+  connected: undefined,
 };
 
 export const $sessionStore = createStore<SessionType>(defaultSession)

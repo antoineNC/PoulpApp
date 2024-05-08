@@ -24,7 +24,7 @@ type Admin = UserType & {
 type SessionType = {
   user: UserType;
   role: Role;
-  connected: boolean;
+  connected?: boolean;
 };
 
 // Posts

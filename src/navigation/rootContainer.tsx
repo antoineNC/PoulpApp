@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useUnit } from "effector-react";
@@ -20,6 +21,7 @@ export default function RootContainer() {
   console.log("CONNECTED:", connected);
   const { getAllOffice } = useOffice();
   const { getAllPost } = usePost();
+
   useEffect(() => {
     if (connected) {
       getAllOffice();
@@ -30,6 +32,10 @@ export default function RootContainer() {
       getAllPost();
     }
   }, [connected, officeList]);
+
+  if (connected === undefined) {
+    return <View style={{ flex: 1, backgroundColor: colors.primary }}></View>;
+  }
   return (
     <NavigationContainer>
       {connected ? (

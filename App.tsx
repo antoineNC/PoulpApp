@@ -4,7 +4,7 @@ import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
 
 import RootContainer from "navigation/rootContainer";
-import { subscribeUserState, useAuth, useOffice, usePost } from "@firebase";
+import { subscribeUserState, useAuth } from "@firebase";
 
 export default function App() {
   const { getCurrentUser, signout } = useAuth();
