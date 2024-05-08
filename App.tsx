@@ -4,17 +4,17 @@ import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
 
 import RootContainer from "navigation/rootContainer";
-import { subscribeUserState } from "firebase/firebase.utils";
-import { logoutUser, setUser } from "utils/user.utils";
+import { subscribeUserState, useAuth } from "@firebase";
 
 export default function App() {
+  const { getCurrentUser, signout } = useAuth();
   useEffect(() => {
     subscribeUserState(async (user) => {
       try {
         if (user) {
-          await setUser(user);
+          await getCurrentUser(user.uid);
         } else {
-          logoutUser();
+          signout();
         }
       } catch (e: any) {
         throw Error(e);

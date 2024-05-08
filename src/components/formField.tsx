@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, View } from "react-native";
 import { TextInput, TextInputProps } from "react-native-paper";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
-import { getFieldProps } from "utils/form.utils";
+import { getFieldProps } from "utils/formUtils";
 import { colors } from "@theme";
 import { authStyles } from "@styles";
 
@@ -30,7 +30,7 @@ function FormField<T extends FieldValues>(props: FieldProps<T>) {
         field: { onChange, onBlur, value, ref },
         fieldState: { error, invalid },
       }) => (
-        <View style={authStyles.formField}>
+        <View>
           <TextInput
             ref={ref}
             mode="outlined"

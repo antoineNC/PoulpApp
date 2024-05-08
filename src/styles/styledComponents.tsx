@@ -20,8 +20,10 @@ export const Body = styled(Text)`
 
 export const Container = styled.View`
   flex: 1;
-  justify-content: center;
-  align-items: center;
+`;
+
+export const ContainerScroll = styled.ScrollView`
+  flex: 1;
 `;
 
 export const Row = styled.View`

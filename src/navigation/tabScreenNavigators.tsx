@@ -13,7 +13,7 @@ import HomeScreen from "@screens/home/home";
 import CalendarScreen from "@screens/home/calendar";
 import { ScoreScreen } from "@screens/famCup/score";
 import { FeedScreen } from "@screens/famCup/feed";
-import { OfficesScreen } from "@screens/office/offices";
+import OfficesScreen from "@screens/office/offices";
 import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
 

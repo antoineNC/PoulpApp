@@ -1,10 +1,11 @@
+import { useAuth } from "@firebase";
 import { Button } from "react-native-paper";
-import { logoutUser } from "utils/user.utils";
 
 export function ProfileScreen() {
+  const { signout } = useAuth();
   return (
     <>
-      <Button children="LOGOUT" onPress={logoutUser} />
+      <Button children="LOGOUT" onPress={signout} />
     </>
   );
 }

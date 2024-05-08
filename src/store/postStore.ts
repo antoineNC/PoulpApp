@@ -1,20 +1,14 @@
-import { createEffect, createEvent, createStore } from "effector";
-import { getAllPosts } from "@firebase";
-import { Post } from "@types";
+import { createEvent, createStore } from "effector";
 
 const actionPost = {
-  getPosts: createEffect("GET_POSTS", {
-    handler: (setPosts: (state: Post[]) => void) => getAllPosts(setPosts),
-  }),
-  setPosts: createEvent<Post[]>("SET_POSTS"),
+  setAllPost: createEvent<Post[]>("GET_POSTS"),
   logout: createEvent("LOGOUT"),
 };
 
 const defaultPosts: Post[] = [];
 
 const $postStore = createStore(defaultPosts)
-  .on(actionPost.getPosts, (posts) => posts)
-  .on(actionPost.setPosts, (state) => state)
+  .on(actionPost.setAllPost, (_, posts) => posts)
   .reset(actionPost.logout);
 
 export { $postStore, actionPost };

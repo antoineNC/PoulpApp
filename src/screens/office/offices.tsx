@@ -1,3 +1,79 @@
-export function OfficesScreen() {
-  return <></>;
+import { useState } from "react";
+import { Alert, FlatList, Modal, TouchableOpacity } from "react-native";
+import { Button, Card } from "react-native-paper";
+import { useUnit } from "effector-react";
+
+import { $officeStore } from "@context/officeStore";
+import { Container, Image, Text, Title } from "@styledComponents";
+import { officeStyles } from "@styles";
+import { colors } from "@theme";
+import { OfficeDisplay } from "components/officeDisplay";
+
+export default function OfficesScreen() {
+  const offices = useUnit($officeStore);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [displayedOffice, setDisplayedOffice] = useState<Office>();
+
+  const toggleModal = () => {
+    setModalVisible((prev) => !prev);
+  };
+
+  return (
+    <Container>
+      <Modal
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={toggleModal}
+        transparent
+      >
+        <OfficeDisplay item={displayedOffice} toggleModal={toggleModal} />
+      </Modal>
+      <FlatList
+        data={offices}
+        contentContainerStyle={{ rowGap: 20, paddingHorizontal: 20 }}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            key={item.id}
+            onPress={() => {
+              setDisplayedOffice(item);
+              toggleModal();
+            }}
+          >
+            <Card
+              style={{
+                backgroundColor: colors.primary,
+                borderWidth: 0.5,
+                borderColor: colors.secondary,
+              }}
+            >
+              <Card.Title
+                title={
+                  <Title>
+                    {item.name} ({item.acronym})
+                  </Title>
+                }
+                subtitle={<Text>{item.mail}</Text>}
+                left={() => <Image source={{ uri: item.logo }} $size={80} />}
+                leftStyle={{ width: 80, aspectRatio: 1 }}
+                style={{ height: 100 }}
+              />
+              <Card.Content>
+                <Text>{item.description}</Text>
+              </Card.Content>
+              <Card.Actions>
+                <Button
+                  mode="contained"
+                  icon="pencil"
+                  onPress={() => Alert.alert("kaehdv")}
+                >
+                  Modifier
+                </Button>
+              </Card.Actions>
+            </Card>
+          </TouchableOpacity>
+        )}
+      />
+    </Container>
+  );
 }

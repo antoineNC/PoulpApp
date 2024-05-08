@@ -1,14 +1,13 @@
-import { View, TouchableOpacity } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { Text, Image, Body, Row, Title } from "@styledComponents";
+import { FlatList, View } from "react-native";
+import { Row, Image, Title, Body, Text } from "@styledComponents";
 import { colors } from "@theme";
 import { CloseButton } from "./closeButton";
 
-export const PostDisplay = ({
+export const OfficeDisplay = ({
   item,
   toggleModal,
 }: {
-  item: Post | undefined;
+  item: Office | undefined;
   toggleModal: () => void;
 }) => {
   if (item) {
@@ -17,30 +16,38 @@ export const PostDisplay = ({
         style={{
           flex: 1,
           backgroundColor: colors.primary,
-          opacity: 0.98,
           paddingTop: 15,
         }}
       >
         <CloseButton onPress={toggleModal} />
         <Row style={{ marginBottom: 10 }}>
           <Image
-            source={{ uri: item.editor.logo }}
+            source={{ uri: item.logo }}
             $size={60}
             style={{ marginHorizontal: 10 }}
           />
           <View>
-            <Title>{item.title}</Title>
-            {item.tags.length > 0 && <Text>{item.tags}</Text>}
+            <Title>{item.name}</Title>
+            {/* {item.tags.length > 0 && <Text>{item.tags}</Text>} */}
           </View>
         </Row>
         <Body>{item.description}</Body>
-        {item.image && (
+        <FlatList
+          horizontal
+          data={item.clubs}
+          renderItem={(club) => (
+            <View>
+              <Text>{club.item}</Text>
+            </View>
+          )}
+        />
+        {/* {item.image && (
           <Image
             source={{ uri: item.image }}
             resizeMode="contain"
             resizeMethod="scale"
           />
-        )}
+        )} */}
       </View>
     );
   }

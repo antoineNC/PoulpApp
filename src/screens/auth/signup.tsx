@@ -7,11 +7,10 @@ import Spinner from "react-native-loading-spinner-overlay";
 
 import { AuthParamList } from "@navigation/navigation.types";
 import CustomField from "components/formField";
-import { signupUser } from "utils/user.utils";
-import { FormFieldProps } from "@types";
-import { Container } from "@styledComponents";
+import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { colors } from "@theme";
+import { useAuth } from "@firebase";
 
 type FieldNames = {
   firstName: string;
@@ -26,6 +25,10 @@ export default function SignupScreen({
   navigation,
 }: NativeStackScreenProps<AuthParamList>) {
   const [loading, setLoading] = useState(false);
+  const { signup } = useAuth();
+  const { control, handleSubmit, watch, setFocus } = useForm<FieldNames>();
+  const pwd = watch("password");
+
   const values: FormFieldProps<FieldNames> = [
     { name: "firstName", required: true },
     { name: "lastName", required: true },
@@ -34,17 +37,12 @@ export default function SignupScreen({
     { name: "repeatPassword", required: true, confirm: true },
     { name: "code", required: true },
   ];
-  const { control, handleSubmit, watch, setFocus } = useForm<FieldNames>();
-  const pwd = watch("password");
 
   const onSubmit = async (data: FieldNames) => {
     setLoading(true);
     try {
-      await signupUser({
-        firstname: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        password: data.password,
+      await signup({
+        ...data,
       });
       setLoading(false);
     } catch (e: any) {

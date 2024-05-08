@@ -1,13 +1,12 @@
 import { View } from "react-native";
 import { Text, Image, Body, Title, Row } from "@styledComponents";
-import { Post } from "@types";
 
 export const PostItem = ({ item }: { item: Post }) => {
   return (
     <View key={item.id} style={{ rowGap: 10 }}>
       <Row>
         <Image
-          source={{ uri: item.editorLogo }}
+          source={{ uri: item.editor.logo }}
           $size={50}
           style={{ marginHorizontal: 5 }}
         />

@@ -7,11 +7,10 @@ import Spinner from "react-native-loading-spinner-overlay";
 
 import { AuthParamList } from "@navigation/navigation.types";
 import CustomField from "components/formField";
-import { loginUser } from "utils/user.utils";
 import { colors } from "@theme";
-import { FormFieldProps } from "@types";
-import { Container } from "@styledComponents";
+import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
+import { useAuth } from "@firebase";
 
 type FieldNames = {
   email: string;
@@ -22,16 +21,18 @@ export default function LoginScreen({
   navigation,
 }: NativeStackScreenProps<AuthParamList>) {
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const { control, handleSubmit, setFocus } = useForm<FieldNames>();
+
   const values: FormFieldProps<FieldNames> = [
     { name: "email", required: true },
     { name: "password", required: true },
   ];
-  const { control, handleSubmit, setFocus } = useForm<FieldNames>();
 
   const onSubmit = async (data: FieldNames) => {
     setLoading(true);
     try {
-      await loginUser(data);
+      await login(data);
       setLoading(false);
     } catch (e: any) {
       setLoading(false);
