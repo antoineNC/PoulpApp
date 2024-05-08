@@ -1,40 +1,46 @@
-enum Role {
-  ADMIN_ROLE = "ADMIN",
-  STUDENT_ROLE = "STUDENT",
-  OFFICE_ROLE = "OFFICE",
-}
+type Role = "STUDENT_ROLE" | "OFFICE_ROLE" | "ADMIN_ROLE";
 type UserType = {
   id: string;
   mail: string;
-  role: Role;
 };
-type StudentType = UserType & {
+type Student = UserType & {
   lastName: string;
   firstName: string;
-  adhesion: Array<OfficeType>;
+  adhesion: Array<Office>;
 };
-type OfficeType = UserType & {
+type Office = UserType & {
   acronym: string;
   name: string;
   description: string;
-  logo: string;
-  members: Array<StudentType>;
+  logo?: string;
+  members: Array<string>;
   partnerships: Array<string>;
   clubs: Array<string>;
 };
-type AdminType = UserType & {
+type Admin = UserType & {
   name: string;
 };
 
 type SessionType = {
   user: UserType;
+  role: Role;
   connected: boolean;
 };
 
 // Posts
 type Post = {
   id: string;
-  editorLogo: string;
+  title: string;
+  description: string;
+  editor: Office;
+  image?: string;
+  tags: Array<string>;
+  createdAt: Date;
+  visibleCal: boolean;
+  date: {
+    start?: Date;
+    end?: Date;
+  };
 };
 
 // Clubs

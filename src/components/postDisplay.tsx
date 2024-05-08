@@ -24,7 +24,7 @@ export const PostDisplay = ({
         <CloseButton onPress={toggleModal} />
         <Row style={{ marginBottom: 10 }}>
           <Image
-            source={{ uri: item.editorLogo }}
+            source={{ uri: item.editor.logo }}
             $size={60}
             style={{ marginHorizontal: 10 }}
           />

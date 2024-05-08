@@ -8,6 +8,8 @@ import {
   OfficeNavigator,
 } from "@navigation/tabScreenNavigators";
 import { TabBarParamList } from "@navigation/navigation.types";
+import { useEffect } from "react";
+import { useOffice, usePost } from "@firebase";
 
 const TabBar = createMaterialBottomTabNavigator<TabBarParamList>();
 

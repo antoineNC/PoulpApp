@@ -7,7 +7,7 @@ export const OfficeDisplay = ({
   item,
   toggleModal,
 }: {
-  item: OfficeType | undefined;
+  item: Office | undefined;
   toggleModal: () => void;
 }) => {
   if (item) {

@@ -3,7 +3,7 @@ import { DocumentReference, Timestamp } from "firebase/firestore";
 type fb_Post = {
   title: string;
   description: string;
-  editor: DocumentReference;
+  editor: string;
   image: string;
   tags: Array<string>;
   createdAt: Timestamp;
@@ -12,6 +12,18 @@ type fb_Post = {
     start?: Timestamp;
     end?: Timestamp;
   };
+};
+
+type fb_Office = {
+  mail: string;
+  role: string;
+  name: string;
+  acronym: string;
+  description: string;
+  role: string;
+  members: string[];
+  clubs: string[];
+  partnerships: string[];
 };
 
 type fb_Club = {

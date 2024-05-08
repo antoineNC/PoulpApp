@@ -6,13 +6,15 @@ export const actionSession = {
 };
 
 const defaultSession: SessionType = {
-  user: { id: "", mail: "", role: Role.STUDENT_ROLE },
+  user: { id: "", mail: "" },
+  role: "STUDENT_ROLE",
   connected: false,
 };
 
 export const $sessionStore = createStore<SessionType>(defaultSession)
-  .on(actionSession.login, (state, user) => ({
+  .on(actionSession.login, (_, user) => ({
     user,
+    role: "STUDENT_ROLE",
     connected: true,
   }))
   .reset(actionSession.logout);

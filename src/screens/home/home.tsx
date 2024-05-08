@@ -1,21 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FlatList, View, TouchableOpacity, Modal } from "react-native";
+import { Divider } from "react-native-paper";
+import { useUnit } from "effector-react";
 
-import { getAllPosts } from "@firebase";
+import { $postStore } from "@context/postStore";
 import { PostDisplay } from "components/postDisplay";
 import { PostItem } from "components/postItem";
 import { Container } from "@styledComponents";
-import { Divider } from "react-native-paper";
 import { colors } from "@theme";
 
 export default function HomeScreen() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const posts = useUnit($postStore);
   const [displayedPost, setDisplayedPost] = useState<Post>();
   const [modalVisible, setModalVisible] = useState(false);
-
-  useEffect(() => {
-    getAllPosts((posts) => setPosts(posts));
-  }, []);
 
   const toggleModal = () => setModalVisible((prev) => !prev);
 

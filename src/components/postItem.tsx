@@ -6,7 +6,7 @@ export const PostItem = ({ item }: { item: Post }) => {
     <View key={item.id} style={{ rowGap: 10 }}>
       <Row>
         <Image
-          source={{ uri: item.editorLogo }}
+          source={{ uri: item.editor.logo }}
           $size={50}
           style={{ marginHorizontal: 5 }}
         />
