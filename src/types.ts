@@ -13,9 +13,9 @@ type Office = UserType & {
   name: string;
   description: string;
   logo?: string;
-  members: Array<string>;
-  partnerships: Array<string>;
-  clubs: Array<string>;
+  members: { idEtu: string; idRole: string }[];
+  partnerships: string[];
+  clubs: string[];
 };
 type Admin = UserType & {
   name: string;
@@ -27,7 +27,6 @@ type SessionType = {
   connected?: boolean;
 };
 
-// Posts
 type Post = {
   id: string;
   title: string;
@@ -43,8 +42,8 @@ type Post = {
   };
 };
 
-// Clubs
 type Club = {
+  id: string;
   name: string;
   description: string;
   contact: string;
@@ -52,7 +51,27 @@ type Club = {
   office: string;
 };
 
-// Form
+type Partnership = {
+  id: string;
+  name: string;
+  description: string;
+  address: string;
+  addressMap: string;
+  advantages: string[];
+  logo: string;
+  office: string;
+};
+
+type Point = {
+  titre: string;
+  date: Date;
+  bleu: number;
+  jaune: number;
+  orange: number;
+  rouge: number;
+  vert: number;
+};
+
 type FormFieldProps<T> = {
   name: keyof T;
   required: boolean;

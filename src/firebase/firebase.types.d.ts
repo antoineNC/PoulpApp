@@ -21,7 +21,7 @@ type fb_Office = {
   acronym: string;
   description: string;
   role: string;
-  members: string[];
+  members: { idEtu: string; idRole: string }[];
   clubs: string[];
   partnerships: string[];
 };
