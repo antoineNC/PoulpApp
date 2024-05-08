@@ -8,15 +8,11 @@ import { subscribeUserState, useAuth, useOffice, usePost } from "@firebase";
 
 export default function App() {
   const { getCurrentUser, signout } = useAuth();
-  const { getAllOffice } = useOffice();
-  const { getAllPost } = usePost();
   useEffect(() => {
     subscribeUserState(async (user) => {
       try {
         if (user) {
           await getCurrentUser(user.uid);
-          await getAllOffice();
-          await getAllPost();
         } else {
           signout();
         }

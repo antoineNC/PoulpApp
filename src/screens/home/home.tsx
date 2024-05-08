@@ -13,7 +13,6 @@ export default function HomeScreen() {
   const posts = useUnit($postStore);
   const [displayedPost, setDisplayedPost] = useState<Post>();
   const [modalVisible, setModalVisible] = useState(false);
-
   const toggleModal = () => setModalVisible((prev) => !prev);
 
   return (

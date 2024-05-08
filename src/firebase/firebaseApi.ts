@@ -168,7 +168,7 @@ export const useOffice = () => {
       onSnapshot(q, async (snapshot) => {
         const allOffice = snapshot.docs.map(async (doc) => {
           const officeData = doc.data() as fb_Office;
-          const logo = await getOfficeLogo(doc.id);
+          const logo = await getOfficeLogo(officeData.acronym.toLowerCase());
           const office: Office = {
             ...officeData,
             id: doc.id,
@@ -177,7 +177,6 @@ export const useOffice = () => {
           return office;
         });
         const allOfficeResolved = await Promise.all(allOffice);
-        console.log("OFFICE", allOfficeResolved);
         actionOffice.setAllOffice(allOfficeResolved);
       });
     } catch (e: any) {
@@ -185,8 +184,8 @@ export const useOffice = () => {
     }
   };
 
-  const getOfficeLogo = async (office: string) => {
-    const logoRef = ref(assetsRef, `/${office.toUpperCase()}.png`);
+  const getOfficeLogo = async (officeAcronym: string) => {
+    const logoRef = ref(assetsRef, `/${officeAcronym}.png`);
     try {
       const url = await getDownloadURL(logoRef);
       return url;
@@ -218,10 +217,9 @@ export const usePost = () => {
   const allOffice = useUnit($officeStore);
   const getAllPost = async () => {
     try {
-      console.log("ALLOFFICE", allOffice);
       const q = query(postCollection, orderBy("createdAt", "desc"));
       onSnapshot(q, async (snapshot) => {
-        const posts = snapshot.docs.map(async (doc) => {
+        const postList = snapshot.docs.map(async (doc) => {
           const postData = doc.data() as fb_Post;
           const editor = allOffice.find(
             (office) => office.id === postData.editor
@@ -233,7 +231,7 @@ export const usePost = () => {
           const post: Post = {
             ...postData,
             id: doc.id,
-            editor: editor,
+            editor: { id: editor?.id, logo: editor?.logo },
             image: imageURL,
             createdAt: postData.createdAt.toDate(),
             date: {
@@ -243,7 +241,8 @@ export const usePost = () => {
           };
           return post;
         });
-        actionPost.getPosts(await Promise.all(posts));
+        const postListResolved = await Promise.all(postList);
+        actionPost.setAllPost(postListResolved);
       });
     } catch (e: any) {
       throw Error("Une erreur est survenue.\n" + e);
@@ -276,7 +275,7 @@ export const usePost = () => {
   // };
 
   const getPostImgURL = async (id: string) => {
-    const imgRef = ref(imgPostRef, `/${id}.png`);
+    const imgRef = ref(imgPostRef, `/${id}`);
     try {
       const url = await getDownloadURL(imgRef);
       return url;

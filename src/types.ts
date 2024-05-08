@@ -32,7 +32,7 @@ type Post = {
   id: string;
   title: string;
   description: string;
-  editor: Office;
+  editor: { id?: string; logo?: string };
   image?: string;
   tags: Array<string>;
   createdAt: Date;

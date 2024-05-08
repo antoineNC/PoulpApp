@@ -1,19 +1,35 @@
+import { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useUnit } from "effector-react";
 
+import { useOffice, usePost } from "@firebase";
 import TabBarContainer from "@navigation/tabBarContainer";
 import { AuthParamList } from "@navigation/navigation.types";
 import LoginScreen from "@screens/auth/login";
 import SignupScreen from "@screens/auth/signup";
 import { $sessionStore } from "@context/sessionStore";
 import { colors } from "@theme";
+import { $officeStore } from "@context/officeStore";
 
 const AuthStack = createNativeStackNavigator<AuthParamList>();
 
 export default function RootContainer() {
   const { connected } = useUnit($sessionStore);
+  const officeList = useUnit($officeStore);
   console.log("CONNECTED:", connected);
+  const { getAllOffice } = useOffice();
+  const { getAllPost } = usePost();
+  useEffect(() => {
+    if (connected) {
+      getAllOffice();
+    }
+  }, [connected]);
+  useEffect(() => {
+    if (connected && officeList.length > 0) {
+      getAllPost();
+    }
+  }, [connected, officeList]);
   return (
     <NavigationContainer>
       {connected ? (
