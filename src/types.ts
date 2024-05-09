@@ -52,7 +52,7 @@ type Club = {
   name: string;
   description: string;
   contact: string;
-  logo: string;
+  logo?: string;
   office: { id: string; acronym: string; logo: string };
 };
 

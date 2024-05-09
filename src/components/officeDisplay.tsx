@@ -1,7 +1,8 @@
-import { FlatList, View } from "react-native";
-import { Row, Image, Title, Body, Text } from "@styledComponents";
+import { Alert, FlatList, Linking, TouchableOpacity, View } from "react-native";
+import { Row, Image, Title, Body, Text, Link } from "@styledComponents";
 import { colors } from "@theme";
 import { CloseButton } from "./closeButton";
+import { officeStyles } from "@styles";
 
 export const OfficeDisplay = ({
   item,
@@ -10,6 +11,17 @@ export const OfficeDisplay = ({
   item: Office | undefined;
   toggleModal: () => void;
 }) => {
+  const handlePress = async (url: string) => {
+    // Checking if the link is supported for links with custom URL scheme.
+    const supported = await Linking.canOpenURL("mailto:" + url);
+    if (supported) {
+      // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+      // by some browser in the mobile
+      await Linking.openURL("mailto:" + url);
+    } else {
+      Alert.alert(`Don't know how to open this URL: ${url}`);
+    }
+  };
   if (item) {
     return (
       <View
@@ -28,26 +40,51 @@ export const OfficeDisplay = ({
           />
           <View>
             <Title>{item.name}</Title>
-            {/* {item.tags.length > 0 && <Text>{item.tags}</Text>} */}
           </View>
         </Row>
-        <Body>{item.description}</Body>
-        <FlatList
-          horizontal
-          data={item.clubs}
-          renderItem={(club) => (
-            <View>
-              <Text>{club.item}</Text>
-            </View>
-          )}
-        />
-        {/* {item.image && (
-          <Image
-            source={{ uri: item.image }}
-            resizeMode="contain"
-            resizeMethod="scale"
-          />
-        )} */}
+        <Body>
+          <Row>
+            <Text>Envoyez nous un mail :</Text>
+            <TouchableOpacity onPress={() => handlePress(item.mail)}>
+              <Link>{item.mail}</Link>
+            </TouchableOpacity>
+          </Row>
+          <View style={officeStyles.borderRounded}>
+            <Text>{item.description}</Text>
+          </View>
+          <View style={officeStyles.borderRounded}>
+            <FlatList
+              data={item.members}
+              ListHeaderComponent={
+                <Text style={{ fontWeight: "bold" }}>Liste des membres :</Text>
+              }
+              renderItem={({ item }) => (
+                <Row style={{ marginVertical: 5 }}>
+                  <Text style={{ flex: 1 }}>{item.nameRole} :</Text>
+                  <Text style={{ flex: 2 }}>{item.nameStudent}</Text>
+                </Row>
+              )}
+            />
+          </View>
+          <View>
+            <Text style={{ fontWeight: "bold" }}>Liste des clubs :</Text>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={item.clubs}
+              renderItem={({ item }) => (
+                <View style={{ margin: 10, alignItems: "center" }}>
+                  <Image
+                    source={{ uri: item.logo }}
+                    $size={100}
+                    style={{ borderRadius: 5 }}
+                  />
+                  <Text>{item.name}</Text>
+                </View>
+              )}
+            />
+          </View>
+        </Body>
       </View>
     );
   }

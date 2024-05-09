@@ -18,4 +18,10 @@ export const officeStyles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
   },
+  borderRounded: {
+    borderWidth: 0.5,
+    borderColor: "white",
+    borderRadius: 5,
+    padding: 5,
+  },
 });

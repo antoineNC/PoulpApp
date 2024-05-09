@@ -10,7 +10,7 @@ import { colors } from "@theme";
 import { OfficeDisplay } from "components/officeDisplay";
 
 export default function OfficesScreen() {
-  const offices = useUnit($officeStore);
+  const { officeList } = useUnit($officeStore);
   const [modalVisible, setModalVisible] = useState(false);
   const [displayedOffice, setDisplayedOffice] = useState<Office>();
 
@@ -29,7 +29,7 @@ export default function OfficesScreen() {
         <OfficeDisplay item={displayedOffice} toggleModal={toggleModal} />
       </Modal>
       <FlatList
-        data={offices}
+        data={officeList}
         contentContainerStyle={{ rowGap: 20, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (

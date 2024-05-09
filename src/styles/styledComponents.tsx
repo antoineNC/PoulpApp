@@ -10,12 +10,17 @@ export const Text = styled.Text<{ $size?: string }>`
       : fontSize.m}px;
 `;
 
+export const Link = styled(Text)`
+  color: ${colors.cyan};
+`;
+
 export const Title = styled(Text)`
   font-size: ${fontSize.l}px;
 `;
 
-export const Body = styled(Text)`
+export const Body = styled.View`
   margin: 0px 15px 10px;
+  row-gap: 15px;
 `;
 
 export const Container = styled.View`

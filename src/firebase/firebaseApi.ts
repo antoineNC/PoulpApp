@@ -20,16 +20,27 @@ import {
   orderBy,
   onSnapshot,
 } from "@firebase/firestore";
-import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import {
+  StorageReference,
+  getDownloadURL,
+  getStorage,
+  ref,
+} from "firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import app from "firebase/firebase.config";
-import { fb_Office, fb_Post, fb_Student } from "firebase/firebase.types";
+import {
+  fb_Club,
+  fb_Office,
+  fb_Post,
+  fb_Student,
+} from "firebase/firebase.types";
 import { actionSession } from "@context/sessionStore";
 import { $officeStore, actionOffice } from "@context/officeStore";
 import { actionPost } from "@context/postStore";
 import { useUnit } from "effector-react";
 import { actionStudent } from "@context/studentStore";
+import { getDocs } from "firebase/firestore";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -42,8 +53,38 @@ const clubCollection = collection(db, "Club");
 const storage = getStorage();
 const assetsRef = ref(storage, "Assets");
 const imgPostRef = ref(storage, "ImgPosts");
+const imgClubPartRef = ref(storage, "ImgClubPartenariat");
 export const subscribeUserState = (observer: (user: User | null) => void) => {
   return onAuthStateChanged(auth, (user) => observer(user));
+};
+
+export const useUtils = () => {
+  const getImgURL = async (storageRef: StorageReference, id: string) => {
+    const imgRef = ref(storageRef, `/${id}`);
+    try {
+      const url = await getDownloadURL(imgRef);
+      return url;
+    } catch (error: any) {
+      // A full list of error codes is available at
+      // https://firebase.google.com/docs/storage/web/handle-errors
+      switch (error.code) {
+        case "storage/object-not-found":
+          // File doesn't exist
+          break;
+        case "storage/unauthorized":
+          // User doesn't have permission to access the object
+          break;
+        case "storage/canceled":
+          // User canceled the upload
+          break;
+        case "storage/unknown":
+          // Unknown error occurred, inspect the server response
+          break;
+      }
+      return undefined;
+    }
+  };
+  return { getImgURL };
 };
 
 export const useAuth = () => {
@@ -62,7 +103,7 @@ export const useAuth = () => {
       );
       await getCurrentUser(userCredential.user.uid);
     } catch (e: any) {
-      throw Error(e);
+      throw Error(`[login] ${e}\n`);
     }
   };
 
@@ -94,7 +135,7 @@ export const useAuth = () => {
       });
       await getCurrentUser(user.uid, "Le compte n'a pas bien été enregistré.");
     } catch (e: any) {
-      throw Error(e);
+      throw Error(`[signup] ${e}\n`);
     }
   };
 
@@ -120,7 +161,7 @@ export const useAuth = () => {
       };
       actionSession.login(user);
     } catch (e: any) {
-      throw Error(e);
+      throw Error(`[getCurrentUser] ${e}\n`);
     }
   };
 
@@ -158,14 +199,14 @@ export const useAuth = () => {
 };
 
 export const useStudent = () => {
-  const allOffice = useUnit($officeStore);
+  const { officeList } = useUnit($officeStore);
   const getAllStudent = async (getSnapshot: (snapshot: Student[]) => void) => {
     try {
       const q = query(userCollection, where("role", "==", "STUDENT_ROLE"));
       onSnapshot(q, async (snapshot) => {
         const allStudent = snapshot.docs.map(async (doc) => {
           const studentData = doc.data() as fb_Student;
-          const officeAdherent = allOffice.filter((office) =>
+          const officeAdherent = officeList.filter((office) =>
             studentData.adhesion.includes(office.id)
           );
           const adhesion = officeAdherent.map((office) => ({
@@ -184,7 +225,7 @@ export const useStudent = () => {
         actionStudent.setAllStudent(allStudentResolved);
       });
     } catch (e: any) {
-      throw Error("[getAllOffice]\n" + e);
+      throw Error(`[getAllStudent] ${e}\n`);
     }
   };
 
@@ -192,6 +233,7 @@ export const useStudent = () => {
 };
 
 export const useOffice = () => {
+  const { getOfficeClub } = useClub();
   const getAllOffice = async (getSnapshot: (snapshot: Office[]) => void) => {
     try {
       const q = query(userCollection, where("role", "==", "OFFICE_ROLE"));
@@ -199,12 +241,17 @@ export const useOffice = () => {
         const allOffice = snapshot.docs.map(async (doc) => {
           const officeData = doc.data() as fb_Office;
           const logo = await getOfficeLogo(officeData.acronym.toLowerCase());
+          const clubList = await getOfficeClub({
+            id: doc.id,
+            acronym: officeData.acronym,
+            logo,
+          });
           const office: Office = {
             ...officeData,
             id: doc.id,
             logo,
             partnerships: [],
-            clubs: [],
+            clubs: clubList,
           };
           return office;
         });
@@ -213,7 +260,7 @@ export const useOffice = () => {
         getSnapshot(allOfficeResolved);
       });
     } catch (e: any) {
-      throw Error("[getAllOffice]\n" + e);
+      throw Error(`[getAllOffice] ${e}\n`);
     }
   };
 
@@ -252,7 +299,7 @@ export const useOffice = () => {
 };
 
 export const usePost = () => {
-  // const allOffice = useUnit($officeStore);
+  const { getImgURL } = useUtils();
   const { getAllOffice } = useOffice();
   const getAllPost = async () => {
     try {
@@ -267,11 +314,11 @@ export const usePost = () => {
             if (!editor) {
               throw Error(`There is no editor for the post ${doc.id}.\n`);
             }
-            const imageURL = await getPostImgURL(postData.image);
+            const imageURL = await getImgURL(imgPostRef, postData.image);
             const post: Post = {
               ...postData,
               id: doc.id,
-              editor: { id: editor.id, logo: editor.logo },
+              editor: { ...editor },
               image: imageURL,
               createdAt: postData.createdAt.toDate(),
               date: {
@@ -286,7 +333,7 @@ export const usePost = () => {
         });
       });
     } catch (e: any) {
-      throw Error("Une erreur est survenue.\n" + e);
+      throw Error(`[getAllPost] ${e}\n`);
     }
   };
 
@@ -315,42 +362,65 @@ export const usePost = () => {
   //   }
   // };
 
-  const getPostImgURL = async (id: string) => {
-    const imgRef = ref(imgPostRef, `/${id}`);
-    try {
-      const url = await getDownloadURL(imgRef);
-      return url;
-    } catch (error: any) {
-      // A full list of error codes is available at
-      // https://firebase.google.com/docs/storage/web/handle-errors
-      switch (error.code) {
-        case "storage/object-not-found":
-          // File doesn't exist
-          break;
-        case "storage/unauthorized":
-          // User doesn't have permission to access the object
-          break;
-        case "storage/canceled":
-          // User canceled the upload
-          break;
-        case "storage/unknown":
-          // Unknown error occurred, inspect the server response
-          break;
-      }
-    }
-  };
-
   return { getAllPost };
 };
 
-// ===== CLUBS =====
+const useClub = () => {
+  const { officeList } = useUnit($officeStore);
+  const { getImgURL } = useUtils();
+  const getAllClub = async () => {
+    try {
+      onSnapshot(clubCollection, async (snapshot) => {
+        const clubList = snapshot.docs.map(async (doc) => {
+          const clubData = doc.data() as fb_Club;
+          const office = officeList.find(
+            (office) => office.id === clubData.office
+          );
+          if (!office) {
+            throw Error(`There is no office for the club ${doc.id}.\n`);
+          }
+          const logo = await getImgURL(imgClubPartRef, clubData.logo);
+          const club: Club = {
+            ...clubData,
+            id: doc.id,
+            logo,
+            office: { ...office },
+          };
+          return club;
+        });
+        const clubListResolved = await Promise.all(clubList);
+        actionOffice.setAllClub(clubListResolved);
+      });
+    } catch (e: any) {
+      throw Error(`[getAllClub] ${e}\n`);
+    }
+  };
 
-// const getAllClubs = async () => {
-//   const querySnapshot = await getDocs(clubCollection);
-//   const clubs = querySnapshot.docs.map((doc) => {
-//     const data = doc.data() as fb_Club;
-//     const office = getId(data.office);
-//     return { ...data, office: office };
-//   });
-//   return clubs;
-// };
+  const getOfficeClub = async (partialOffice: {
+    id: string;
+    acronym: string;
+    logo: string;
+  }) => {
+    try {
+      const q = query(clubCollection, where("office", "==", partialOffice.id));
+      const querySnapshot = await getDocs(q);
+      const clubList: Club[] = [];
+      querySnapshot.forEach(async (doc) => {
+        const clubData = doc.data() as fb_Club;
+        const logo = await getImgURL(imgClubPartRef, clubData.logo);
+        const club: Club = {
+          ...clubData,
+          id: doc.id,
+          logo,
+          office: partialOffice,
+        };
+        clubList.push(club);
+      });
+      return clubList;
+    } catch (e: any) {
+      throw Error(`[getOfficeClub] ${e}\n`);
+    }
+  };
+
+  return { getAllClub, getOfficeClub };
+};

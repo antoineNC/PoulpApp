@@ -15,7 +15,9 @@ export const PostItem = ({ item }: { item: Post }) => {
           {item.tags.length > 0 && <Text>{item.tags}</Text>}
         </View>
       </Row>
-      <Body numberOfLines={3}>{item.description}</Body>
+      <Body>
+        <Text numberOfLines={3}>{item.description}</Text>
+      </Body>
       {item.image && (
         <Image
           source={{ uri: item.image }}
