@@ -6,16 +6,21 @@ type UserType = {
 type Student = UserType & {
   lastName: string;
   firstName: string;
-  adhesion: Array<Office>;
+  adhesion: { id: string; acronym: string; logo: string }[];
 };
 type Office = UserType & {
   acronym: string;
   name: string;
   description: string;
-  logo?: string;
-  members: { idEtu: string; idRole: string }[];
-  partnerships: string[];
-  clubs: string[];
+  logo: string;
+  members: {
+    idStudent: string;
+    nameStudent: string;
+    idRole: string;
+    nameRole: string;
+  }[];
+  partnerships: Partnership[];
+  clubs: Club[];
 };
 type Admin = UserType & {
   name: string;
@@ -31,7 +36,7 @@ type Post = {
   id: string;
   title: string;
   description: string;
-  editor: { id?: string; logo?: string };
+  editor: { id: string; logo: string };
   image?: string;
   tags: Array<string>;
   createdAt: Date;
@@ -48,7 +53,7 @@ type Club = {
   description: string;
   contact: string;
   logo: string;
-  office: string;
+  office: { id: string; acronym: string; logo: string };
 };
 
 type Partnership = {
@@ -59,10 +64,11 @@ type Partnership = {
   addressMap: string;
   advantages: string[];
   logo: string;
-  office: string;
+  office: { id: string; acronym: string; logo: string };
 };
 
 type Point = {
+  id: string;
   titre: string;
   date: Date;
   bleu: number;
