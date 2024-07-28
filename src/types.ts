@@ -6,7 +6,7 @@ type UserType = {
 type Student = UserType & {
   lastName: string;
   firstName: string;
-  adhesion: { id: string; acronym: string; logo: string }[];
+  adhesion?: string[];
 };
 type Office = UserType & {
   acronym: string;
@@ -15,12 +15,10 @@ type Office = UserType & {
   logo: string;
   members: {
     idStudent: string;
-    nameStudent: string;
     idRole: string;
-    nameRole: string;
   }[];
-  partnerships: Partnership[];
-  clubs: Club[];
+  partnerships?: string[];
+  clubs?: string[];
 };
 type Admin = UserType & {
   name: string;
@@ -29,20 +27,20 @@ type Admin = UserType & {
 type SessionType = {
   user: UserType;
   role: Role;
-  connected?: boolean;
+  connected: boolean;
 };
 
 type Post = {
   id: string;
   title: string;
-  description: string;
-  editor: { id: string; logo: string };
+  description?: string;
+  editor: string;
   image?: string;
-  tags: Array<string>;
+  tags?: Array<string>;
   createdAt: Date;
   visibleCal: boolean;
-  date: {
-    start?: Date;
+  date?: {
+    start: Date;
     end?: Date;
   };
 };
@@ -50,21 +48,21 @@ type Post = {
 type Club = {
   id: string;
   name: string;
-  description: string;
-  contact: string;
+  office: string;
+  description?: string;
+  contact?: string;
   logo?: string;
-  office: { id: string; acronym: string; logo: string };
 };
 
 type Partnership = {
   id: string;
   name: string;
-  description: string;
-  address: string;
-  addressMap: string;
-  advantages: string[];
-  logo: string;
-  office: { id: string; acronym: string; logo: string };
+  office: string;
+  description?: string;
+  address?: string;
+  addressMap?: string;
+  advantages?: string[];
+  logo?: string;
 };
 
 type Point = {
