@@ -4,6 +4,7 @@ import { Divider } from "react-native-paper";
 import { useUnit } from "effector-react";
 
 import { $postStore } from "@context/postStore";
+import { $officeStore } from "@context/officeStore";
 import { PostDisplay } from "components/postDisplay";
 import { PostItem } from "components/postItem";
 import { Container } from "@styledComponents";
@@ -11,7 +12,11 @@ import { colors } from "@theme";
 
 export default function HomeScreen() {
   const posts = useUnit($postStore);
-  const [displayedPost, setDisplayedPost] = useState<Post>();
+  const { officeList } = useUnit($officeStore);
+  const [displayedItem, setDisplayedItem] = useState<{
+    post: Post;
+    office?: Office;
+  }>();
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => setModalVisible((prev) => !prev);
 
@@ -23,7 +28,7 @@ export default function HomeScreen() {
         onRequestClose={toggleModal}
         transparent
       >
-        <PostDisplay item={displayedPost} toggleModal={toggleModal} />
+        <PostDisplay item={displayedItem} toggleModal={toggleModal} />
       </Modal>
       <FlatList
         data={posts}
@@ -36,14 +41,15 @@ export default function HomeScreen() {
         )}
         ListFooterComponent={() => <View style={{ minHeight: 50 }}></View>}
         renderItem={({ item }) => {
+          const office = officeList.find((el) => el.id === item.editor);
           return (
             <TouchableOpacity
               onPress={() => {
-                setDisplayedPost(item);
+                setDisplayedItem({ post: item, office });
                 toggleModal();
               }}
             >
-              <PostItem item={item} />
+              <PostItem post={item} office={office} />
             </TouchableOpacity>
           );
         }}

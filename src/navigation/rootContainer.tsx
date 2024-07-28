@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useUnit } from "effector-react";
 
-import { usePost } from "@firebase";
+import { useOffice, usePost } from "@firebase";
 import TabBarContainer from "@navigation/tabBarContainer";
 import { AuthParamList } from "@navigation/navigation.types";
 import LoginScreen from "@screens/auth/login";
@@ -18,10 +18,13 @@ export default function RootContainer() {
   const { connected } = useUnit($sessionStore);
   console.log("CONNECTED:", connected);
   const { getAllPost } = usePost();
+  const { getAllOffice, getAllClub } = useOffice();
 
   useEffect(() => {
     if (connected) {
       getAllPost();
+      getAllOffice();
+      getAllClub();
     }
   }, [connected]);
 
