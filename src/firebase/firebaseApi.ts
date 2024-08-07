@@ -238,6 +238,7 @@ export const useOffice = () => {
   const getAllOffice = async () => {
     try {
       const q = query(userCollection, where("role", "==", "OFFICE_ROLE"));
+      // TODO : transform to a get function
       onSnapshot(q, async (snapshot) => {
         const allOffice = snapshot.docs.map(async (doc) => {
           const officeData = doc.data();
