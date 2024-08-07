@@ -346,7 +346,7 @@ export const usePost = () => {
 
   const getAllPost = async () => {
     try {
-      const q = query(postCollection, orderBy("createdAt", "desc"), limit(6));
+      const q = query(postCollection, orderBy("createdAt", "desc"), limit(10));
       const snapshot = await getDocs(q);
       const postList = await postMapping(snapshot);
       const lastVisible = snapshot.docs[snapshot.docs.length - 1];
@@ -362,7 +362,7 @@ export const usePost = () => {
       postCollection,
       orderBy("createdAt", "desc"),
       startAfter(lastVisible),
-      limit(5)
+      limit(10)
     );
     const snapshot = await getDocs(q);
     const postList = await postMapping(snapshot);
