@@ -59,6 +59,42 @@ const imgClubPartRef = ref(storage, "ImgClubPartenariat");
 export const subscribeUserState = (observer: (user: User | null) => void) => {
   return onAuthStateChanged(auth, (user) => observer(user));
 };
+/*Eventually useful */
+
+// const createQuery = (
+//   collection: CollectionReference,
+//   filter?: {
+//     limit?: number;
+//     startAfter?: DocumentSnapshot;
+//     where?: {
+//       field: string | FieldPath;
+//       operation: WhereFilterOp;
+//       value: unknown;
+//     }[];
+//     order?: {
+//       field: string | FieldPath;
+//       direction: OrderByDirection;
+//     };
+//   }
+// ) => {
+//   const queryConstraints: QueryConstraint[] = [];
+//   if (filter) {
+//     if (filter.where?.length) {
+//       filter.where.forEach((element) =>
+//         queryConstraints.push(
+//           where(element.field, element.operation, element.value)
+//         )
+//       );
+//     }
+//     if (filter.order)
+//       queryConstraints.push(
+//         orderBy(filter.order.field, filter.order.direction)
+//       );
+//     if (filter.startAfter) queryConstraints.push(startAfter(filter.startAfter));
+//     if (filter.limit) queryConstraints.push(limit(filter.limit));
+//   }
+//   return query(collection, ...queryConstraints);
+// };
 
 export const useUtils = () => {
   const getImgURL = async (storageRef: StorageReference, id: string) => {
