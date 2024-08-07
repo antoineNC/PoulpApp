@@ -7,8 +7,6 @@ import { config } from "@gluestack-ui/config";
 import RootContainer from "navigation/rootContainer";
 import { subscribeUserState, useAuth, useOffice } from "@firebase";
 import { actionSession } from "@context/sessionStore";
-import { useUnit } from "effector-react";
-import { $officeStore } from "@context/officeStore";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,8 +33,18 @@ export default function App() {
     });
   }, []);
 
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
+
   return (
-    <SafeAreaProvider style={{ flex: 1 }}>
+    <SafeAreaProvider onLayout={onLayoutRootView}>
       <GluestackUIProvider config={config}>
         <RootContainer />
       </GluestackUIProvider>
