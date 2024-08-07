@@ -11,7 +11,7 @@ import { OfficeDisplay } from "components/officeDisplay";
 export default function OfficesScreen() {
   const { officeList } = useUnit($officeStore);
   const [modalVisible, setModalVisible] = useState(false);
-  const [displayedOffice, setDisplayedOffice] = useState<Office>();
+  const [displayedOffice, setDisplayedOffice] = useState<Office>(officeList[0]);
 
   const toggleModal = () => {
     setModalVisible((prev) => !prev);

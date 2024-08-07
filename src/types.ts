@@ -65,6 +65,11 @@ type Partnership = {
   logo?: string;
 };
 
+type RoleOffice = {
+  id: string;
+  name: string;
+};
+
 type Point = {
   id: string;
   titre: string;

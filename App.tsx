@@ -13,7 +13,7 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   const { getCurrentUser, signout } = useAuth();
-  const { getAllOffice, getAllClub } = useOffice();
+  const { getAllOffice, getAllClub, getAllRole } = useOffice();
   useEffect(() => {
     subscribeUserState(async (userAuth) => {
       try {
@@ -21,6 +21,7 @@ export default function App() {
           const { user, role } = await getCurrentUser(userAuth.uid);
           await getAllOffice();
           await getAllClub();
+          await getAllRole();
           actionSession.login({ user, role });
         } else {
           signout();

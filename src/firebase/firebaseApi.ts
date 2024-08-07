@@ -50,6 +50,7 @@ const db = getFirestore(app);
 const userCollection = collection(db, "Users");
 const postCollection = collection(db, "Post");
 const clubCollection = collection(db, "Club");
+const roleCollection = collection(db, "RoleBureau");
 
 const storage = getStorage();
 const assetsRef = ref(storage, "Assets");
@@ -243,30 +244,29 @@ export const useAuth = () => {
 };
 
 export const useStudent = () => {
-  const getAllStudent = async (getSnapshot: (snapshot: Student[]) => void) => {
-    try {
-      const q = query(userCollection, where("role", "==", "STUDENT_ROLE"));
-      onSnapshot(q, async (snapshot) => {
-        const allStudent = snapshot.docs.map(async (doc) => {
-          const studentData = doc.data();
-          const student: Student = {
-            id: doc.id,
-            mail: studentData.mail,
-            firstName: studentData.firstName,
-            lastName: studentData.lastName,
-            adhesion: studentData.adhesion,
-          };
-          return student;
-        });
-        const allStudentResolved = await Promise.all(allStudent);
-        actionStudent.setAllStudent(allStudentResolved);
-      });
-    } catch (e: any) {
-      throw Error(`[getAllStudent] ${e}\n`);
-    }
-  };
-
-  return { getAllStudent };
+  // const getAllStudent = async (getSnapshot: (snapshot: Student[]) => void) => {
+  //   try {
+  //     const q = query(userCollection, where("role", "==", "STUDENT_ROLE"));
+  //     onSnapshot(q, async (snapshot) => {
+  //       const allStudent = snapshot.docs.map(async (doc) => {
+  //         const studentData = doc.data();
+  //         const student: Student = {
+  //           id: doc.id,
+  //           mail: studentData.mail,
+  //           firstName: studentData.firstName,
+  //           lastName: studentData.lastName,
+  //           adhesion: studentData.adhesion,
+  //         };
+  //         return student;
+  //       });
+  //       const allStudentResolved = await Promise.all(allStudent);
+  //       actionStudent.setAllStudent(allStudentResolved);
+  //     });
+  //   } catch (e: any) {
+  //     throw Error(`[getAllStudent] ${e}\n`);
+  //   }
+  // };
+  // return { getAllStudent };
 };
 
 export const useOffice = () => {
@@ -326,6 +326,19 @@ export const useOffice = () => {
     }
   };
 
+  const getAllRole = async () => {
+    try {
+      onSnapshot(roleCollection, async (snapshot) => {
+        const allRole = snapshot.docs.map(
+          (doc) => ({ id: doc.id, ...doc.data() } as RoleOffice)
+        );
+        actionOffice.setAllRole(allRole);
+      });
+    } catch (e) {}
+  };
+
+  // pas forcément utile si on les récupère qu'une fois au début
+  // et qu'on filtre dans le store
   const getOfficeClub = async (partialOffice: {
     id: string;
     acronym: string;
@@ -354,7 +367,7 @@ export const useOffice = () => {
     }
   };
 
-  return { getAllOffice, getAllClub, getOfficeClub };
+  return { getAllOffice, getAllClub, getAllRole };
 };
 
 export const usePost = () => {
@@ -395,16 +408,21 @@ export const usePost = () => {
   };
 
   const getMorePost = async (lastVisible: DocumentSnapshot) => {
-    const q = query(
-      postCollection,
-      orderBy("createdAt", "desc"),
-      startAfter(lastVisible),
-      limit(10)
-    );
-    const snapshot = await getDocs(q);
-    const postList = await postMapping(snapshot);
-    const newLastVisible = snapshot.docs[snapshot.docs.length - 1];
-    return { postList, newLastVisible };
+    try {
+      const q = query(
+        postCollection,
+        orderBy("createdAt", "desc"),
+        startAfter(lastVisible),
+        limit(10)
+      );
+      const snapshot = await getDocs(q);
+      const postList = await postMapping(snapshot);
+      const newLastVisible = snapshot.docs[snapshot.docs.length - 1];
+      return { postList, newLastVisible };
+    } catch (e: any) {
+      console.log(`[getMorePost] ${e}\n`);
+      throw e;
+    }
   };
 
   return { getAllPost, getMorePost };
