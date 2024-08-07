@@ -5,7 +5,6 @@ import { useUnit } from "effector-react";
 
 import { $officeStore } from "@context/officeStore";
 import { Container, Image, Text, Title } from "@styledComponents";
-import { officeStyles } from "@styles";
 import { colors } from "@theme";
 import { OfficeDisplay } from "components/officeDisplay";
 
@@ -54,7 +53,7 @@ export default function OfficesScreen() {
                   </Title>
                 }
                 subtitle={<Text>{item.mail}</Text>}
-                left={() => <Image source={{ uri: item.logo }} $size={80} />}
+                left={() => <Image source={{ uri: item.logoUrl }} $size={80} />}
                 leftStyle={{ width: 80, aspectRatio: 1 }}
                 style={{ height: 100 }}
               />

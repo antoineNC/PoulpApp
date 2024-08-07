@@ -3,6 +3,9 @@ import { Row, Image, Title, Body, Text, Link } from "@styledComponents";
 import { colors } from "@theme";
 import { CloseButton } from "./closeButton";
 import { officeStyles } from "@styles";
+import { useEffect, useState } from "react";
+import { useUnit } from "effector-react";
+import { $officeStore } from "@context/officeStore";
 
 export const OfficeDisplay = ({
   item,
@@ -11,6 +14,12 @@ export const OfficeDisplay = ({
   item: Office | undefined;
   toggleModal: () => void;
 }) => {
+  const { clubList } = useUnit($officeStore);
+  const [clubs, setClubs] = useState<Club[]>([]);
+  useEffect(() => {
+    const clubsOffice = clubList.filter((club) => club.officeId === item?.id);
+    setClubs(clubsOffice);
+  }, [clubList]);
   const handlePress = async (url: string) => {
     // Checking if the link is supported for links with custom URL scheme.
     const supported = await Linking.canOpenURL("mailto:" + url);
@@ -34,7 +43,7 @@ export const OfficeDisplay = ({
         <CloseButton onPress={toggleModal} />
         <Row style={{ marginBottom: 10 }}>
           <Image
-            source={{ uri: item.logo }}
+            source={{ uri: item.logoUrl }}
             $size={60}
             style={{ marginHorizontal: 10 }}
           />
@@ -60,8 +69,8 @@ export const OfficeDisplay = ({
               }
               renderItem={({ item }) => (
                 <Row style={{ marginVertical: 5 }}>
-                  <Text style={{ flex: 1 }}>{item.nameRole} :</Text>
-                  <Text style={{ flex: 2 }}>{item.nameStudent}</Text>
+                  <Text style={{ flex: 1 }}>{item.idRole} :</Text>
+                  <Text style={{ flex: 2 }}>{item.idStudent}</Text>
                 </Row>
               )}
             />
@@ -71,11 +80,11 @@ export const OfficeDisplay = ({
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
-              data={item.clubs}
+              data={clubs}
               renderItem={({ item }) => (
                 <View style={{ margin: 10, alignItems: "center" }}>
                   <Image
-                    source={{ uri: item.logo }}
+                    source={{ uri: item.logoUrl }}
                     $size={100}
                     style={{ borderRadius: 5 }}
                   />

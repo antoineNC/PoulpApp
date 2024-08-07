@@ -48,10 +48,10 @@ type Post = {
 type Club = {
   id: string;
   name: string;
-  office: string;
+  officeId: string;
   description?: string;
   contact?: string;
-  logo?: string;
+  logoUrl?: string;
 };
 
 type Partnership = {

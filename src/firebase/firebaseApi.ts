@@ -307,12 +307,12 @@ export const useOffice = () => {
       onSnapshot(clubCollection, async (snapshot) => {
         const clubList = snapshot.docs.map(async (doc) => {
           const clubData = doc.data();
-          const logo = await getImgURL(imgClubPartRef, clubData.logo);
+          const logoUrl = await getImgURL(imgClubPartRef, clubData.logo);
           const club: Club = {
             id: doc.id,
             name: clubData.name,
-            office: clubData.office,
-            logo,
+            officeId: clubData.office,
+            logoUrl,
             description: clubData.description,
             contact: clubData.contact,
           };
@@ -337,12 +337,12 @@ export const useOffice = () => {
       const clubList: Club[] = [];
       querySnapshot.forEach(async (doc) => {
         const clubData = doc.data();
-        const logo = await getImgURL(imgClubPartRef, clubData.logo);
+        const logoUrl = await getImgURL(imgClubPartRef, clubData.logo);
         const club: Club = {
           id: doc.id,
           name: clubData.name,
-          office: clubData.office,
-          logo,
+          officeId: clubData.office,
+          logoUrl,
           description: clubData.description,
           contact: clubData.contact,
         };
