@@ -16,21 +16,11 @@ const AuthStack = createNativeStackNavigator<AuthParamList>();
 
 export default function RootContainer() {
   const { connected } = useUnit($sessionStore);
-  console.log("CONNECTED:", connected);
-  const { getAllPost } = usePost();
-  const { getAllOffice, getAllClub } = useOffice();
 
   useEffect(() => {
-    if (connected) {
-      getAllPost();
-      getAllOffice();
-      getAllClub();
-    }
+    console.log("CONNECTED:", connected);
   }, [connected]);
 
-  if (connected === undefined) {
-    return <View style={{ flex: 1, backgroundColor: colors.primary }}></View>;
-  }
   return (
     <NavigationContainer>
       {connected ? (
