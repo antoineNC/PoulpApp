@@ -19,23 +19,29 @@ import {
   setDoc,
   orderBy,
   onSnapshot,
+  CollectionReference,
+  DocumentSnapshot,
+  FieldPath,
+  getDocs,
+  limit,
+  OrderByDirection,
+  QueryConstraint,
+  QuerySnapshot,
+  startAfter,
+  WhereFilterOp,
 } from "@firebase/firestore";
 import {
   StorageReference,
   getDownloadURL,
   getStorage,
   ref,
-} from "firebase/storage";
+} from "@firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import app from "firebase/firebase.config";
 import { actionSession } from "@context/sessionStore";
-import { $officeStore, actionOffice } from "@context/officeStore";
-import { actionPost } from "@context/postStore";
-import { useUnit } from "effector-react";
+import { actionOffice } from "@context/officeStore";
 import { actionStudent } from "@context/studentStore";
-import { getDocs } from "firebase/firestore";
-import { ensc_logo_url } from "data";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -49,6 +55,7 @@ const storage = getStorage();
 const assetsRef = ref(storage, "Assets");
 const imgPostRef = ref(storage, "ImgPosts");
 const imgClubPartRef = ref(storage, "ImgClubPartenariat");
+
 export const subscribeUserState = (observer: (user: User | null) => void) => {
   return onAuthStateChanged(auth, (user) => observer(user));
 };
@@ -83,6 +90,7 @@ export const useUtils = () => {
 };
 
 export const useAuth = () => {
+  const { getAllOffice, getAllClub } = useOffice();
   const login = async ({
     email,
     password,
@@ -96,7 +104,11 @@ export const useAuth = () => {
         email,
         password
       );
-      await getCurrentUser(userCredential.user.uid);
+      const { user, role } = await getCurrentUser(userCredential.user.uid);
+      await getAllOffice();
+      await getAllClub();
+      // TODO : get office, clubs, partnerships, role
+      actionSession.login({ user, role });
     } catch (e: any) {
       throw Error(`[login] ${e}\n`);
     }
@@ -119,16 +131,19 @@ export const useAuth = () => {
         email,
         password
       );
-      const { user } = userCredential;
-      await setDoc(doc(userCollection, user.uid), {
-        id: user.uid,
-        mail: user.email,
+      await setDoc(doc(userCollection, userCredential.user.uid), {
+        id: userCredential.user.uid,
+        mail: userCredential.user.email,
         role: "student",
         firstName,
         lastName,
         adhesion: [],
       });
-      await getCurrentUser(user.uid, "Le compte n'a pas bien été enregistré.");
+      const { user, role } = await getCurrentUser(
+        userCredential.user.uid,
+        "Le compte n'a pas bien été enregistré."
+      );
+      actionSession.login({ user, role });
     } catch (e: any) {
       throw Error(`[signup] ${e}\n`);
     }
@@ -140,21 +155,19 @@ export const useAuth = () => {
     signOut(auth);
   };
 
-  const getCurrentUser = async (
-    id: string,
-    errExist?: string
-  ): Promise<void> => {
+  const getCurrentUser = async (id: string, errExist?: string) => {
     try {
       const userRef = await getDoc(doc(userCollection, id));
       if (!userRef.exists()) {
         throw Error(errExist || "Informations incorrectes.");
       }
       const userData = userRef.data();
+      const { mail, role } = userData;
       const user: UserType = {
-        id: id,
-        mail: userData.mail,
+        id,
+        mail,
       };
-      actionSession.login(user);
+      return { user, role };
     } catch (e: any) {
       throw Error(`[getCurrentUser] ${e}\n`);
     }
@@ -194,7 +207,6 @@ export const useAuth = () => {
 };
 
 export const useStudent = () => {
-  const { officeList } = useUnit($officeStore);
   const getAllStudent = async (getSnapshot: (snapshot: Student[]) => void) => {
     try {
       const q = query(userCollection, where("role", "==", "STUDENT_ROLE"));
@@ -241,7 +253,7 @@ export const useOffice = () => {
             mail: officeData.mail,
             members: officeData.members,
             clubs: officeData.clubs,
-            logo: logo || ensc_logo_url,
+            logoUrl: logo || require("../../assets/no_image_available.jpg"),
           };
           return office;
         });
@@ -310,36 +322,53 @@ export const useOffice = () => {
 
 export const usePost = () => {
   const { getImgURL } = useUtils();
+  const postMapping = async (snapshot: QuerySnapshot) => {
+    const postList = snapshot.docs.map(async (doc) => {
+      const postData = doc.data();
+      const imageURL =
+        postData.imageId && (await getImgURL(imgPostRef, postData.imageId));
+      const post: Post = {
+        id: doc.id,
+        title: postData.title,
+        description: postData.description,
+        editorId: postData.editorId,
+        imageUrl: imageURL,
+        createdAt: postData.createdAt.toDate(),
+        date: postData.date && {
+          start: postData.date.start.toDate(),
+          end: postData.date.end.toDate(),
+        },
+      };
+      return post;
+    });
+    return Promise.all(postList);
+  };
+
   const getAllPost = async () => {
     try {
-      const q = query(postCollection, orderBy("createdAt", "desc"));
-      onSnapshot(q, async (snapshot) => {
-        const postList = snapshot.docs.map(async (doc) => {
-          const postData = doc.data();
-          const imageURL = await getImgURL(imgPostRef, postData.image);
-          const post: Post = {
-            id: doc.id,
-            title: postData.title,
-            description: postData.description,
-            editor: postData.editor,
-            image: imageURL,
-            createdAt: postData.createdAt.toDate(),
-            visibleCal: postData.visibleCal,
-            date: postData.date && {
-              start: postData.date.start?.toDate(),
-              end: postData.date.end?.toDate(),
-            },
-          };
-          return post;
-        });
-        const postListResolved = await Promise.all(postList);
-        actionPost.setAllPost(postListResolved);
-      });
+      const q = query(postCollection, orderBy("createdAt", "desc"), limit(6));
+      const snapshot = await getDocs(q);
+      const postList = await postMapping(snapshot);
+      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+      return { postList, lastVisible };
     } catch (e: any) {
       console.log(`[getAllPost] ${e}\n`);
       throw e;
     }
   };
 
-  return { getAllPost };
+  const getMorePost = async (lastVisible: DocumentSnapshot) => {
+    const q = query(
+      postCollection,
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(5)
+    );
+    const snapshot = await getDocs(q);
+    const postList = await postMapping(snapshot);
+    const newLastVisible = snapshot.docs[snapshot.docs.length - 1];
+    return { postList, newLastVisible };
+  };
+
+  return { getAllPost, getMorePost };
 };
