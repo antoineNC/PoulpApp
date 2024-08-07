@@ -1,5 +1,4 @@
-import { View, TouchableOpacity } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { View } from "react-native";
 import { Text, Image, Body, Row, Title } from "@styledComponents";
 import { colors } from "@theme";
 import { CloseButton } from "./closeButton";
@@ -23,7 +22,7 @@ export const PostDisplay = ({
         <CloseButton onPress={toggleModal} />
         <Row style={{ marginBottom: 10 }}>
           <Image
-            source={{ uri: item.office?.logo }}
+            source={{ uri: item.office?.logoUrl }}
             $size={60}
             style={{ marginHorizontal: 10 }}
           />
@@ -37,9 +36,9 @@ export const PostDisplay = ({
         <Body>
           <Text>{item.post.description}</Text>
         </Body>
-        {item.post.image && (
+        {item.post.imageUrl && (
           <Image
-            source={{ uri: item.post.image }}
+            source={{ uri: item.post.imageUrl }}
             resizeMode="contain"
             resizeMethod="scale"
           />

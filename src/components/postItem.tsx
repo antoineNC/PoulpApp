@@ -6,7 +6,7 @@ export const PostItem = ({ post, office }: { post: Post; office?: Office }) => {
     <View key={post.id} style={{ rowGap: 10 }}>
       <Row>
         <Image
-          source={{ uri: office?.logo }}
+          source={{ uri: post.editor?.logoUrl }}
           $size={50}
           style={{ marginHorizontal: 5 }}
         />
@@ -20,9 +20,9 @@ export const PostItem = ({ post, office }: { post: Post; office?: Office }) => {
       <Body>
         <Text numberOfLines={3}>{post.description}</Text>
       </Body>
-      {post.image && (
+      {post.imageUrl && (
         <Image
-          source={{ uri: post.image }}
+          source={{ uri: post.imageUrl }}
           resizeMode="contain"
           resizeMethod="scale"
         />

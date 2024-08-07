@@ -12,8 +12,8 @@ type Office = UserType & {
   acronym: string;
   name: string;
   description: string;
-  logo: string;
-  members: {
+  logoUrl: string;
+  members?: {
     idStudent: string;
     idRole: string;
   }[];
@@ -33,16 +33,16 @@ type SessionType = {
 type Post = {
   id: string;
   title: string;
-  description?: string;
-  editor: string;
-  image?: string;
-  tags?: Array<string>;
   createdAt: Date;
-  visibleCal: boolean;
+  editorId: string;
+  description?: string;
+  imageUrl?: string;
+  tags?: Array<string>;
   date?: {
     start: Date;
-    end?: Date;
+    end: Date;
   };
+  editor?: Office;
 };
 
 type Club = {
