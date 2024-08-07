@@ -2,8 +2,8 @@ import styled from "styled-components/native";
 import { windowScale } from "data";
 import { colors, fontSize } from "@theme";
 
-export const Text = styled.Text<{ $size?: string }>`
-  color: ${colors.white};
+export const Text = styled.Text<{ $size?: string; $dark?: boolean }>`
+  color: ${(props) => (props.$dark ? colors.primary : colors.white)};
   font-size: ${(props) =>
     props.$size
       ? fontSize[props.$size as keyof typeof fontSize]
