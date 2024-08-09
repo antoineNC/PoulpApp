@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Text, Image, Body, Row, Title } from "@styledComponents";
+import { Text, Image, Body, Row, Title2 } from "@styledComponents";
 import { colors } from "@theme";
 import { CloseButton } from "./closeButton";
 
@@ -27,7 +27,7 @@ export const PostDisplay = ({
             style={{ marginHorizontal: 10 }}
           />
           <View>
-            <Title>{item.post.title}</Title>
+            <Title2>{item.post.title}</Title2>
             {item.post.tags?.length && item.post.tags.length > 0 && (
               <Text>{item.post.tags}</Text>
             )}

@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Text, Image, Body, Title, Row } from "@styledComponents";
+import { Text, Image, Body, Title2, Row } from "@styledComponents";
 
 export const PostItem = ({ post, office }: { post: Post; office?: Office }) => {
   return (
@@ -11,7 +11,7 @@ export const PostItem = ({ post, office }: { post: Post; office?: Office }) => {
           style={{ marginHorizontal: 5 }}
         />
         <View>
-          <Title>{post.title}</Title>
+          <Title2>{post.title}</Title2>
           {post.tags?.length && post.tags.length > 0 && (
             <Text>{post.tags}</Text>
           )}

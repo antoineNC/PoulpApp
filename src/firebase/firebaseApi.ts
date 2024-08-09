@@ -266,7 +266,28 @@ export const useStudent = () => {
   //     throw Error(`[getAllStudent] ${e}\n`);
   //   }
   // };
-  // return { getAllStudent };
+
+  const getStudentById = async (id: string) => {
+    try {
+      const snapshot = await getDoc(doc(userCollection, id));
+      if (!snapshot.exists()) {
+        throw Error(`L'étudiant.e ${id} n'existe pas.`);
+      }
+      if (snapshot.data().role !== "STUDENT_ROLE") {
+        throw Error(`L'étudiant.e ${id} n'existe pas.`);
+      }
+      const student: Student = {
+        id: snapshot.id,
+        firstName: snapshot.data().firstName,
+        lastName: snapshot.data().lastName,
+        mail: snapshot.data().mail,
+      };
+      return student;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  return { getStudentById };
 };
 
 export const useOffice = () => {
@@ -307,11 +328,11 @@ export const useOffice = () => {
       onSnapshot(clubCollection, async (snapshot) => {
         const clubList = snapshot.docs.map(async (doc) => {
           const clubData = doc.data();
-          const logoUrl = await getImgURL(imgClubPartRef, clubData.logo);
+          const logoUrl = await getImgURL(imgClubPartRef, clubData.logoId);
           const club: Club = {
             id: doc.id,
             name: clubData.name,
-            officeId: clubData.office,
+            officeId: clubData.officeId,
             logoUrl,
             description: clubData.description,
             contact: clubData.contact,
@@ -335,36 +356,6 @@ export const useOffice = () => {
         actionOffice.setAllRole(allRole);
       });
     } catch (e) {}
-  };
-
-  // pas forcément utile si on les récupère qu'une fois au début
-  // et qu'on filtre dans le store
-  const getOfficeClub = async (partialOffice: {
-    id: string;
-    acronym: string;
-    logo: string;
-  }) => {
-    try {
-      const q = query(clubCollection, where("office", "==", partialOffice.id));
-      const querySnapshot = await getDocs(q);
-      const clubList: Club[] = [];
-      querySnapshot.forEach(async (doc) => {
-        const clubData = doc.data();
-        const logoUrl = await getImgURL(imgClubPartRef, clubData.logo);
-        const club: Club = {
-          id: doc.id,
-          name: clubData.name,
-          officeId: clubData.office,
-          logoUrl,
-          description: clubData.description,
-          contact: clubData.contact,
-        };
-        clubList.push(club);
-      });
-      return clubList;
-    } catch (e: any) {
-      throw Error(`[getOfficeClub] ${e}\n`);
-    }
   };
 
   return { getAllOffice, getAllClub, getAllRole };
