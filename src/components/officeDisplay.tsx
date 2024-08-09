@@ -3,10 +3,18 @@ import { Alert, FlatList, Linking, TouchableOpacity, View } from "react-native";
 import { useUnit } from "effector-react";
 import { useStudent } from "@firebase";
 import { $officeStore } from "@context/officeStore";
+import {
+  Row,
+  Image,
+  Title2,
+  Body,
+  Text,
+  Link,
+  ModalContainer,
+  BodyTitle,
+} from "@styledComponents";
 import { CloseButton } from "./closeButton";
-import { Row, Image, Title2, Body, Text, Link } from "@styledComponents";
 import { officeStyles } from "@styles";
-import { colors } from "@theme";
 
 export const OfficeDisplay = ({
   item,
@@ -66,25 +74,15 @@ export const OfficeDisplay = ({
     }
   };
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: colors.primary,
-        paddingTop: 15,
-      }}
-    >
+    <ModalContainer>
       <CloseButton onPress={toggleModal} />
-      <Row style={{ marginBottom: 10 }}>
-        <Image
-          source={{ uri: item.logoUrl }}
-          $size={60}
-          style={{ marginHorizontal: 10 }}
-        />
-        <View>
-          <Title2>{item.name}</Title2>
-        </View>
-      </Row>
       <Body>
+        <Row>
+          <Image source={{ uri: item.logoUrl }} $size={60} />
+          <View>
+            <Title2>{item.name}</Title2>
+          </View>
+        </Row>
         <Row>
           <Text>Envoyez nous un mail : </Text>
           <TouchableOpacity onPress={() => handlePress(item.mail)}>
@@ -92,18 +90,14 @@ export const OfficeDisplay = ({
           </TouchableOpacity>
         </Row>
         <View style={officeStyles.borderRounded}>
-          <Text $bold style={{ paddingVertical: 5 }}>
-            Description :
-          </Text>
+          <BodyTitle>Description :</BodyTitle>
           <Text>{item.description}</Text>
         </View>
         {memberOffice.length > 0 && (
           <View style={officeStyles.borderRounded}>
             <FlatList
               data={memberOffice}
-              ListHeaderComponent={
-                <Text style={{ fontWeight: "bold" }}>Liste des membres :</Text>
-              }
+              ListHeaderComponent={<BodyTitle>Liste des membres :</BodyTitle>}
               renderItem={({ item }) => (
                 <Row style={{ marginVertical: 5 }}>
                   <Text style={{ flex: 1 }}>{item.role} :</Text>
@@ -115,7 +109,7 @@ export const OfficeDisplay = ({
         )}
         {clubs && clubs.length > 0 && (
           <View>
-            <Text $bold>Liste des clubs :</Text>
+            <BodyTitle>Liste des clubs :</BodyTitle>
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -135,7 +129,7 @@ export const OfficeDisplay = ({
         )}
         {partnerships && partnerships.length > 0 && (
           <View>
-            <Text $bold>Liste des partenariats :</Text>
+            <BodyTitle>Liste des partenariats :</BodyTitle>
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -154,6 +148,6 @@ export const OfficeDisplay = ({
           </View>
         )}
       </Body>
-    </View>
+    </ModalContainer>
   );
 };

@@ -276,14 +276,15 @@ export const useStudent = () => {
       if (!snapshot.exists()) {
         throw Error(`L'étudiant.e ${id} n'existe pas.`);
       }
-      if (snapshot.data().role !== "STUDENT_ROLE") {
+      const studentData = snapshot.data();
+      if (studentData.role !== "STUDENT_ROLE") {
         throw Error(`L'étudiant.e ${id} n'existe pas.`);
       }
       const student: Student = {
         id: snapshot.id,
-        firstName: snapshot.data().firstName,
-        lastName: snapshot.data().lastName,
-        mail: snapshot.data().mail,
+        firstName: studentData.firstName,
+        lastName: studentData.lastName,
+        mail: studentData.mail,
       };
       return student;
     } catch (e) {
@@ -408,6 +409,7 @@ export const usePost = () => {
         editorId: postData.editorId,
         imageUrl: imageURL,
         createdAt: postData.createdAt.toDate(),
+        tags: postData.tags,
         date: postData.date && {
           start: postData.date.start.toDate(),
           end: postData.date.end.toDate(),

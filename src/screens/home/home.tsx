@@ -13,10 +13,7 @@ import { colors } from "@theme";
 export default function HomeScreen() {
   const { posts, loading, lastVisible } = useUnit($postStore);
   const { officeList } = useUnit($officeStore);
-  const [displayedItem, setDisplayedItem] = useState<{
-    post: Post;
-    office?: Office;
-  }>();
+  const [displayedItem, setDisplayedItem] = useState<Post>(posts[0]);
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => setModalVisible((prev) => !prev);
 
@@ -59,7 +56,7 @@ export default function HomeScreen() {
         onRequestClose={toggleModal}
         transparent
       >
-        <PostDisplay item={displayedItem} toggleModal={toggleModal} />
+        <PostDisplay post={displayedItem} toggleModal={toggleModal} />
       </Modal>
       <FlatList
         data={postsWithOffice}
@@ -70,7 +67,7 @@ export default function HomeScreen() {
           return (
             <TouchableOpacity
               onPress={() => {
-                setDisplayedItem({ post: item });
+                setDisplayedItem(item);
                 toggleModal();
               }}
             >

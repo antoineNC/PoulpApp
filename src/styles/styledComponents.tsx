@@ -25,10 +25,17 @@ export const Title1 = styled(Text)`
 
 export const Title2 = styled(Text)`
   font-size: ${fontSize.l}px;
+  font-weight: bold;
+  padding: 0 10px;
+`;
+
+export const BodyTitle = styled(Text)`
+  font-weight: 900;
+  margin: 5px 0;
 `;
 
 export const Body = styled.View`
-  margin: 0px 15px 10px;
+  margin: 10px 15px;
   row-gap: 15px;
 `;
 
@@ -40,12 +47,19 @@ export const ContainerScroll = styled.ScrollView`
   flex: 1;
 `;
 
-export const Row = styled.View`
+export const Row = styled.View<{ $padding?: string }>`
   flex-direction: row;
   align-items: center;
+  padding: ${(props) => props.$padding || "0px"};
 `;
 
 export const Image = styled.Image<{ $size?: number }>`
   width: ${(props) => props.$size || windowScale.width}px;
   aspect-ratio: 1;
+`;
+
+export const ModalContainer = styled.View`
+  flex: 1;
+  background-color: ${colors.primary};
+  padding: 15px 0 0;
 `;

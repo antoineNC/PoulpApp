@@ -9,7 +9,7 @@ export const CloseButton = ({ onPress }: { onPress: () => void }) => {
         name="close-circle-outline"
         size={35}
         color={colors.white}
-        style={{ alignSelf: "flex-end", marginRight: 15 }}
+        style={{ marginRight: 15 }}
       />
     </TouchableOpacity>
   );

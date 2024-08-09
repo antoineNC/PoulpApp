@@ -3,18 +3,18 @@ import { Text, Image, Body, Title2, Row } from "@styledComponents";
 
 export const PostItem = ({ post }: { post: Post }) => {
   return (
-    <View key={post.id} style={{ rowGap: 10 }}>
-      <Row>
-        <Image
-          source={{ uri: post.editor?.logoUrl }}
-          $size={50}
-          style={{ marginHorizontal: 5 }}
-        />
+    <View key={post.id}>
+      <Row $padding="0 15px">
+        <Image source={{ uri: post.editor?.logoUrl }} $size={50} />
         <View>
           <Title2>{post.title}</Title2>
-          {post.tags?.length && post.tags.length > 0 && (
-            <Text>{post.tags}</Text>
-          )}
+          <Row $padding="0 10px">
+            {post.tags?.length &&
+              post.tags.length > 0 &&
+              post.tags.map((value, index) => (
+                <Text key={index}>[{value}] </Text>
+              ))}
+          </Row>
         </View>
       </Row>
       <Body>

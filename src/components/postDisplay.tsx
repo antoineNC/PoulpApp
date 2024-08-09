@@ -1,51 +1,43 @@
 import { View } from "react-native";
-import { Text, Image, Body, Row, Title2 } from "@styledComponents";
-import { colors } from "@theme";
+import {
+  Text,
+  Image,
+  Body,
+  Row,
+  Title2,
+  ModalContainer,
+} from "@styledComponents";
 import { CloseButton } from "./closeButton";
 
 export const PostDisplay = ({
-  item,
+  post,
   toggleModal,
 }: {
-  item?: { post: Post; office?: Office };
+  post: Post;
   toggleModal: () => void;
 }) => {
-  if (item) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.primary,
-          paddingTop: 15,
-        }}
-      >
-        <CloseButton onPress={toggleModal} />
-        <Row style={{ marginBottom: 10 }}>
-          <Image
-            source={{ uri: item.office?.logoUrl }}
-            $size={60}
-            style={{ marginHorizontal: 10 }}
-          />
-          <View>
-            <Title2>{item.post.title}</Title2>
-            {item.post.tags?.length && item.post.tags.length > 0 && (
-              <Text>{item.post.tags}</Text>
-            )}
-          </View>
-        </Row>
-        <Body>
-          <Text>{item.post.description}</Text>
-        </Body>
-        {item.post.imageUrl && (
-          <Image
-            source={{ uri: item.post.imageUrl }}
-            resizeMode="contain"
-            resizeMethod="scale"
-          />
-        )}
-      </View>
-    );
-  }
-  // TODO : Loading screen or error screen
-  return <></>;
+  return (
+    <ModalContainer>
+      <CloseButton onPress={toggleModal} />
+      <Row $padding="0 15px">
+        <Image source={{ uri: post.editor?.logoUrl }} $size={60} />
+        <View>
+          <Title2>{post.title}</Title2>
+          {post.tags?.length && post.tags.length > 0 && (
+            <Text>{post.tags[0]}</Text>
+          )}
+        </View>
+      </Row>
+      <Body>
+        <Text>{post.description}</Text>
+      </Body>
+      {post.imageUrl && (
+        <Image
+          source={{ uri: post.imageUrl }}
+          resizeMode="contain"
+          resizeMethod="scale"
+        />
+      )}
+    </ModalContainer>
+  );
 };
