@@ -2,7 +2,6 @@ import { StyleSheet } from "react-native";
 
 export const authStyles = StyleSheet.create({
   container: {
-    rowGap: 50,
     marginTop: 50,
     marginHorizontal: 40,
   },
@@ -10,6 +9,7 @@ export const authStyles = StyleSheet.create({
     rowGap: 10,
   },
   buttonContainer: {
+    marginVertical: 40,
     rowGap: 20,
   },
 });

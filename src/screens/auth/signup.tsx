@@ -62,22 +62,20 @@ export default function SignupScreen({
       )}
       <Container style={authStyles.container}>
         <View style={authStyles.formList}>
-          {values.map((field, index) => {
-            return (
-              <CustomField<FieldNames>
-                key={index}
-                index={index}
-                lastInput={index === values.length - 1}
-                control={control}
-                name={field.name}
-                required={field.required}
-                repeat={field.confirm ? pwd : undefined}
-                setFocus={(index) =>
-                  index < values.length ? setFocus(values[index].name) : null
-                }
-              />
-            );
-          })}
+          {values.map((field, index) => (
+            <CustomField<FieldNames>
+              key={index}
+              index={index}
+              lastInput={index === values.length - 1}
+              control={control}
+              name={field.name}
+              required={field.required}
+              repeat={field.confirm ? pwd : undefined}
+              setFocus={(index) =>
+                index < values.length ? setFocus(values[index].name) : null
+              }
+            />
+          ))}
         </View>
         <View style={authStyles.buttonContainer}>
           <Button

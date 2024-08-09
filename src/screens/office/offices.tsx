@@ -4,15 +4,14 @@ import { Button, Card } from "react-native-paper";
 import { useUnit } from "effector-react";
 
 import { $officeStore } from "@context/officeStore";
-import { Container, Image, Text, Title } from "@styledComponents";
-import { officeStyles } from "@styles";
+import { Container, Image, Text, Title2 } from "@styledComponents";
 import { colors } from "@theme";
 import { OfficeDisplay } from "components/officeDisplay";
 
 export default function OfficesScreen() {
   const { officeList } = useUnit($officeStore);
   const [modalVisible, setModalVisible] = useState(false);
-  const [displayedOffice, setDisplayedOffice] = useState<Office>();
+  const [displayedOffice, setDisplayedOffice] = useState<Office>(officeList[0]);
 
   const toggleModal = () => {
     setModalVisible((prev) => !prev);
@@ -49,12 +48,12 @@ export default function OfficesScreen() {
             >
               <Card.Title
                 title={
-                  <Title>
+                  <Title2>
                     {item.name} ({item.acronym})
-                  </Title>
+                  </Title2>
                 }
                 subtitle={<Text>{item.mail}</Text>}
-                left={() => <Image source={{ uri: item.logo }} $size={80} />}
+                left={() => <Image source={{ uri: item.logoUrl }} $size={80} />}
                 leftStyle={{ width: 80, aspectRatio: 1 }}
                 style={{ height: 100 }}
               />

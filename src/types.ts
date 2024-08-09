@@ -6,21 +6,19 @@ type UserType = {
 type Student = UserType & {
   lastName: string;
   firstName: string;
-  adhesion: { id: string; acronym: string; logo: string }[];
+  adhesion?: string[];
 };
 type Office = UserType & {
   acronym: string;
   name: string;
   description: string;
-  logo: string;
-  members: {
+  logoUrl: string;
+  members?: {
     idStudent: string;
-    nameStudent: string;
     idRole: string;
-    nameRole: string;
   }[];
-  partnerships: Partnership[];
-  clubs: Club[];
+  partnerships?: string[];
+  clubs?: string[];
 };
 type Admin = UserType & {
   name: string;
@@ -29,42 +27,47 @@ type Admin = UserType & {
 type SessionType = {
   user: UserType;
   role: Role;
-  connected?: boolean;
+  connected: boolean;
 };
 
 type Post = {
   id: string;
   title: string;
-  description: string;
-  editor: { id: string; logo: string };
-  image?: string;
-  tags: Array<string>;
   createdAt: Date;
-  visibleCal: boolean;
-  date: {
-    start?: Date;
-    end?: Date;
+  editorId: string;
+  description?: string;
+  imageUrl?: string;
+  tags?: Array<string>;
+  date?: {
+    start: Date;
+    end: Date;
   };
+  editor?: Office;
 };
 
 type Club = {
   id: string;
   name: string;
-  description: string;
-  contact: string;
-  logo?: string;
-  office: { id: string; acronym: string; logo: string };
+  officeId: string;
+  description?: string;
+  contact?: string;
+  logoUrl?: string;
 };
 
 type Partnership = {
   id: string;
   name: string;
-  description: string;
-  address: string;
-  addressMap: string;
-  advantages: string[];
-  logo: string;
-  office: { id: string; acronym: string; logo: string };
+  officeId: string;
+  description?: string;
+  address?: string;
+  addressMap?: string;
+  benefits?: string[];
+  logoUrl?: string;
+};
+
+type RoleOffice = {
+  id: string;
+  name: string;
 };
 
 type Point = {

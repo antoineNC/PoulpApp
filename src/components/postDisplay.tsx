@@ -1,6 +1,5 @@
-import { View, TouchableOpacity } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { Text, Image, Body, Row, Title } from "@styledComponents";
+import { View } from "react-native";
+import { Text, Image, Body, Row, Title2 } from "@styledComponents";
 import { colors } from "@theme";
 import { CloseButton } from "./closeButton";
 
@@ -8,7 +7,7 @@ export const PostDisplay = ({
   item,
   toggleModal,
 }: {
-  item: Post | undefined;
+  item?: { post: Post; office?: Office };
   toggleModal: () => void;
 }) => {
   if (item) {
@@ -17,28 +16,29 @@ export const PostDisplay = ({
         style={{
           flex: 1,
           backgroundColor: colors.primary,
-          opacity: 0.98,
           paddingTop: 15,
         }}
       >
         <CloseButton onPress={toggleModal} />
         <Row style={{ marginBottom: 10 }}>
           <Image
-            source={{ uri: item.editor.logo }}
+            source={{ uri: item.office?.logoUrl }}
             $size={60}
             style={{ marginHorizontal: 10 }}
           />
           <View>
-            <Title>{item.title}</Title>
-            {item.tags.length > 0 && <Text>{item.tags}</Text>}
+            <Title2>{item.post.title}</Title2>
+            {item.post.tags?.length && item.post.tags.length > 0 && (
+              <Text>{item.post.tags}</Text>
+            )}
           </View>
         </Row>
         <Body>
-          <Text>{item.description}</Text>
+          <Text>{item.post.description}</Text>
         </Body>
-        {item.image && (
+        {item.post.imageUrl && (
           <Image
-            source={{ uri: item.image }}
+            source={{ uri: item.post.imageUrl }}
             resizeMode="contain"
             resizeMethod="scale"
           />
@@ -46,5 +46,6 @@ export const PostDisplay = ({
       </View>
     );
   }
+  // TODO : Loading screen or error screen
   return <></>;
 };

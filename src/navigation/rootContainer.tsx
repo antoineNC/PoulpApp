@@ -1,10 +1,7 @@
-import { useEffect } from "react";
-import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useUnit } from "effector-react";
 
-import { usePost } from "@firebase";
 import TabBarContainer from "@navigation/tabBarContainer";
 import { AuthParamList } from "@navigation/navigation.types";
 import LoginScreen from "@screens/auth/login";
@@ -16,18 +13,7 @@ const AuthStack = createNativeStackNavigator<AuthParamList>();
 
 export default function RootContainer() {
   const { connected } = useUnit($sessionStore);
-  console.log("CONNECTED:", connected);
-  const { getAllPost } = usePost();
 
-  useEffect(() => {
-    if (connected) {
-      getAllPost();
-    }
-  }, [connected]);
-
-  if (connected === undefined) {
-    return <View style={{ flex: 1, backgroundColor: colors.primary }}></View>;
-  }
   return (
     <NavigationContainer>
       {connected ? (
