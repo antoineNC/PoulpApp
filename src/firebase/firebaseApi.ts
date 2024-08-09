@@ -45,12 +45,13 @@ const db = getFirestore(app);
 const userCollection = collection(db, "Users");
 const postCollection = collection(db, "Post");
 const clubCollection = collection(db, "Club");
+const partnerCollection = collection(db, "Partnership");
 const roleCollection = collection(db, "RoleBureau");
 
 const storage = getStorage();
 const assetsRef = ref(storage, "Assets");
 const imgPostRef = ref(storage, "ImgPosts");
-const imgClubPartRef = ref(storage, "ImgClubPartenariat");
+const imgClubPartnerRef = ref(storage, "ImgClubPartenariat");
 
 export const subscribeUserState = (observer: (user: User | null) => void) => {
   return onAuthStateChanged(auth, (user) => observer(user));
@@ -122,7 +123,8 @@ export const useUtils = () => {
 };
 
 export const useAuth = () => {
-  const { getAllOffice, getAllClub } = useOffice();
+  const { getAllOffice, getAllClub, getAllPartnership, getAllRole } =
+    useOffice();
   const login = async ({
     email,
     password,
@@ -136,11 +138,7 @@ export const useAuth = () => {
         email,
         password
       );
-      const { user, role } = await getCurrentUser(userCredential.user.uid);
-      await getAllOffice();
-      await getAllClub();
-      // TODO : get office, clubs, partnerships, role
-      actionSession.login({ user, role });
+      await loginHandle(userCredential.user.uid);
     } catch (e: any) {
       throw Error(`[login] ${e}\n`);
     }
@@ -228,6 +226,15 @@ export const useAuth = () => {
     }
   };
 
+  const loginHandle = async (id: string) => {
+    const { user, role } = await getCurrentUser(id);
+    await getAllOffice();
+    await getAllClub();
+    await getAllPartnership();
+    await getAllRole();
+    actionSession.login({ user, role });
+  };
+
   return {
     login,
     signup,
@@ -235,6 +242,7 @@ export const useAuth = () => {
     updateMail,
     updateInfo,
     getCurrentUser,
+    loginHandle,
   };
 };
 
@@ -306,6 +314,7 @@ export const useOffice = () => {
             mail: officeData.mail,
             members: officeData.members,
             clubs: officeData.clubs,
+            partnerships: officeData.partnerships,
             logoUrl: logo || require("../../assets/no_image_available.jpg"),
           };
           return office;
@@ -323,7 +332,7 @@ export const useOffice = () => {
       onSnapshot(clubCollection, async (snapshot) => {
         const clubList = snapshot.docs.map(async (doc) => {
           const clubData = doc.data();
-          const logoUrl = await getImgURL(imgClubPartRef, clubData.logoId);
+          const logoUrl = await getImgURL(imgClubPartnerRef, clubData.logoId);
           const club: Club = {
             id: doc.id,
             name: clubData.name,
@@ -342,6 +351,35 @@ export const useOffice = () => {
     }
   };
 
+  const getAllPartnership = async () => {
+    try {
+      onSnapshot(partnerCollection, async (snapshot) => {
+        const partnerList = snapshot.docs.map(async (doc) => {
+          const partnerData = doc.data();
+          const logoUrl = await getImgURL(
+            imgClubPartnerRef,
+            partnerData.logoId
+          );
+          const partnership: Partnership = {
+            id: doc.id,
+            name: partnerData.name,
+            officeId: partnerData.officeId,
+            logoUrl,
+            description: partnerData.description,
+            address: partnerData.address,
+            addressMap: partnerData.addressMap,
+            benefits: partnerData.benefits,
+          };
+          return partnership;
+        });
+        const partnerListResolved = await Promise.all(partnerList);
+        actionOffice.setAllPartnership(partnerListResolved);
+      });
+    } catch (e: any) {
+      throw Error(`[getAllPartner] ${e}\n`);
+    }
+  };
+
   const getAllRole = async () => {
     try {
       onSnapshot(roleCollection, async (snapshot) => {
@@ -353,7 +391,7 @@ export const useOffice = () => {
     } catch (e) {}
   };
 
-  return { getAllOffice, getAllClub, getAllRole };
+  return { getAllOffice, getAllClub, getAllPartnership, getAllRole };
 };
 
 export const usePost = () => {

@@ -57,12 +57,12 @@ type Club = {
 type Partnership = {
   id: string;
   name: string;
-  office: string;
+  officeId: string;
   description?: string;
   address?: string;
   addressMap?: string;
-  advantages?: string[];
-  logo?: string;
+  benefits?: string[];
+  logoUrl?: string;
 };
 
 type RoleOffice = {

@@ -5,24 +5,18 @@ import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
 
 import RootContainer from "navigation/rootContainer";
-import { subscribeUserState, useAuth, useOffice } from "@firebase";
-import { actionSession } from "@context/sessionStore";
+import { subscribeUserState, useAuth } from "@firebase";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
-  const { getCurrentUser, signout } = useAuth();
-  const { getAllOffice, getAllClub, getAllRole } = useOffice();
+  const { signout, loginHandle } = useAuth();
   useEffect(() => {
     subscribeUserState(async (userAuth) => {
       try {
         if (userAuth) {
-          const { user, role } = await getCurrentUser(userAuth.uid);
-          await getAllOffice();
-          await getAllClub();
-          await getAllRole();
-          actionSession.login({ user, role });
+          await loginHandle(userAuth.uid);
         } else {
           signout();
         }

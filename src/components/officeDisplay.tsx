@@ -15,7 +15,7 @@ export const OfficeDisplay = ({
   item: Office;
   toggleModal: () => void;
 }) => {
-  const { clubList, roleList } = useUnit($officeStore);
+  const { clubList, partnershipList, roleList } = useUnit($officeStore);
   const { getStudentById } = useStudent();
   const [memberOffice, setMemberOffice] = useState<
     { role: string; student: string }[]
@@ -26,6 +26,14 @@ export const OfficeDisplay = ({
       ?.map((clubId) => clubList.find((club) => club.id === clubId))
       .filter((value) => value !== undefined);
   }, [item.clubs]);
+  const partnerships = useMemo(() => {
+    return item.partnerships
+      ?.map((partnerId) =>
+        partnershipList.find((partner) => partner.id === partnerId)
+      )
+      .filter((value) => value !== undefined);
+  }, [item.partnerships]);
+
   const setMembers = useCallback(async () => {
     const members = [];
     if (item.members) {
@@ -78,7 +86,7 @@ export const OfficeDisplay = ({
       </Row>
       <Body>
         <Row>
-          <Text>Envoyez nous un mail :</Text>
+          <Text>Envoyez nous un mail : </Text>
           <TouchableOpacity onPress={() => handlePress(item.mail)}>
             <Link>{item.mail}</Link>
           </TouchableOpacity>
@@ -112,6 +120,26 @@ export const OfficeDisplay = ({
               horizontal
               showsHorizontalScrollIndicator={false}
               data={clubs}
+              renderItem={({ item }) => (
+                <View style={{ margin: 10, alignItems: "center" }}>
+                  <Image
+                    source={{ uri: item.logoUrl }}
+                    $size={100}
+                    style={{ borderRadius: 5 }}
+                  />
+                  <Text>{item.name}</Text>
+                </View>
+              )}
+            />
+          </View>
+        )}
+        {partnerships && partnerships.length > 0 && (
+          <View>
+            <Text $bold>Liste des partenariats :</Text>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={partnerships}
               renderItem={({ item }) => (
                 <View style={{ margin: 10, alignItems: "center" }}>
                   <Image
