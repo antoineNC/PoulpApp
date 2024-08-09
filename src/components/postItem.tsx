@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Text, Image, Body, Title2, Row } from "@styledComponents";
 
-export const PostItem = ({ post, office }: { post: Post; office?: Office }) => {
+export const PostItem = ({ post }: { post: Post }) => {
   return (
     <View key={post.id} style={{ rowGap: 10 }}>
       <Row>

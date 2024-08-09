@@ -19,16 +19,11 @@ import {
   setDoc,
   orderBy,
   onSnapshot,
-  CollectionReference,
   DocumentSnapshot,
-  FieldPath,
   getDocs,
   limit,
-  OrderByDirection,
-  QueryConstraint,
   QuerySnapshot,
   startAfter,
-  WhereFilterOp,
 } from "@firebase/firestore";
 import {
   StorageReference,
