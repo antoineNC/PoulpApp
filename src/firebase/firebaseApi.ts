@@ -315,7 +315,7 @@ export const useOffice = () => {
             members: officeData.members,
             clubs: officeData.clubs,
             partnerships: officeData.partnerships,
-            logoUrl: logo || require("../../assets/no_image_available.jpg"),
+            logoUrl: logo || require("@assets/no_image_available.jpg"),
           };
           return office;
         });
