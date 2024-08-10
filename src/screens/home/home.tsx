@@ -85,9 +85,9 @@ export default function HomeScreen() {
           />
         )}
         // onEndReached={handleEndReached}
-        onEndReachedThreshold={0.5}
+        // onEndReachedThreshold={0.5}
         ListFooterComponent={
-          <View style={{ minHeight: 50 }}>
+          <View style={{ minHeight: 40 }}>
             {loading ? <ActivityIndicator animating={true} /> : null}
           </View>
         }

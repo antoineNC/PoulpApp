@@ -32,15 +32,24 @@ export type HomeTabScreenProps<T extends keyof HomeTabParamList> =
   >;
 
 // === Office tab
-export type OfficeTabParamList = {
-  offices: undefined;
-  updateOffice: undefined;
-};
 export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
   CompositeScreenProps<
     NativeStackScreenProps<OfficeTabParamList, T>,
     TabBarScreenProps<keyof TabBarParamList>
   >;
+export type OfficeTabParamList = {
+  offices: undefined;
+  viewOffice: { office: Office };
+  updateOffice: undefined;
+};
+export type ViewOfficeProps = MaterialBottomTabScreenProps<
+  OfficeTabParamList,
+  "viewOffice"
+>;
+export type OfficesProps = MaterialBottomTabScreenProps<
+  OfficeTabParamList,
+  "offices"
+>;
 
 // === FamCup tab
 export type FamCupTabParamList = {
