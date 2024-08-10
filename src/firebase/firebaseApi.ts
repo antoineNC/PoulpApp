@@ -272,6 +272,31 @@ export const useStudent = () => {
   //   }
   // };
 
+  const getMemberOffice = async (idOffice: string) => {
+    try {
+      const q = query(
+        userCollection,
+        where("role", "==", "STUDENT_ROLE"),
+        where("memberOf", "array-contains", idOffice)
+      );
+      const snapshot = await getDocs(q);
+      const members: Student[] = snapshot.docs.map((student) => {
+        const studentData = student.data();
+        return {
+          id: student.id,
+          mail: studentData.mail,
+          firstName: studentData.firstName,
+          lastName: studentData.lastName,
+          adhesion: studentData.adhesion,
+          memberOf: studentData.memberOf,
+        };
+      });
+      return members;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const getStudentById = async (id: string) => {
     try {
       const snapshot = await getDoc(doc(userCollection, id));
@@ -293,7 +318,7 @@ export const useStudent = () => {
       console.error(e);
     }
   };
-  return { getStudentById };
+  return { getMemberOffice, getStudentById };
 };
 
 export const useOffice = () => {

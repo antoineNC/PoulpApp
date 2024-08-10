@@ -24,7 +24,7 @@ export const OfficeDisplay = ({
   toggleModal: () => void;
 }) => {
   const { clubList, partnershipList, roleList } = useUnit($officeStore);
-  const { getStudentById } = useStudent();
+  const { getMemberOffice } = useStudent();
   const [memberOffice, setMemberOffice] = useState<
     { role: string; student: string }[]
   >([]);
@@ -43,19 +43,22 @@ export const OfficeDisplay = ({
   }, [item.partnerships]);
 
   const setMembers = useCallback(async () => {
-    const members = [];
+    const memberList = [];
     if (item.members) {
+      const students = await getMemberOffice(item.id);
       for await (const member of item.members) {
         const role = roleList.find((role) => role.id === member.idRole);
-        const student = await getStudentById(member.idStudent);
+        const student = students?.find(
+          (student) => student.id === member.idStudent
+        );
         if (role && student)
-          members.push({
+          memberList.push({
             role: role.name,
             student: `${student.lastName.toUpperCase()} ${student.firstName}`,
           });
       }
     }
-    setMemberOffice(members);
+    setMemberOffice(memberList);
   }, [roleList]);
 
   useEffect(() => {

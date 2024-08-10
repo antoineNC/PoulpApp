@@ -7,6 +7,7 @@ type Student = UserType & {
   lastName: string;
   firstName: string;
   adhesion?: string[];
+  memberOf?: string[];
 };
 type Office = UserType & {
   acronym: string;
