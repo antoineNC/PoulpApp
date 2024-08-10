@@ -9,19 +9,20 @@ import { PostDisplay } from "components/postDisplay";
 import { PostItem } from "components/postItem";
 import { Container } from "@styledComponents";
 import { colors } from "@theme";
+import { usePost } from "@firebase";
 
 export default function HomeScreen() {
-  const { posts, loading, lastVisible } = useUnit($postStore);
+  const { posts, lastVisible } = useUnit($postStore);
   const { officeList } = useUnit($officeStore);
+  const { getMorePost } = usePost();
+  const [loading, setLoading] = useState(false);
   const [displayedItem, setDisplayedItem] = useState<Post>(posts[0]);
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => setModalVisible((prev) => !prev);
 
   useEffect(() => {
-    actionPost.loadPosts();
-    return () => {
-      actionPost.resetPosts();
-    };
+    const unsubPost = async () => await getMorePost();
+    unsubPost();
   }, []);
 
   // Create a memoized map of associationId to association
@@ -42,9 +43,11 @@ export default function HomeScreen() {
     return postOffice;
   }, [posts, officeMapping]);
 
-  const handleEndReached = useCallback(() => {
-    if (!loading && lastVisible) {
-      actionPost.loadMorePosts(lastVisible);
+  const handleEndReached = useCallback(async () => {
+    if (lastVisible) {
+      setLoading(true);
+      await getMorePost(lastVisible);
+      setLoading(false);
     }
   }, [loading, lastVisible]);
 
@@ -66,6 +69,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
+              key={item.id}
               onPress={() => {
                 setDisplayedItem(item);
                 toggleModal();
@@ -80,7 +84,7 @@ export default function HomeScreen() {
             style={{ backgroundColor: colors.black, marginVertical: 10 }}
           />
         )}
-        onEndReached={handleEndReached}
+        // onEndReached={handleEndReached}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
           <View style={{ minHeight: 50 }}>

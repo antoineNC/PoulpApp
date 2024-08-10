@@ -37,6 +37,8 @@ import app from "firebase/firebase.config";
 import { actionSession } from "@context/sessionStore";
 import { actionOffice } from "@context/officeStore";
 import { actionStudent } from "@context/studentStore";
+import { actionPost } from "@context/postStore";
+import { QueryConstraint } from "firebase/firestore";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -420,36 +422,55 @@ export const usePost = () => {
     return Promise.all(postList);
   };
 
-  const getAllPost = async () => {
-    try {
-      const q = query(postCollection, orderBy("createdAt", "desc"), limit(10));
-      const snapshot = await getDocs(q);
-      const postList = await postMapping(snapshot);
-      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-      return { postList, lastVisible };
-    } catch (e: any) {
-      console.log(`[getAllPost] ${e}\n`);
-      throw e;
-    }
-  };
+  // const getAllPost = async () => {
+  //   try {
+  //     const q = query(postCollection, orderBy("createdAt", "desc"), limit(10));
+  //     return onSnapshot(q, async (snap) => {
+  //       const postList = await postMapping(snap);
+  //       const lastVisible = snap.docs[snap.docs.length - 1];
+  //       actionPost.setInitialPost({
+  //         posts: postList,
+  //         lastVisible,
+  //         loading: false,
+  //       });
+  //     });
+  //     //  const snapshot = await getDocs(q);
+  //     //  const postList = await postMapping(snapshot);
+  //     //  const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+  //     //  return { postList, lastVisible };
+  //   } catch (e: any) {
+  //     console.log(`[getAllPost] ${e}\n`);
+  //     throw e;
+  //   }
+  // };
 
-  const getMorePost = async (lastVisible: DocumentSnapshot) => {
+  const getMorePost = async (lastVisible?: DocumentSnapshot) => {
     try {
-      const q = query(
-        postCollection,
+      const queryConstraints: QueryConstraint[] = [
         orderBy("createdAt", "desc"),
-        startAfter(lastVisible),
-        limit(10)
-      );
-      const snapshot = await getDocs(q);
-      const postList = await postMapping(snapshot);
-      const newLastVisible = snapshot.docs[snapshot.docs.length - 1];
-      return { postList, newLastVisible };
+        // limit(10),
+      ];
+      if (lastVisible) queryConstraints.push(startAfter(lastVisible));
+      const q = query(postCollection, ...queryConstraints);
+
+      return onSnapshot(q, async (snap) => {
+        const postList = await postMapping(snap);
+        const lastVisible = snap.docs[snap.docs.length - 1];
+        actionPost.setMorePost({
+          posts: postList,
+          lastVisible,
+          loading: false,
+        });
+      });
+      // const snapshot = await getDocs(q);
+      // const postList = await postMapping(snapshot);
+      // const newLastVisible = snapshot.docs[snapshot.docs.length - 1];
+      // return { postList, newLastVisible };
     } catch (e: any) {
       console.log(`[getMorePost] ${e}\n`);
       throw e;
     }
   };
 
-  return { getAllPost, getMorePost };
+  return { getMorePost };
 };
