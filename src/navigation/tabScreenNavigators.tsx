@@ -10,6 +10,7 @@ import {
   TabBarScreenProps,
 } from "@navigation/navigation.types";
 import HomeScreen from "@screens/home/home";
+import ViewPostScreen from "@screens/home/viewPost";
 import CalendarScreen from "@screens/home/calendar";
 import { ScoreScreen } from "@screens/famCup/score";
 import { FeedScreen } from "@screens/famCup/feed";
@@ -55,6 +56,17 @@ export function HomeNavigator({
             </TouchableOpacity>
           ),
         }}
+      />
+      <HomeStack.Screen
+        name="viewPost"
+        component={ViewPostScreen}
+        options={({ route }) => ({
+          headerTitle: () => (
+            <Row>
+              <Title2>{route.params.post.title}</Title2>
+            </Row>
+          ),
+        })}
       />
       <HomeStack.Screen name="calendar" component={CalendarScreen} />
     </HomeStack.Navigator>

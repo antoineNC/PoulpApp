@@ -1,24 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, View, TouchableOpacity, Modal } from "react-native";
+import { FlatList, View, TouchableOpacity } from "react-native";
 import { ActivityIndicator, Divider } from "react-native-paper";
 import { useUnit } from "effector-react";
 
 import { $postStore, actionPost } from "@context/postStore";
 import { $officeStore } from "@context/officeStore";
-import { PostDisplay } from "components/postDisplay";
 import { PostItem } from "components/postItem";
 import { Container } from "@styledComponents";
 import { colors } from "@theme";
 import { usePost } from "@firebase";
+import { HomeProps } from "@navigation/navigation.types";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }: HomeProps) {
   const { posts, lastVisible } = useUnit($postStore);
   const { officeList } = useUnit($officeStore);
   const { getMorePost } = usePost();
   const [loading, setLoading] = useState(false);
-  const [displayedItem, setDisplayedItem] = useState<Post>(posts[0]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const toggleModal = () => setModalVisible((prev) => !prev);
 
   useEffect(() => {
     const unsubPost = async () => await getMorePost();
@@ -53,14 +50,6 @@ export default function HomeScreen() {
 
   return (
     <Container>
-      <Modal
-        visible={modalVisible}
-        animationType="fade"
-        onRequestClose={toggleModal}
-        transparent
-      >
-        <PostDisplay post={displayedItem} toggleModal={toggleModal} />
-      </Modal>
       <FlatList
         data={postsWithOffice}
         keyExtractor={(item) => item.id}
@@ -71,8 +60,7 @@ export default function HomeScreen() {
             <TouchableOpacity
               key={item.id}
               onPress={() => {
-                setDisplayedItem(item);
-                toggleModal();
+                navigation.navigate("viewPost", { post: item });
               }}
             >
               <PostItem post={item} />

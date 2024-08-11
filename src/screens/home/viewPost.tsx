@@ -5,20 +5,14 @@ import {
   Body,
   Row,
   Title2,
-  ModalContainer,
+  ContainerScroll,
 } from "@styledComponents";
-import { CloseButton } from "./closeButton";
+import { ViewPostProps } from "@navigation/navigation.types";
 
-export const PostDisplay = ({
-  post,
-  toggleModal,
-}: {
-  post: Post;
-  toggleModal: () => void;
-}) => {
+export default function ViewPostScreen({ route }: ViewPostProps) {
+  const { post } = route.params;
   return (
-    <ModalContainer>
-      <CloseButton onPress={toggleModal} />
+    <ContainerScroll>
       <Row $padding="0 15px">
         <Image source={{ uri: post.editor?.logoUrl }} $size={60} />
         <View>
@@ -38,6 +32,6 @@ export const PostDisplay = ({
           resizeMethod="scale"
         />
       )}
-    </ModalContainer>
+    </ContainerScroll>
   );
-};
+}
