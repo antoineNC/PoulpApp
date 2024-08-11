@@ -1,24 +1,28 @@
 import { View } from "react-native";
-import { Text, Image, Body, Title, Row } from "@styledComponents";
+import { Text, Image, Body, Title2, Row } from "@styledComponents";
 
-export const PostItem = ({ item }: { item: Post }) => {
+export const PostItem = ({ post }: { post: Post }) => {
   return (
-    <View key={item.id} style={{ rowGap: 10 }}>
-      <Row>
-        <Image
-          source={{ uri: item.editor.logo }}
-          $size={50}
-          style={{ marginHorizontal: 5 }}
-        />
+    <View key={post.id}>
+      <Row $padding="0 15px">
+        <Image source={{ uri: post.editor?.logoUrl }} $size={50} />
         <View>
-          <Title>{item.title}</Title>
-          {item.tags.length > 0 && <Text>{item.tags}</Text>}
+          <Title2>{post.title}</Title2>
+          <Row $padding="0 10px">
+            {post.tags?.length &&
+              post.tags.length > 0 &&
+              post.tags.map((value, index) => (
+                <Text key={index}>[{value}] </Text>
+              ))}
+          </Row>
         </View>
       </Row>
-      <Body numberOfLines={3}>{item.description}</Body>
-      {item.image && (
+      <Body>
+        <Text numberOfLines={3}>{post.description}</Text>
+      </Body>
+      {post.imageUrl && (
         <Image
-          source={{ uri: item.image }}
+          source={{ uri: post.imageUrl }}
           resizeMode="contain"
           resizeMethod="scale"
         />

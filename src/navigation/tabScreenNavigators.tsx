@@ -14,8 +14,10 @@ import CalendarScreen from "@screens/home/calendar";
 import { ScoreScreen } from "@screens/famCup/score";
 import { FeedScreen } from "@screens/famCup/feed";
 import OfficesScreen from "@screens/office/offices";
+import ViewOfficeScreen from "@screens/office/viewOffice";
 import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
+import { Image, Row, Text, Title2 } from "@styledComponents";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -66,6 +68,18 @@ export function OfficeNavigator() {
         name="offices"
         component={OfficesScreen}
         options={{ title: "Bureaux" }}
+      />
+      <OfficeStack.Screen
+        name="viewOffice"
+        component={ViewOfficeScreen}
+        options={({ route }) => ({
+          headerTitle: () => (
+            <Row>
+              <Image $size={45} source={{ uri: route.params.office.logoUrl }} />
+              <Title2>{route.params.office.name}</Title2>
+            </Row>
+          ),
+        })}
       />
       <OfficeStack.Screen name="updateOffice" component={CalendarScreen} />
     </OfficeStack.Navigator>

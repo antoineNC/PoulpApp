@@ -6,16 +6,20 @@ type UserType = {
 type Student = UserType & {
   lastName: string;
   firstName: string;
-  adhesion: Array<Office>;
+  adhesion?: string[];
+  memberOf?: string[];
 };
 type Office = UserType & {
   acronym: string;
   name: string;
   description: string;
-  logo?: string;
-  members: Array<string>;
-  partnerships: Array<string>;
-  clubs: Array<string>;
+  logoUrl: string;
+  members?: {
+    idStudent: string;
+    idRole: string;
+  }[];
+  partnerships?: string[];
+  clubs?: string[];
 };
 type Admin = UserType & {
   name: string;
@@ -24,35 +28,60 @@ type Admin = UserType & {
 type SessionType = {
   user: UserType;
   role: Role;
-  connected?: boolean;
+  connected: boolean;
 };
 
-// Posts
 type Post = {
   id: string;
   title: string;
-  description: string;
-  editor: { id?: string; logo?: string };
-  image?: string;
-  tags: Array<string>;
   createdAt: Date;
-  visibleCal: boolean;
-  date: {
-    start?: Date;
-    end?: Date;
+  editorId: string;
+  description?: string;
+  imageUrl?: string;
+  tags?: Array<string>;
+  date?: {
+    start: Date;
+    end: Date;
   };
+  editor?: Office;
 };
 
-// Clubs
 type Club = {
+  id: string;
   name: string;
-  description: string;
-  contact: string;
-  logo: string;
-  office: string;
+  officeId: string;
+  description?: string;
+  contact?: string;
+  logoUrl?: string;
 };
 
-// Form
+type Partnership = {
+  id: string;
+  name: string;
+  officeId: string;
+  description?: string;
+  address?: string;
+  addressMap?: string;
+  benefits?: string[];
+  logoUrl?: string;
+};
+
+type RoleOffice = {
+  id: string;
+  name: string;
+};
+
+type Point = {
+  id: string;
+  titre: string;
+  date: Date;
+  bleu: number;
+  jaune: number;
+  orange: number;
+  rouge: number;
+  vert: number;
+};
+
 type FormFieldProps<T> = {
   name: keyof T;
   required: boolean;

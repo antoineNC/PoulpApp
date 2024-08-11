@@ -1,8 +1,8 @@
+import { colors } from "@theme";
 import { StyleSheet } from "react-native";
 
 export const authStyles = StyleSheet.create({
   container: {
-    rowGap: 50,
     marginTop: 50,
     marginHorizontal: 40,
   },
@@ -10,12 +10,20 @@ export const authStyles = StyleSheet.create({
     rowGap: 10,
   },
   buttonContainer: {
+    marginVertical: 40,
     rowGap: 20,
   },
 });
 
 export const officeStyles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
+    paddingHorizontal: 20,
+  },
+  borderRounded: {
+    borderWidth: 0.5,
+    borderColor: colors.secondary,
+    borderRadius: 5,
+    padding: 5,
+    marginVertical: 10,
   },
 });

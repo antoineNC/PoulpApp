@@ -11,27 +11,34 @@ import {
 import {
   getFirestore,
   collection,
-  getDocs,
   doc,
   getDoc,
   updateDoc,
   query,
   where,
-  DocumentData,
   setDoc,
   orderBy,
   onSnapshot,
+  DocumentSnapshot,
+  getDocs,
+  limit,
+  QuerySnapshot,
+  startAfter,
 } from "@firebase/firestore";
-import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { DocumentReference, QuerySnapshot } from "firebase/firestore";
+import {
+  StorageReference,
+  getDownloadURL,
+  getStorage,
+  ref,
+} from "@firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import app from "firebase/firebase.config";
-import { fb_Club, fb_Office, fb_Post } from "./firebase.types";
 import { actionSession } from "@context/sessionStore";
-import { $officeStore, actionOffice } from "@context/officeStore";
+import { actionOffice } from "@context/officeStore";
+import { actionStudent } from "@context/studentStore";
 import { actionPost } from "@context/postStore";
-import { useUnit } from "effector-react";
+import { QueryConstraint } from "firebase/firestore";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -39,17 +46,87 @@ const auth = initializeAuth(app, {
 const db = getFirestore(app);
 const userCollection = collection(db, "Users");
 const postCollection = collection(db, "Post");
-const bureauCollection = collection(db, "Bureau");
 const clubCollection = collection(db, "Club");
+const partnerCollection = collection(db, "Partnership");
+const roleCollection = collection(db, "RoleBureau");
 
 const storage = getStorage();
 const assetsRef = ref(storage, "Assets");
 const imgPostRef = ref(storage, "ImgPosts");
+const imgClubPartnerRef = ref(storage, "ImgClubPartenariat");
+
 export const subscribeUserState = (observer: (user: User | null) => void) => {
   return onAuthStateChanged(auth, (user) => observer(user));
 };
+/*Eventually useful */
+
+// const createQuery = (
+//   collection: CollectionReference,
+//   filter?: {
+//     limit?: number;
+//     startAfter?: DocumentSnapshot;
+//     where?: {
+//       field: string | FieldPath;
+//       operation: WhereFilterOp;
+//       value: unknown;
+//     }[];
+//     order?: {
+//       field: string | FieldPath;
+//       direction: OrderByDirection;
+//     };
+//   }
+// ) => {
+//   const queryConstraints: QueryConstraint[] = [];
+//   if (filter) {
+//     if (filter.where?.length) {
+//       filter.where.forEach((element) =>
+//         queryConstraints.push(
+//           where(element.field, element.operation, element.value)
+//         )
+//       );
+//     }
+//     if (filter.order)
+//       queryConstraints.push(
+//         orderBy(filter.order.field, filter.order.direction)
+//       );
+//     if (filter.startAfter) queryConstraints.push(startAfter(filter.startAfter));
+//     if (filter.limit) queryConstraints.push(limit(filter.limit));
+//   }
+//   return query(collection, ...queryConstraints);
+// };
+
+export const useUtils = () => {
+  const getImgURL = async (storageRef: StorageReference, id: string) => {
+    const imgRef = ref(storageRef, `/${id}`);
+    try {
+      const url = await getDownloadURL(imgRef);
+      return url;
+    } catch (error: any) {
+      // A full list of error codes is available at
+      // https://firebase.google.com/docs/storage/web/handle-errors
+      switch (error.code) {
+        case "storage/object-not-found":
+          // File doesn't exist
+          break;
+        case "storage/unauthorized":
+          // User doesn't have permission to access the object
+          break;
+        case "storage/canceled":
+          // User canceled the upload
+          break;
+        case "storage/unknown":
+          // Unknown error occurred, inspect the server response
+          break;
+      }
+      return undefined;
+    }
+  };
+  return { getImgURL };
+};
 
 export const useAuth = () => {
+  const { getAllOffice, getAllClub, getAllPartnership, getAllRole } =
+    useOffice();
   const login = async ({
     email,
     password,
@@ -63,9 +140,9 @@ export const useAuth = () => {
         email,
         password
       );
-      await getCurrentUser(userCredential.user.uid);
+      await loginHandle(userCredential.user.uid);
     } catch (e: any) {
-      throw Error(e);
+      throw Error(`[login] ${e}\n`);
     }
   };
 
@@ -86,18 +163,21 @@ export const useAuth = () => {
         email,
         password
       );
-      const { user } = userCredential;
-      await setDoc(doc(userCollection, user.uid), {
-        id: user.uid,
-        mail: user.email,
+      await setDoc(doc(userCollection, userCredential.user.uid), {
+        id: userCredential.user.uid,
+        mail: userCredential.user.email,
         role: "student",
         firstName,
         lastName,
         adhesion: [],
       });
-      await getCurrentUser(user.uid, "Le compte n'a pas bien été enregistré.");
+      const { user, role } = await getCurrentUser(
+        userCredential.user.uid,
+        "Le compte n'a pas bien été enregistré."
+      );
+      actionSession.login({ user, role });
     } catch (e: any) {
-      throw Error(e);
+      throw Error(`[signup] ${e}\n`);
     }
   };
 
@@ -107,23 +187,21 @@ export const useAuth = () => {
     signOut(auth);
   };
 
-  const getCurrentUser = async (
-    id: string,
-    errExist?: string
-  ): Promise<void> => {
+  const getCurrentUser = async (id: string, errExist?: string) => {
     try {
       const userRef = await getDoc(doc(userCollection, id));
       if (!userRef.exists()) {
         throw Error(errExist || "Informations incorrectes.");
       }
       const userData = userRef.data();
+      const { mail, role } = userData;
       const user: UserType = {
-        id: id,
-        mail: userData.mail,
+        id,
+        mail,
       };
-      actionSession.login(user);
+      return { user, role };
     } catch (e: any) {
-      throw Error(e);
+      throw Error(`[getCurrentUser] ${e}\n`);
     }
   };
 
@@ -150,6 +228,15 @@ export const useAuth = () => {
     }
   };
 
+  const loginHandle = async (id: string) => {
+    const { user, role } = await getCurrentUser(id);
+    await getAllOffice();
+    await getAllClub();
+    await getAllPartnership();
+    await getAllRole();
+    actionSession.login({ user, role });
+  };
+
   return {
     login,
     signup,
@@ -157,22 +244,106 @@ export const useAuth = () => {
     updateMail,
     updateInfo,
     getCurrentUser,
+    loginHandle,
   };
 };
 
-// ===== OFFICE =====
+export const useStudent = () => {
+  // const getAllStudent = async (getSnapshot: (snapshot: Student[]) => void) => {
+  //   try {
+  //     const q = query(userCollection, where("role", "==", "STUDENT_ROLE"));
+  //     onSnapshot(q, async (snapshot) => {
+  //       const allStudent = snapshot.docs.map(async (doc) => {
+  //         const studentData = doc.data();
+  //         const student: Student = {
+  //           id: doc.id,
+  //           mail: studentData.mail,
+  //           firstName: studentData.firstName,
+  //           lastName: studentData.lastName,
+  //           adhesion: studentData.adhesion,
+  //         };
+  //         return student;
+  //       });
+  //       const allStudentResolved = await Promise.all(allStudent);
+  //       actionStudent.setAllStudent(allStudentResolved);
+  //     });
+  //   } catch (e: any) {
+  //     throw Error(`[getAllStudent] ${e}\n`);
+  //   }
+  // };
+
+  const getMemberOffice = async (idOffice: string) => {
+    try {
+      const q = query(
+        userCollection,
+        where("role", "==", "STUDENT_ROLE"),
+        where("memberOf", "array-contains", idOffice)
+      );
+      const snapshot = await getDocs(q);
+      const members: Student[] = snapshot.docs.map((student) => {
+        const studentData = student.data();
+        return {
+          id: student.id,
+          mail: studentData.mail,
+          firstName: studentData.firstName,
+          lastName: studentData.lastName,
+          adhesion: studentData.adhesion,
+          memberOf: studentData.memberOf,
+        };
+      });
+      return members;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const getStudentById = async (id: string) => {
+    try {
+      const snapshot = await getDoc(doc(userCollection, id));
+      if (!snapshot.exists()) {
+        throw Error(`L'étudiant.e ${id} n'existe pas.`);
+      }
+      const studentData = snapshot.data();
+      if (studentData.role !== "STUDENT_ROLE") {
+        throw Error(`L'étudiant.e ${id} n'existe pas.`);
+      }
+      const student: Student = {
+        id: snapshot.id,
+        firstName: studentData.firstName,
+        lastName: studentData.lastName,
+        mail: studentData.mail,
+      };
+      return student;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  return { getMemberOffice, getStudentById };
+};
+
 export const useOffice = () => {
+  const { getImgURL } = useUtils();
   const getAllOffice = async () => {
     try {
       const q = query(userCollection, where("role", "==", "OFFICE_ROLE"));
+      // TODO : transform to a get function
       onSnapshot(q, async (snapshot) => {
         const allOffice = snapshot.docs.map(async (doc) => {
-          const officeData = doc.data() as fb_Office;
-          const logo = await getOfficeLogo(officeData.acronym.toLowerCase());
+          const officeData = doc.data();
+          const logo = await getImgURL(
+            assetsRef,
+            `${officeData.acronym.toLowerCase()}.png`
+          );
           const office: Office = {
-            ...officeData,
             id: doc.id,
-            logo,
+            name: officeData.name,
+            acronym: officeData.acronym,
+            description: officeData.description,
+            mail: officeData.mail,
+            members: officeData.members,
+            clubs: officeData.clubs,
+            partnerships: officeData.partnerships,
+            logoUrl: logo || require("@assets/no_image_available.jpg"),
           };
           return office;
         });
@@ -180,136 +351,151 @@ export const useOffice = () => {
         actionOffice.setAllOffice(allOfficeResolved);
       });
     } catch (e: any) {
-      throw Error("[getAllOffice]\n" + e);
+      throw Error(`[getAllOffice] ${e}\n`);
     }
   };
 
-  const getOfficeLogo = async (officeAcronym: string) => {
-    const logoRef = ref(assetsRef, `/${officeAcronym}.png`);
+  const getAllClub = async () => {
     try {
-      const url = await getDownloadURL(logoRef);
-      return url;
-    } catch (error: any) {
-      // A full list of error codes is available at
-      // https://firebase.google.com/docs/storage/web/handle-errors
-      switch (error.code) {
-        case "storage/object-not-found":
-          // File doesn't exist
-          break;
-        case "storage/unauthorized":
-          // User doesn't have permission to access the object
-          break;
-        case "storage/canceled":
-          // User canceled the upload
-          break;
-
-        case "storage/unknown":
-          // Unknown error occurred, inspect the server response
-          break;
-      }
+      onSnapshot(clubCollection, async (snapshot) => {
+        const clubList = snapshot.docs.map(async (doc) => {
+          const clubData = doc.data();
+          const logoUrl = await getImgURL(imgClubPartnerRef, clubData.logoId);
+          const club: Club = {
+            id: doc.id,
+            name: clubData.name,
+            officeId: clubData.officeId,
+            logoUrl,
+            description: clubData.description,
+            contact: clubData.contact,
+          };
+          return club;
+        });
+        const clubListResolved = await Promise.all(clubList);
+        actionOffice.setAllClub(clubListResolved);
+      });
+    } catch (e: any) {
+      throw Error(`[getAllClub] ${e}\n`);
     }
   };
 
-  return { getAllOffice };
+  const getAllPartnership = async () => {
+    try {
+      onSnapshot(partnerCollection, async (snapshot) => {
+        const partnerList = snapshot.docs.map(async (doc) => {
+          const partnerData = doc.data();
+          const logoUrl = await getImgURL(
+            imgClubPartnerRef,
+            partnerData.logoId
+          );
+          const partnership: Partnership = {
+            id: doc.id,
+            name: partnerData.name,
+            officeId: partnerData.officeId,
+            logoUrl,
+            description: partnerData.description,
+            address: partnerData.address,
+            addressMap: partnerData.addressMap,
+            benefits: partnerData.benefits,
+          };
+          return partnership;
+        });
+        const partnerListResolved = await Promise.all(partnerList);
+        actionOffice.setAllPartnership(partnerListResolved);
+      });
+    } catch (e: any) {
+      throw Error(`[getAllPartner] ${e}\n`);
+    }
+  };
+
+  const getAllRole = async () => {
+    try {
+      onSnapshot(roleCollection, async (snapshot) => {
+        const allRole = snapshot.docs.map(
+          (doc) => ({ id: doc.id, ...doc.data() } as RoleOffice)
+        );
+        actionOffice.setAllRole(allRole);
+      });
+    } catch (e) {}
+  };
+
+  return { getAllOffice, getAllClub, getAllPartnership, getAllRole };
 };
 
 export const usePost = () => {
-  const allOffice = useUnit($officeStore);
-  const getAllPost = async () => {
-    try {
-      const q = query(postCollection, orderBy("createdAt", "desc"));
-      onSnapshot(q, async (snapshot) => {
-        const postList = snapshot.docs.map(async (doc) => {
-          const postData = doc.data() as fb_Post;
-          const editor = allOffice.find(
-            (office) => office.id === postData.editor
-          );
-          if (!editor) {
-            throw Error(`There is no editor for the post ${doc.id}.\n`);
-          }
-          const imageURL = await getPostImgURL(postData.image);
-          const post: Post = {
-            ...postData,
-            id: doc.id,
-            editor: { id: editor?.id, logo: editor?.logo },
-            image: imageURL,
-            createdAt: postData.createdAt.toDate(),
-            date: {
-              start: postData.date.start?.toDate(),
-              end: postData.date.end?.toDate(),
-            },
-          };
-          return post;
-        });
-        const postListResolved = await Promise.all(postList);
-        actionPost.setAllPost(postListResolved);
-      });
-    } catch (e: any) {
-      throw Error("Une erreur est survenue.\n" + e);
-    }
+  const { getImgURL } = useUtils();
+  const postMapping = async (snapshot: QuerySnapshot) => {
+    const postList = snapshot.docs.map(async (doc) => {
+      const postData = doc.data();
+      const imageURL =
+        postData.imageId && (await getImgURL(imgPostRef, postData.imageId));
+      const post: Post = {
+        id: doc.id,
+        title: postData.title,
+        description: postData.description,
+        editorId: postData.editorId,
+        imageUrl: imageURL,
+        createdAt: postData.createdAt.toDate(),
+        tags: postData.tags,
+        date: postData.date && {
+          start: postData.date.start.toDate(),
+          end: postData.date.end.toDate(),
+        },
+      };
+      return post;
+    });
+    return Promise.all(postList);
   };
 
-  // const getEventPosts = async () => {
+  // const getAllPost = async () => {
   //   try {
-  //     const q = query(
-  //       postCollection,
-  //       where("visibleCal", "==", true),
-  //       orderBy("createdAt", "desc")
-  //     );
-  //     onSnapshot(q, async (snapshot) => {
-  //       const posts = snapshot.docs.map(async (doc) => {
-  //         const data = doc.data() as fb_Post;
-  //         const office = await getOneOffice(data.editor);
-  //         const post: Post = {
-  //           id: doc.id,
-  //           editorLogo: office.logo,
-  //           ...data,
-  //         };
-  //         return post;
+  //     const q = query(postCollection, orderBy("createdAt", "desc"), limit(10));
+  //     return onSnapshot(q, async (snap) => {
+  //       const postList = await postMapping(snap);
+  //       const lastVisible = snap.docs[snap.docs.length - 1];
+  //       actionPost.setInitialPost({
+  //         posts: postList,
+  //         lastVisible,
+  //         loading: false,
   //       });
-  //       actionPost.getPosts(await Promise.all(posts));
   //     });
+  //     //  const snapshot = await getDocs(q);
+  //     //  const postList = await postMapping(snapshot);
+  //     //  const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+  //     //  return { postList, lastVisible };
   //   } catch (e: any) {
-  //     throw Error("Une erreur est survenue.\n" + e);
+  //     console.log(`[getAllPost] ${e}\n`);
+  //     throw e;
   //   }
   // };
 
-  const getPostImgURL = async (id: string) => {
-    const imgRef = ref(imgPostRef, `/${id}`);
+  const getMorePost = async (lastVisible?: DocumentSnapshot) => {
     try {
-      const url = await getDownloadURL(imgRef);
-      return url;
-    } catch (error: any) {
-      // A full list of error codes is available at
-      // https://firebase.google.com/docs/storage/web/handle-errors
-      switch (error.code) {
-        case "storage/object-not-found":
-          // File doesn't exist
-          break;
-        case "storage/unauthorized":
-          // User doesn't have permission to access the object
-          break;
-        case "storage/canceled":
-          // User canceled the upload
-          break;
-        case "storage/unknown":
-          // Unknown error occurred, inspect the server response
-          break;
-      }
+      const queryConstraints: QueryConstraint[] = [
+        orderBy("createdAt", "desc"),
+        // limit(10),
+      ];
+      if (lastVisible) queryConstraints.push(startAfter(lastVisible));
+      const q = query(postCollection, ...queryConstraints);
+
+      return onSnapshot(q, async (snap) => {
+        const postList = await postMapping(snap);
+        const lastVisible = snap.docs[snap.docs.length - 1];
+        actionPost.setMorePost({
+          posts: postList,
+          lastVisible,
+          loading: false,
+        });
+      });
+      // const snapshot = await getDocs(q);
+      // const postList = await postMapping(snapshot);
+      // const newLastVisible = snapshot.docs[snapshot.docs.length - 1];
+      // return { postList, newLastVisible };
+    } catch (e: any) {
+      console.log(`[getMorePost] ${e}\n`);
+      throw e;
     }
   };
 
-  return { getAllPost };
+  return { getMorePost };
 };
-
-// ===== CLUBS =====
-
-// const getAllClubs = async () => {
-//   const querySnapshot = await getDocs(clubCollection);
-//   const clubs = querySnapshot.docs.map((doc) => {
-//     const data = doc.data() as fb_Club;
-//     const office = getId(data.office);
-//     return { ...data, office: office };
-//   });
-//   return clubs;
-// };

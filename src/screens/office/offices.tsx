@@ -1,43 +1,26 @@
-import { useState } from "react";
-import { Alert, FlatList, Modal, TouchableOpacity } from "react-native";
+import { Alert, FlatList, TouchableOpacity } from "react-native";
 import { Button, Card } from "react-native-paper";
 import { useUnit } from "effector-react";
 
 import { $officeStore } from "@context/officeStore";
-import { Container, Image, Text, Title } from "@styledComponents";
-import { officeStyles } from "@styles";
+import { Container, Image, Text, Title2 } from "@styledComponents";
 import { colors } from "@theme";
-import { OfficeDisplay } from "components/officeDisplay";
+import { OfficesProps } from "@navigation/navigation.types";
 
-export default function OfficesScreen() {
-  const offices = useUnit($officeStore);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [displayedOffice, setDisplayedOffice] = useState<Office>();
-
-  const toggleModal = () => {
-    setModalVisible((prev) => !prev);
-  };
+export default function OfficesScreen({ navigation }: OfficesProps) {
+  const { officeList } = useUnit($officeStore);
 
   return (
     <Container>
-      <Modal
-        visible={modalVisible}
-        animationType="fade"
-        onRequestClose={toggleModal}
-        transparent
-      >
-        <OfficeDisplay item={displayedOffice} toggleModal={toggleModal} />
-      </Modal>
       <FlatList
-        data={offices}
+        data={officeList}
         contentContainerStyle={{ rowGap: 20, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <TouchableOpacity
             key={item.id}
             onPress={() => {
-              setDisplayedOffice(item);
-              toggleModal();
+              navigation.navigate("viewOffice", { office: item });
             }}
           >
             <Card
@@ -49,12 +32,12 @@ export default function OfficesScreen() {
             >
               <Card.Title
                 title={
-                  <Title>
+                  <Title2>
                     {item.name} ({item.acronym})
-                  </Title>
+                  </Title2>
                 }
                 subtitle={<Text>{item.mail}</Text>}
-                left={() => <Image source={{ uri: item.logo }} $size={80} />}
+                left={() => <Image source={{ uri: item.logoUrl }} $size={80} />}
                 leftStyle={{ width: 80, aspectRatio: 1 }}
                 style={{ height: 100 }}
               />

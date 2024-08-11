@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import * as SplashScreen from "expo-splash-screen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
@@ -6,24 +7,39 @@ import { config } from "@gluestack-ui/config";
 import RootContainer from "navigation/rootContainer";
 import { subscribeUserState, useAuth } from "@firebase";
 
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
-  const { getCurrentUser, signout } = useAuth();
+  const [appIsReady, setAppIsReady] = useState(false);
+  const { signout, loginHandle } = useAuth();
   useEffect(() => {
-    subscribeUserState(async (user) => {
+    subscribeUserState(async (userAuth) => {
       try {
-        if (user) {
-          await getCurrentUser(user.uid);
+        if (userAuth) {
+          await loginHandle(userAuth.uid);
         } else {
           signout();
         }
       } catch (e: any) {
         throw Error(e);
+      } finally {
+        setAppIsReady(true);
       }
     });
   }, []);
 
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
+
   return (
-    <SafeAreaProvider style={{ flex: 1 }}>
+    <SafeAreaProvider onLayout={onLayoutRootView}>
       <GluestackUIProvider config={config}>
         <RootContainer />
       </GluestackUIProvider>

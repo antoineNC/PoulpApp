@@ -1,48 +1,43 @@
-import { View, TouchableOpacity } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { Text, Image, Body, Row, Title } from "@styledComponents";
-import { colors } from "@theme";
+import { View } from "react-native";
+import {
+  Text,
+  Image,
+  Body,
+  Row,
+  Title2,
+  ModalContainer,
+} from "@styledComponents";
 import { CloseButton } from "./closeButton";
 
 export const PostDisplay = ({
-  item,
+  post,
   toggleModal,
 }: {
-  item: Post | undefined;
+  post: Post;
   toggleModal: () => void;
 }) => {
-  if (item) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.primary,
-          opacity: 0.98,
-          paddingTop: 15,
-        }}
-      >
-        <CloseButton onPress={toggleModal} />
-        <Row style={{ marginBottom: 10 }}>
-          <Image
-            source={{ uri: item.editor.logo }}
-            $size={60}
-            style={{ marginHorizontal: 10 }}
-          />
-          <View>
-            <Title>{item.title}</Title>
-            {item.tags.length > 0 && <Text>{item.tags}</Text>}
-          </View>
-        </Row>
-        <Body>{item.description}</Body>
-        {item.image && (
-          <Image
-            source={{ uri: item.image }}
-            resizeMode="contain"
-            resizeMethod="scale"
-          />
-        )}
-      </View>
-    );
-  }
-  return <></>;
+  return (
+    <ModalContainer>
+      <CloseButton onPress={toggleModal} />
+      <Row $padding="0 15px">
+        <Image source={{ uri: post.editor?.logoUrl }} $size={60} />
+        <View>
+          <Title2>{post.title}</Title2>
+          {post.tags?.length && post.tags.length > 0 && (
+            <Text>{post.tags[0]}</Text>
+          )}
+        </View>
+      </Row>
+      <Body>
+        <Text>{post.description}</Text>
+      </Body>
+      {post.imageUrl && (
+        <Image
+          source={{ uri: post.imageUrl }}
+          resizeMode="contain"
+          resizeMethod="scale"
+        />
+      )}
+    </ModalContainer>
+  );
 };
