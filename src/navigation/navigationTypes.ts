@@ -21,7 +21,7 @@ export type AuthParamList = {
 // === TabBar
 export type TabBarParamList = {
   homeContainer: NavigatorScreenParams<HomeTabParamList>;
-  officeContainer: undefined;
+  officeContainer: NavigatorScreenParams<OfficeTabParamList>;
   famCupContainer: undefined;
   menuContainer: undefined;
 };
@@ -32,6 +32,7 @@ export type TabBarScreenProps<T extends keyof TabBarParamList> =
 export type HomeTabParamList = {
   home: undefined;
   viewPost: { post: Post };
+  updatePost: { post: Post };
   calendar: undefined;
 };
 export type HomeTabScreenProps<T extends keyof HomeTabParamList> =
@@ -41,6 +42,7 @@ export type HomeTabScreenProps<T extends keyof HomeTabParamList> =
   >;
 export type HomeProps = HomeTabScreenProps<"home">;
 export type ViewPostProps = HomeTabScreenProps<"viewPost">;
+export type UpdatePostProps = HomeTabScreenProps<"updatePost">;
 
 // === Office tab
 export type OfficeTabParamList = {

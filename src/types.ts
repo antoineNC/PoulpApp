@@ -34,14 +34,14 @@ type SessionType = {
 type Post = {
   id: string;
   title: string;
-  createdAt: Date;
+  createdAt: number;
   editorId: string;
   description?: string;
   imageUrl?: string;
   tags?: Array<string>;
   date?: {
-    start: Date;
-    end: Date;
+    start: number;
+    end: number;
   };
   editor?: Office;
 };

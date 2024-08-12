@@ -5,7 +5,7 @@ import { Button } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { AuthParamList } from "@navigation/navigation.types";
+import { AuthParamList } from "@navigation/navigationTypes";
 import CustomField from "components/formField";
 import { colors } from "@theme";
 import { ContainerScroll as Container } from "@styledComponents";

@@ -33,7 +33,7 @@ import {
 } from "@firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import app from "firebase/firebase.config";
+import app from "firebase/firebaseConfig";
 import { actionSession } from "@context/sessionStore";
 import { actionOffice } from "@context/officeStore";
 import { actionStudent } from "@context/studentStore";
@@ -435,11 +435,11 @@ export const usePost = () => {
         description: postData.description,
         editorId: postData.editorId,
         imageUrl: imageURL,
-        createdAt: postData.createdAt.toDate(),
+        createdAt: postData.createdAt.toMillis(),
         tags: postData.tags,
         date: postData.date && {
-          start: postData.date.start.toDate(),
-          end: postData.date.end.toDate(),
+          start: postData.date.start.toMillis(),
+          end: postData.date.end.toMillis(),
         },
       };
       return post;

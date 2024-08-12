@@ -5,7 +5,7 @@ import { useUnit } from "effector-react";
 import { $officeStore } from "@context/officeStore";
 import { Container, Image, Text, Title2 } from "@styledComponents";
 import { colors } from "@theme";
-import { OfficesProps } from "@navigation/navigation.types";
+import { OfficesProps } from "@navigation/navigationTypes";
 
 export default function OfficesScreen({ navigation }: OfficesProps) {
   const { officeList } = useUnit($officeStore);
@@ -46,7 +46,7 @@ export default function OfficesScreen({ navigation }: OfficesProps) {
               </Card.Content>
               <Card.Actions>
                 <Button
-                  mode="contained"
+                  mode="contained-tonal"
                   icon="pencil"
                   onPress={() => Alert.alert("kaehdv")}
                 >

@@ -8,7 +8,7 @@ import {
   MenuTabParamList,
   OfficeTabParamList,
   TabBarScreenProps,
-} from "@navigation/navigation.types";
+} from "@navigation/navigationTypes";
 import HomeScreen from "@screens/home/home";
 import ViewPostScreen from "@screens/home/viewPost";
 import CalendarScreen from "@screens/home/calendar";

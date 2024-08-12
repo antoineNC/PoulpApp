@@ -47,9 +47,10 @@ export const ContainerScroll = styled.ScrollView`
   flex: 1;
 `;
 
-export const Row = styled.View<{ $padding?: string }>`
+export const Row = styled.View<{ $padding?: string; $justify?: string }>`
   flex-direction: row;
   align-items: center;
+  justify-content: ${(props) => props.$justify || "start"};
   padding: ${(props) => props.$padding || "0px"};
 `;
 

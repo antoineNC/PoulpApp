@@ -7,9 +7,8 @@ import { $postStore, actionPost } from "@context/postStore";
 import { $officeStore } from "@context/officeStore";
 import { PostItem } from "components/postItem";
 import { Container } from "@styledComponents";
-import { colors } from "@theme";
 import { usePost } from "@firebase";
-import { HomeProps } from "@navigation/navigation.types";
+import { HomeProps } from "@navigation/navigationTypes";
 
 export default function HomeScreen({ navigation }: HomeProps) {
   const { posts, lastVisible } = useUnit($postStore);
@@ -63,7 +62,7 @@ export default function HomeScreen({ navigation }: HomeProps) {
                 navigation.navigate("viewPost", { post: item });
               }}
             >
-              <PostItem post={item} />
+              <PostItem post={item} navigation={navigation} />
             </TouchableOpacity>
           );
         }}
