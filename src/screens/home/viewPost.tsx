@@ -1,22 +1,17 @@
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 import {
   Text,
   Image,
   Body,
   Row,
-  Title2,
   ContainerScroll,
   BodyTitle,
   Container,
 } from "@styledComponents";
 import { ViewPostProps } from "@navigation/navigationTypes";
 import { officeStyles } from "@styles";
-import { formatAllDate, formatDay } from "utils/dateUtils";
+import { displayDate } from "utils/dateUtils";
 import { useEffect, useState } from "react";
-type DateType = {
-  start: string;
-  end: string;
-};
 
 export default function ViewPostScreen({ navigation, route }: ViewPostProps) {
   const { post } = route.params;
@@ -24,24 +19,17 @@ export default function ViewPostScreen({ navigation, route }: ViewPostProps) {
   const [allDay, setAllDay] = useState<boolean>(false);
   useEffect(() => {
     if (post.date) {
-      const startDate = new Date(post.date.start).toUTCString();
-      const endDate = new Date(post.date.end).toUTCString();
-      if (startDate === endDate) {
-        setAllDay(true);
-        const day = formatDay(startDate);
-        setDate({ start: day, end: day });
-      } else {
-        setAllDay(false);
-        const start = formatAllDate(startDate);
-        const end = formatAllDate(endDate);
-        setDate({ start, end });
+      const result = displayDate(post.date);
+      if (result) {
+        setAllDay(result.allday);
+        setDate(result.date);
       }
     }
   }, []);
   return (
     <ContainerScroll>
-      <Row $padding="0 15px">
-        <Title2>Editeur :</Title2>
+      <Row $padding="0 15px" $justify="flex-end">
+        <Text>Editeur :</Text>
         <TouchableOpacity
           onPress={() =>
             post.editor &&

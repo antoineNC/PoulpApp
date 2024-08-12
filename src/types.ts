@@ -87,3 +87,8 @@ type FormFieldProps<T> = {
   required: boolean;
   confirm?: boolean;
 }[];
+
+type DateType = {
+  start: string;
+  end: string;
+};
