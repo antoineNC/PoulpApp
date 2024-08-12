@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, View, TouchableOpacity } from "react-native";
-import { ActivityIndicator, Divider } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
 import { useUnit } from "effector-react";
 
-import { $postStore, actionPost } from "@context/postStore";
+import { $postStore } from "@context/postStore";
 import { $officeStore } from "@context/officeStore";
 import { PostItem } from "components/postItem";
 import { Container } from "@styledComponents";
@@ -66,11 +66,7 @@ export default function HomeScreen({ navigation }: HomeProps) {
             </TouchableOpacity>
           );
         }}
-        ItemSeparatorComponent={() => (
-          <Divider
-            style={{ backgroundColor: colors.black, marginVertical: 10 }}
-          />
-        )}
+        ItemSeparatorComponent={() => <View style={{ marginVertical: 10 }} />}
         // onEndReached={handleEndReached}
         // onEndReachedThreshold={0.5}
         ListFooterComponent={

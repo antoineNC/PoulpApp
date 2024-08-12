@@ -1,5 +1,6 @@
 import { TouchableOpacity } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { IconButton } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import {
@@ -11,6 +12,7 @@ import {
 } from "@navigation/navigationTypes";
 import HomeScreen from "@screens/home/home";
 import ViewPostScreen from "@screens/home/viewPost";
+import UpdatePostScreen from "@screens/home/updatePost";
 import CalendarScreen from "@screens/home/calendar";
 import { ScoreScreen } from "@screens/famCup/score";
 import { FeedScreen } from "@screens/famCup/feed";
@@ -64,6 +66,18 @@ export function HomeNavigator({
           headerTitle: () => (
             <Row>
               <Title2>{route.params.post.title}</Title2>
+            </Row>
+          ),
+        })}
+      />
+      <HomeStack.Screen
+        name="updatePost"
+        component={UpdatePostScreen}
+        options={({ route }) => ({
+          headerTitle: () => (
+            <Row>
+              <Title2>{route.params.post.title}</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={20} />
             </Row>
           ),
         })}
