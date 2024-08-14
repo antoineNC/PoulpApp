@@ -1,3 +1,4 @@
+import { Club, Office, Partnership, RoleOffice } from "@types";
 import { createEvent, createStore } from "effector";
 
 const actionOffice = {

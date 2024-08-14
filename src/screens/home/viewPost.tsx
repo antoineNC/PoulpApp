@@ -12,6 +12,7 @@ import { ViewPostProps } from "@navigation/navigationTypes";
 import { officeStyles } from "@styles";
 import { displayDate } from "utils/dateUtils";
 import { useEffect, useState } from "react";
+import { DateType } from "@types";
 
 export default function ViewPostScreen({ navigation, route }: ViewPostProps) {
   const { post } = route.params;
@@ -20,10 +21,8 @@ export default function ViewPostScreen({ navigation, route }: ViewPostProps) {
   useEffect(() => {
     if (post.date) {
       const result = displayDate(post.date);
-      if (result) {
-        setAllDay(result.allday);
-        setDate(result.date);
-      }
+      setAllDay(result.allday);
+      setDate(result.date);
     }
   }, []);
   return (

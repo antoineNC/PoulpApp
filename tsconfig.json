@@ -32,7 +32,7 @@
         "styles/theme.ts"
       ],
       "@types": [
-        "types.d.ts",
+        "types.ts",
       ]
     },
   }

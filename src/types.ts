@@ -1,15 +1,18 @@
-type Role = "STUDENT_ROLE" | "OFFICE_ROLE" | "ADMIN_ROLE";
-type UserType = {
+import { Timestamp } from "firebase/firestore";
+import { KeyboardTypeOptions } from "react-native";
+
+export type Role = "STUDENT_ROLE" | "OFFICE_ROLE" | "ADMIN_ROLE";
+export type UserType = {
   id: string;
   mail: string;
 };
-type Student = UserType & {
+export type Student = UserType & {
   lastName: string;
   firstName: string;
   adhesion?: string[];
   memberOf?: string[];
 };
-type Office = UserType & {
+export type Office = UserType & {
   acronym: string;
   name: string;
   description: string;
@@ -21,32 +24,32 @@ type Office = UserType & {
   partnerships?: string[];
   clubs?: string[];
 };
-type Admin = UserType & {
+export type Admin = UserType & {
   name: string;
 };
 
-type SessionType = {
+export type SessionType = {
   user: UserType;
   role: Role;
   connected: boolean;
 };
 
-type Post = {
+export type Post = {
   id: string;
   title: string;
-  createdAt: number;
+  createdAt: Timestamp;
   editorId: string;
   description?: string;
   imageUrl?: string;
   tags?: Array<string>;
   date?: {
-    start: number;
-    end: number;
+    start: Timestamp;
+    end: Timestamp;
   };
   editor?: Office;
 };
 
-type Club = {
+export type Club = {
   id: string;
   name: string;
   officeId: string;
@@ -55,7 +58,7 @@ type Club = {
   logoUrl?: string;
 };
 
-type Partnership = {
+export type Partnership = {
   id: string;
   name: string;
   officeId: string;
@@ -66,15 +69,15 @@ type Partnership = {
   logoUrl?: string;
 };
 
-type RoleOffice = {
+export type RoleOffice = {
   id: string;
   name: string;
 };
 
-type Point = {
+export type Point = {
   id: string;
   titre: string;
-  date: Date;
+  date: Timestamp;
   bleu: number;
   jaune: number;
   orange: number;
@@ -82,13 +85,19 @@ type Point = {
   vert: number;
 };
 
-type FormFieldProps<T> = {
+export type FormFieldProps<T> = {
   name: keyof T;
+  label?: string;
+  type?: string;
+  props: {
+    multiline?: boolean;
+    keyboardType?: KeyboardTypeOptions;
+  };
   required: boolean;
   confirm?: boolean;
 }[];
 
-type DateType = {
+export type DateType = {
   start: string;
   end: string;
 };

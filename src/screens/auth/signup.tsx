@@ -11,6 +11,7 @@ import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { colors } from "@theme";
 import { useAuth } from "@firebase";
+import { FormFieldProps } from "@types";
 
 type FieldNames = {
   firstName: string;

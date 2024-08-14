@@ -39,6 +39,15 @@ import { actionOffice } from "@context/officeStore";
 import { actionStudent } from "@context/studentStore";
 import { actionPost } from "@context/postStore";
 import { QueryConstraint } from "firebase/firestore";
+import {
+  Club,
+  Office,
+  Partnership,
+  Post,
+  RoleOffice,
+  Student,
+  UserType,
+} from "@types";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),

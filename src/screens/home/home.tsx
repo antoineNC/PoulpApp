@@ -9,6 +9,7 @@ import { PostItem } from "components/postItem";
 import { Container } from "@styledComponents";
 import { usePost } from "@firebase";
 import { HomeProps } from "@navigation/navigationTypes";
+import { Office, Post } from "@types";
 
 export default function HomeScreen({ navigation }: HomeProps) {
   const { posts, lastVisible } = useUnit($postStore);

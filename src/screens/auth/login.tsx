@@ -11,6 +11,7 @@ import { colors } from "@theme";
 import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { useAuth } from "@firebase";
+import { FormFieldProps } from "@types";
 
 type FieldNames = {
   email: string;

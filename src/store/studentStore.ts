@@ -1,3 +1,4 @@
+import { Student } from "@types";
 import { createEvent, createStore } from "effector";
 
 const actionStudent = {

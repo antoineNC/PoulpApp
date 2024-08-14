@@ -4,6 +4,7 @@ import {
   ParamListBase,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Office, Post } from "@types";
 import { MaterialBottomTabScreenProps } from "react-native-paper";
 
 export type ScreenProps<

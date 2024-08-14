@@ -8,6 +8,7 @@ import { colors } from "@theme";
 import { $postStore } from "@context/postStore";
 import { $officeStore } from "@context/officeStore";
 import { ensc_logo_url } from "data";
+import { Post } from "@types";
 
 export default function CalendarScreen() {
   const posts = useUnit($postStore);
