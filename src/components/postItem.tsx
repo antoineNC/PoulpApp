@@ -15,6 +15,7 @@ import { HomeProps } from "@navigation/navigationTypes";
 import { $sessionStore } from "@context/sessionStore";
 import { officeStyles } from "@styles";
 import { displayDate } from "utils/dateUtils";
+import { DateType, Post } from "@types";
 
 type PostItemProps = Partial<HomeProps> & { post: Post };
 
@@ -25,10 +26,8 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
   useEffect(() => {
     if (post.date) {
       const result = displayDate(post.date);
-      if (result) {
-        setAllDay(result.allday);
-        setDate(result.date);
-      }
+      setAllDay(result.allday);
+      setDate(result.date);
     }
   }, []);
   return (

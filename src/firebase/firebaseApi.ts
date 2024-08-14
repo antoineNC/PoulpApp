@@ -444,11 +444,11 @@ export const usePost = () => {
         description: postData.description,
         editorId: postData.editorId,
         imageUrl: imageURL,
-        createdAt: postData.createdAt.toMillis(),
+        createdAt: postData.createdAt,
         tags: postData.tags,
         date: postData.date && {
-          start: postData.date.start.toMillis(),
-          end: postData.date.end.toMillis(),
+          start: postData.date.start,
+          end: postData.date.end,
         },
       };
       return post;
