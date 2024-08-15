@@ -1,70 +1,53 @@
-import React, { useState } from "react";
-import { Text, View } from "react-native";
-import { TextInput, TextInputProps } from "react-native-paper";
-import { Control, Controller, FieldValues, Path } from "react-hook-form";
-import { getFieldProps } from "utils/formUtils";
-import { colors } from "@theme";
+import React from "react";
+import { Controller, FieldValues, Path } from "react-hook-form";
+import {
+  ControlFieldProps,
+  FormFieldProps,
+  getFieldInput,
+  getFieldProps,
+} from "utils/formUtils";
 
-type FieldProps<T extends FieldValues> = TextInputProps & {
-  control: Control<T>;
-  name: Path<T>;
-  required?: boolean;
-  repeat?: string;
-  index: number;
-  lastInput: boolean;
-  setFocus: (state: number) => void;
-};
+type FormFieldType<T extends FieldValues> = FormFieldProps &
+  ControlFieldProps<T>;
 
-function FormField<T extends FieldValues>(props: FieldProps<T>) {
-  const { control, name, required, repeat, index, lastInput, setFocus } = props;
-  const { label, keyboardType, secureTextEntry, autoCapitalize, rules } =
-    getFieldProps<T>(name, required, repeat);
-  const [hide, setHide] = useState(true);
+function FormField<T extends FieldValues>(props: FormFieldType<T>) {
+  const {
+    control,
+    name,
+    label,
+    type,
+    required,
+    repeat,
+    options,
+    index,
+    lastInput,
+    setFocus,
+    submit,
+  } = props;
+  const { newLabel, rules } = getFieldProps<T>(
+    label,
+    required,
+    repeat,
+    options?.rules
+  );
   return (
     <Controller
       control={control}
       name={name}
       rules={rules}
-      render={({
-        field: { onChange, onBlur, value, ref },
-        fieldState: { error, invalid },
-      }) => (
-        <View>
-          <TextInput
-            ref={ref}
-            mode="outlined"
-            label={label.concat(required ? " *" : "")}
-            onChangeText={onChange}
-            onBlur={onBlur}
-            value={value}
-            error={invalid}
-            autoFocus={index === 0}
-            enterKeyHint={lastInput ? "done" : "next"}
-            blurOnSubmit={lastInput ? true : false}
-            keyboardType={keyboardType || "default"}
-            autoCapitalize={autoCapitalize ? "none" : "sentences"}
-            secureTextEntry={secureTextEntry ? hide : false}
-            right={
-              secureTextEntry ? (
-                hide ? (
-                  <TextInput.Icon
-                    icon="eye"
-                    onPress={() => setHide((prev) => !prev)}
-                  />
-                ) : (
-                  <TextInput.Icon
-                    icon="eye-off"
-                    onPress={() => setHide((prev) => !prev)}
-                  />
-                )
-              ) : null
-            }
-            onSubmitEditing={() => setFocus(index + 1)}
-            style={{ backgroundColor: colors.secondary }}
-          />
-          {error && <Text>{error.message}</Text>}
-        </View>
-      )}
+      render={({ field, fieldState }) =>
+        getFieldInput<T>({
+          label: newLabel,
+          type,
+          options,
+          index,
+          lastInput,
+          setFocus,
+          submit,
+          field,
+          fieldState,
+        })
+      }
     />
   );
 }

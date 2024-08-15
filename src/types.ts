@@ -1,5 +1,5 @@
 import { Timestamp } from "firebase/firestore";
-import { KeyboardTypeOptions } from "react-native";
+import { InputModeOptions } from "react-native";
 
 export type Role = "STUDENT_ROLE" | "OFFICE_ROLE" | "ADMIN_ROLE";
 export type UserType = {
@@ -85,16 +85,32 @@ export type Point = {
   vert: number;
 };
 
-export type FormFieldProps<T> = {
+export type FormFieldType =
+  | "text"
+  | "email"
+  | "password"
+  | "image"
+  | "date"
+  | "chip"
+  | "select"
+  | "double-select";
+export type FormFieldOptions = {
+  multiline?: boolean; // text
+  inputMode?: InputModeOptions; // text
+  secureText?: boolean; // text
+  autoCap?: "none" | "sentences" | "words" | "characters";
+  confirm?: boolean; // text
+  rules?: string[];
+  allDay?: boolean; // date
+  add?: boolean; // text, select, double-select
+};
+
+export type FormFieldValues<T> = {
   name: keyof T;
-  label?: string;
-  type?: string;
-  props: {
-    multiline?: boolean;
-    keyboardType?: KeyboardTypeOptions;
-  };
-  required: boolean;
-  confirm?: boolean;
+  label: string;
+  type: FormFieldType;
+  required?: boolean;
+  options?: FormFieldOptions;
 }[];
 
 export type DateType = {

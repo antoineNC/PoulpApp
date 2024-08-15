@@ -11,7 +11,7 @@ import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { colors } from "@theme";
 import { useAuth } from "@firebase";
-import { FormFieldProps } from "@types";
+import { FormFieldValues } from "@types";
 
 type FieldNames = {
   firstName: string;
@@ -30,13 +30,36 @@ export default function SignupScreen({
   const { control, handleSubmit, watch, setFocus } = useForm<FieldNames>();
   const pwd = watch("password");
 
-  const values: FormFieldProps<FieldNames> = [
-    { name: "firstName", required: true },
-    { name: "lastName", required: true },
-    { name: "email", required: true },
-    { name: "password", required: true },
-    { name: "repeatPassword", required: true, confirm: true },
-    { name: "code", required: true },
+  const values: FormFieldValues<FieldNames> = [
+    { name: "firstName", required: true, type: "text", label: "Prénom" },
+    { name: "lastName", required: true, type: "text", label: "Nom" },
+    {
+      name: "email",
+      label: "Email",
+      type: "text",
+      required: true,
+      options: { inputMode: "email", autoCap: "none" },
+    },
+    {
+      name: "password",
+      label: "Mot de passe",
+      type: "text",
+      required: true,
+      options: { secureText: true },
+    },
+    {
+      name: "repeatPassword",
+      required: true,
+      type: "text",
+      label: "Confirmer mot de passe",
+      options: { secureText: true, confirm: true },
+    },
+    {
+      name: "code",
+      required: true,
+      type: "text",
+      label: "Code ENSC",
+    },
   ];
 
   const onSubmit = async (data: FieldNames) => {
@@ -66,15 +89,19 @@ export default function SignupScreen({
           {values.map((field, index) => (
             <CustomField<FieldNames>
               key={index}
-              index={index}
-              lastInput={index === values.length - 1}
               control={control}
               name={field.name}
               required={field.required}
-              repeat={field.confirm ? pwd : undefined}
+              repeat={field.options?.confirm ? pwd : undefined}
+              label={field.label}
+              type={field.type}
+              options={field.options}
+              index={index}
+              lastInput={index === values.length - 1}
               setFocus={(index) =>
                 index < values.length ? setFocus(values[index].name) : null
               }
+              submit={handleSubmit(onSubmit)}
             />
           ))}
         </View>

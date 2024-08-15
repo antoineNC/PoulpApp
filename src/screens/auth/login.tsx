@@ -11,7 +11,7 @@ import { colors } from "@theme";
 import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { useAuth } from "@firebase";
-import { FormFieldProps } from "@types";
+import { FormFieldValues } from "@types";
 
 type FieldNames = {
   email: string;
@@ -25,12 +25,25 @@ export default function LoginScreen({
   const { login } = useAuth();
   const { control, handleSubmit, setFocus } = useForm<FieldNames>();
 
-  const values: FormFieldProps<FieldNames> = [
-    { name: "email", required: true },
-    { name: "password", required: true },
+  const values: FormFieldValues<FieldNames> = [
+    {
+      name: "email",
+      label: "Email",
+      type: "text",
+      required: true,
+      options: { inputMode: "email", autoCap: "none" },
+    },
+    {
+      name: "password",
+      label: "Mot de passe",
+      type: "text",
+      required: true,
+      options: { secureText: true, rules: ["password"] },
+    },
   ];
 
   const onSubmit = async (data: FieldNames) => {
+    console.log({ data });
     setLoading(true);
     try {
       await login(data);
@@ -55,15 +68,18 @@ export default function LoginScreen({
           {values.map((field, index) => (
             <CustomField<FieldNames>
               key={index}
-              index={index}
-              lastInput={index === values.length - 1}
               control={control}
               name={field.name}
-              label={field.name}
               required={field.required}
+              label={field.label}
+              type={field.type}
+              options={field.options}
+              index={index}
+              lastInput={index === values.length - 1}
               setFocus={(index) =>
-                index < values.length ? setFocus(values[index].name) : null
+                index < values.length && setFocus(values[index].name)
               }
+              submit={handleSubmit(onSubmit)}
             />
           ))}
         </View>

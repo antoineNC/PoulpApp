@@ -12,6 +12,15 @@ import {
 import { UpdatePostProps } from "@navigation/navigationTypes";
 import { officeStyles } from "@styles";
 
+type FieldNames = {
+  title: string;
+  description: string;
+  date: number;
+  tags: string[];
+  editorId: string;
+  imageFile: string;
+};
+
 export default function UpdatePostScreen({
   navigation,
   route,
