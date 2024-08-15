@@ -31,8 +31,20 @@ export default function SignupScreen({
   const pwd = watch("password");
 
   const values: FormFieldValues<FieldNames> = [
-    { name: "firstName", required: true, type: "text", label: "Prénom" },
-    { name: "lastName", required: true, type: "text", label: "Nom" },
+    {
+      name: "firstName",
+      label: "Prénom",
+      type: "text",
+      required: true,
+      options: { rules: ["name"] },
+    },
+    {
+      name: "lastName",
+      label: "Nom",
+      type: "text",
+      required: true,
+      options: { rules: ["name"] },
+    },
     {
       name: "email",
       label: "Email",
@@ -45,20 +57,20 @@ export default function SignupScreen({
       label: "Mot de passe",
       type: "text",
       required: true,
-      options: { secureText: true },
+      options: { secureText: true, rules: ["password"] },
     },
     {
       name: "repeatPassword",
-      required: true,
-      type: "text",
       label: "Confirmer mot de passe",
+      type: "text",
+      required: true,
       options: { secureText: true, confirm: true },
     },
     {
       name: "code",
-      required: true,
-      type: "text",
       label: "Code ENSC",
+      type: "text",
+      required: true,
     },
   ];
 

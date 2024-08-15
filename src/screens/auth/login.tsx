@@ -38,12 +38,10 @@ export default function LoginScreen({
       label: "Mot de passe",
       type: "text",
       required: true,
-      options: { secureText: true, rules: ["password"] },
     },
   ];
 
   const onSubmit = async (data: FieldNames) => {
-    console.log({ data });
     setLoading(true);
     try {
       await login(data);

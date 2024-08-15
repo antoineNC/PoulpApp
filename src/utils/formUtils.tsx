@@ -8,11 +8,10 @@ import {
   RegisterOptions,
 } from "react-hook-form";
 import { CODE_ENSC } from "data";
-import { TextInput } from "react-native-paper";
+import { HelperText, TextInput } from "react-native-paper";
 import { ReactElement, useState } from "react";
 import { FormFieldOptions, FormFieldType } from "@types";
 import { colors } from "@theme";
-import { Text } from "@styledComponents";
 
 export type ControlFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -89,73 +88,6 @@ export function getFieldProps<T extends FieldValues>(
       }
     });
   return { rules, newLabel };
-  // switch (name) {
-  //   case "firstName":
-  //     return {
-  //       label: "Prénom",
-  //       rules: {
-  //         ...rules,
-  //         pattern: {
-  //           value: regEx_name,
-  //           message: errorTxt.invalidFirstName,
-  //         },
-  //       },
-  //     };
-  //   case "lastName":
-  //     return {
-  //       label: "Nom",
-  //       rules: {
-  //         ...rules,
-  //         pattern: {
-  //           value: regEx_name,
-  //           message: errorTxt.invalidLastName,
-  //         },
-  //       },
-  //     };
-  //   case "email":
-  //     return {
-  //       label: "Email",
-  //       rules: {
-  //         ...rules,
-  //         pattern: {
-  //           value: regEx_mail,
-  //           message: errorTxt.invalidMail,
-  //         },
-  //       },
-  //     };
-  //   case "password":
-  //     return {
-  //       label: "Mot de passe",
-  //       rules: {
-  //         ...rules,
-  //         minLength: {
-  //           value: 4,
-  //           message: errorTxt.minLenghtPwd,
-  //         },
-  //       },
-  //     };
-  //   case "repeatPassword":
-  //     return {
-  //       label: "Confirmer mot de passe",
-  //       rules: {
-  //         ...rules,
-  //         validate: (value: string) => value === repeat || errorTxt.confirmPwd,
-  //       },
-  //     };
-  //   case "code":
-  //     return {
-  //       label: "Code ENSC",
-  //       rules: {
-  //         ...rules,
-  //         pattern: {
-  //           value: CODE_ENSC,
-  //           message: errorTxt.invalidCode,
-  //         },
-  //       },
-  //     };
-  //   default:
-  //     return { label: "", rules: {} };
-  // }
 }
 
 export function getFieldInput<T extends FieldValues>({
@@ -210,7 +142,7 @@ export function getFieldInput<T extends FieldValues>({
             }
             style={{ backgroundColor: colors.secondary }}
           />
-          {error && <Text $dark>{error.message}</Text>}
+          {error && <HelperText type="error">{error.message}</HelperText>}
         </View>
       );
     case "image":
