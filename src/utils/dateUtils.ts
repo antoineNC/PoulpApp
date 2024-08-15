@@ -1,13 +1,14 @@
 import { Timestamp } from "firebase/firestore";
 import moment from "moment";
 import "moment/locale/fr";
+import { capitalize } from "utils/utils";
 moment.locale("fr");
 
 export const formatAllDate = (date: moment.MomentInput) => {
-  return moment(date).format("ddd D MMMM YYYY [à] H:mm");
+  return capitalize(moment(date).format("ddd D MMMM YYYY [à] H:mm"));
 };
 export const formatDay = (date: moment.MomentInput) => {
-  return moment(date).format("ddd D MMM YYYY");
+  return capitalize(moment(date).format("ddd D MMM YYYY"));
 };
 
 export const displayDate = (date: { end: Timestamp; start: Timestamp }) => {
