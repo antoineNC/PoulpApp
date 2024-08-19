@@ -94,14 +94,16 @@ export type FormFieldType =
   | "chip"
   | "select"
   | "double-select";
+
 export type FormFieldOptions = {
   multiline?: boolean; // text
   inputMode?: InputModeOptions; // text
   secureText?: boolean; // text
   autoCap?: "none" | "sentences" | "words" | "characters";
   confirm?: boolean; // text
-  rules?: string[];
+  rules?: string[]; // text, date
   allDay?: boolean; // date
+  choices?: { value: string; label: string }[];
   add?: boolean; // text, select, double-select
 };
 

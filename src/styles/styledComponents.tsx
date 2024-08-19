@@ -11,7 +11,7 @@ export const Text = styled.Text<{
     props.$size
       ? fontSize[props.$size as keyof typeof fontSize]
       : fontSize.m}px;
-  color: ${(props) => (props.$dark ? colors.primary : colors.white)};
+  color: ${(props) => (props.$dark ? colors.black : colors.white)};
   font-weight: ${(props) => (props.$bold ? "bold" : "normal")};
 `;
 
@@ -35,6 +35,7 @@ export const BodyTitle = styled(Text)`
 `;
 
 export const Body = styled.View`
+  flex: 1;
   margin: 10px 15px;
   row-gap: 15px;
 `;

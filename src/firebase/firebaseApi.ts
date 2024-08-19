@@ -506,5 +506,19 @@ export const usePost = () => {
     }
   };
 
-  return { getMorePost };
+  const updatePost = async ({
+    editor,
+    title,
+    description,
+    tags,
+  }: {
+    editor: { value: string; label: string };
+    title: string;
+    description: string;
+    tags: string[];
+  }) => {
+    console.log({ editor, title, description, tags });
+  };
+
+  return { getMorePost, updatePost };
 };

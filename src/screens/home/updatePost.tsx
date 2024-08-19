@@ -1,4 +1,6 @@
 import { TouchableOpacity, View } from "react-native";
+import { useForm } from "react-hook-form";
+import CustomField from "components/formField";
 import {
   Text,
   Image,
@@ -10,14 +12,21 @@ import {
   Container,
 } from "@styledComponents";
 import { UpdatePostProps } from "@navigation/navigationTypes";
-import { officeStyles } from "@styles";
+import { authStyles, officeStyles } from "@styles";
+import { FormFieldValues } from "@types";
+import { useUnit } from "effector-react";
+import { $officeStore } from "@context/officeStore";
+import { Button } from "react-native-paper";
+import { usePost } from "@firebase";
+import { postTags } from "data";
+import { colors } from "@theme";
 
 type FieldNames = {
   title: string;
   description: string;
   date: number;
   tags: string[];
-  editorId: string;
+  editor: { value: string; label: string };
   imageFile: string;
 };
 
@@ -26,31 +35,81 @@ export default function UpdatePostScreen({
   route,
 }: UpdatePostProps) {
   const { post } = route.params;
+  const { officeList } = useUnit($officeStore);
+  const { updatePost } = usePost();
+  const defaultTags = post?.tags?.map((tag) => ({ value: tag, label: tag }));
+  const { control, handleSubmit, setFocus } = useForm<FieldNames>({
+    defaultValues: {
+      title: post.title,
+      description: post.description,
+      editor: { value: post.editorId, label: post.editor?.name },
+      tags: post.tags,
+    },
+  });
+  const officeChoices = officeList.map((office) => ({
+    value: office.id,
+    label: office.name,
+  }));
+  const tagsChoices = postTags
+    .sort()
+    .map((tag) => ({ value: tag, label: tag }));
+  const values: FormFieldValues<FieldNames> = [
+    {
+      name: "editor",
+      label: "Bureau",
+      type: "select",
+      options: { choices: officeChoices },
+    },
+    {
+      name: "title",
+      label: "Titre du post",
+      type: "text",
+    },
+    {
+      name: "description",
+      label: "Description",
+      type: "text",
+      options: { multiline: true },
+    },
+    {
+      name: "tags",
+      label: "Tags",
+      type: "chip",
+      options: { choices: tagsChoices },
+    },
+  ];
+
+  const onSubmit = async (data: FieldNames) => {
+    await updatePost({ ...data });
+    navigation.goBack();
+  };
+
   return (
-    <ContainerScroll>
-      <Row $padding="0 15px">
-        <Title2>Editeur :</Title2>
-        <Image source={{ uri: post.editor?.logoUrl }} $size={40} />
-        <Text style={{ marginLeft: 10 }}>{post.editor?.name}</Text>
-      </Row>
-      {post.tags?.length && post.tags.length > 0 && (
-        <Container
-          style={[officeStyles.borderRounded, { marginHorizontal: 15 }]}
-        >
-          <Row>
-            <BodyTitle>Tags : </BodyTitle>
-            {post.tags.map((value, index) => (
-              <Text key={index}>[{value}] </Text>
-            ))}
-          </Row>
-        </Container>
-      )}
-      <Body>
-        <Text>{post.description}</Text>
-      </Body>
-      {post.imageUrl && (
-        <Image source={{ uri: post.imageUrl }} resizeMode="contain" />
-      )}
+    <ContainerScroll style={officeStyles.container}>
+      <View style={authStyles.formList}>
+        {values.map((field, index) => (
+          <CustomField<FieldNames>
+            {...field}
+            key={index}
+            control={control}
+            index={index}
+            lastInput={index === values.length - 1}
+            setFocus={(index) =>
+              index < values.length && setFocus(values[index].name)
+            }
+            submit={handleSubmit(onSubmit)}
+          />
+        ))}
+      </View>
+      <View style={authStyles.buttonContainer}>
+        <Button
+          mode="contained"
+          children="Valider les modifications"
+          onPress={handleSubmit(onSubmit)}
+          uppercase
+          buttonColor={colors.primary}
+        />
+      </View>
     </ContainerScroll>
   );
 }

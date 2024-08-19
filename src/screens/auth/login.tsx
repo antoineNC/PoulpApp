@@ -6,11 +6,11 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Spinner from "react-native-loading-spinner-overlay";
 
 import { AuthParamList } from "@navigation/navigationTypes";
-import CustomField from "components/formField";
-import { colors } from "@theme";
-import { ContainerScroll as Container } from "@styledComponents";
-import { authStyles } from "@styles";
 import { useAuth } from "@firebase";
+import CustomField from "components/formField";
+import { ContainerScroll as Container } from "@styledComponents";
+import { colors } from "@theme";
+import { authStyles } from "@styles";
 import { FormFieldValues } from "@types";
 
 type FieldNames = {
@@ -66,12 +66,8 @@ export default function LoginScreen({
           {values.map((field, index) => (
             <CustomField<FieldNames>
               key={index}
+              {...field}
               control={control}
-              name={field.name}
-              required={field.required}
-              label={field.label}
-              type={field.type}
-              options={field.options}
               index={index}
               lastInput={index === values.length - 1}
               setFocus={(index) =>

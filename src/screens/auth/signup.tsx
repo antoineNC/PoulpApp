@@ -100,18 +100,14 @@ export default function SignupScreen({
         <View style={authStyles.formList}>
           {values.map((field, index) => (
             <CustomField<FieldNames>
+              {...field}
               key={index}
               control={control}
-              name={field.name}
-              required={field.required}
               repeat={field.options?.confirm ? pwd : undefined}
-              label={field.label}
-              type={field.type}
-              options={field.options}
               index={index}
               lastInput={index === values.length - 1}
               setFocus={(index) =>
-                index < values.length ? setFocus(values[index].name) : null
+                index < values.length && setFocus(values[index].name)
               }
               submit={handleSubmit(onSubmit)}
             />

@@ -62,6 +62,7 @@ export default function HomeScreen({ navigation }: HomeProps) {
               onPress={() => {
                 navigation.navigate("viewPost", { post: item });
               }}
+              style={{ flex: 1 }}
             >
               <PostItem post={item} navigation={navigation} />
             </TouchableOpacity>

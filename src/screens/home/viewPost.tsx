@@ -28,7 +28,6 @@ export default function ViewPostScreen({ navigation, route }: ViewPostProps) {
   return (
     <ContainerScroll>
       <Row $padding="0 15px" $justify="flex-end">
-        <Text>Editeur :</Text>
         <TouchableOpacity
           onPress={() =>
             post.editor &&
@@ -79,7 +78,11 @@ export default function ViewPostScreen({ navigation, route }: ViewPostProps) {
         </Container>
       </Body>
       {post.imageUrl && (
-        <Image source={{ uri: post.imageUrl }} resizeMode="contain" />
+        <Image
+          source={{ uri: post.imageUrl }}
+          resizeMode="contain"
+          style={{ marginBottom: 15 }}
+        />
       )}
     </ContainerScroll>
   );

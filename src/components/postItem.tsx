@@ -31,7 +31,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
     }
   }, []);
   return (
-    <View key={post.id}>
+    <Container key={post.id}>
       <Row $padding="0 15px">
         <TouchableOpacity
           onPress={() =>
@@ -108,6 +108,6 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           </Button>
         </Row>
       )}
-    </View>
+    </Container>
   );
 };
