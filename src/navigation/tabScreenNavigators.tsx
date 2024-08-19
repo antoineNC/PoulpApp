@@ -47,16 +47,16 @@ export function HomeNavigator({
         component={HomeScreen}
         options={{
           title: "Fil d'actualité",
-          headerRight: ({ tintColor }) => (
-            <TouchableOpacity
-              style={{ alignSelf: "center" }}
-              onPress={() =>
-                navigation.navigate("homeContainer", { screen: "calendar" })
-              }
-            >
-              <Ionicons name="calendar-sharp" size={30} color={tintColor} />
-            </TouchableOpacity>
-          ),
+          // headerRight: ({ tintColor }) => (
+          //   <TouchableOpacity
+          //     style={{ alignSelf: "center" }}
+          //     onPress={() =>
+          //       navigation.navigate("homeContainer", { screen: "calendar" })
+          //     }
+          //   >
+          //     <Ionicons name="calendar-sharp" size={30} color={tintColor} />
+          //   </TouchableOpacity>
+          // ),
         }}
       />
       <HomeStack.Screen
@@ -73,11 +73,14 @@ export function HomeNavigator({
       <HomeStack.Screen
         name="updatePost"
         component={UpdatePostScreen}
-        options={({ route }) => ({
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
           headerTitle: () => (
             <Row>
-              <Title2>{route.params.post.title}</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={20} />
+              <Title2>Modification du post</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
             </Row>
           ),
         })}
