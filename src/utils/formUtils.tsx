@@ -16,8 +16,8 @@ import { colors } from "@theme";
 import { CODE_ENSC } from "data";
 import { DateTimeFormPicker } from "components/form/dateTimePicker";
 import { TextInputForm } from "components/form/textInput";
-import { ChipInput } from "components/form/chipInput";
-import { SelectInput } from "components/form/selectInput";
+import { ChipInputForm } from "components/form/chipInput";
+import { SelectInputForm } from "components/form/selectInput";
 
 export type ControlFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -116,21 +116,14 @@ export function getFieldInput<T extends FieldValues>(
     case "image":
       break;
     case "date":
-      return (
-        <DateTimeFormPicker
-          value={props.field.value}
-          allDayOption={props.options?.allDay}
-          onChange={props.field.onChange}
-          error={props.fieldState.error}
-        />
-      );
+      return <DateTimeFormPicker<T> {...props} />;
     case "select":
-      return <SelectInput<T> {...props} />;
+      return <SelectInputForm<T> {...props} />;
     case "chip":
-      return <ChipInput<T> {...props} />;
+      return <ChipInputForm<T> {...props} />;
     case "double-select":
       break;
     default:
   }
-  return <View></View>;
+  return <></>;
 }

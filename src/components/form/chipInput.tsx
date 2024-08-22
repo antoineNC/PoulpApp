@@ -7,8 +7,8 @@ import { Text } from "@styledComponents";
 import { FieldInputProps } from "utils/formUtils";
 import { colors } from "@theme";
 
-export function ChipInput<T extends FieldValues>({
-  field: { onBlur, onChange, ref, value },
+export function ChipInputForm<T extends FieldValues>({
+  field: { onBlur, onChange, value },
   fieldState: { error },
   label,
   options,

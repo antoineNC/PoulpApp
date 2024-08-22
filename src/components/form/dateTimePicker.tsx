@@ -13,19 +13,14 @@ import {
 } from "utils/dateUtils";
 import { colors } from "@theme";
 import { Timestamp } from "firebase/firestore";
-import { FieldError } from "react-hook-form";
+import { FieldError, FieldValues } from "react-hook-form";
+import { FieldInputProps } from "utils/formUtils";
 
-export const DateTimeFormPicker = ({
-  value,
-  onChange,
-  allDayOption,
-  error,
-}: {
-  value: Post["date"];
-  onChange: (...event: any[]) => void;
-  allDayOption?: boolean;
-  error?: FieldError;
-}) => {
+export function DateTimeFormPicker<T extends FieldValues>({
+  field: { value, onChange },
+  fieldState: { error },
+  options,
+}: FieldInputProps<T>) {
   const startEqualsEnd = value ? displayDateFromTimestamp(value).allday : false;
   const [startPickerValues, setStartPickerValues] = useState<DatePickerValues>({
     show: false,
@@ -37,7 +32,7 @@ export const DateTimeFormPicker = ({
     mode: "date",
     value: value?.end.toDate() || new Date(),
   });
-  const [allDay, setAllDay] = useState(allDayOption || startEqualsEnd);
+  const [allDay, setAllDay] = useState(options?.allDay || startEqualsEnd);
   const [isDate, setIsDate] = useState(value ? true : false);
   const handleOnChange = (period: "start" | "end", date?: Date) => {
     if (period === "start") {
@@ -72,16 +67,13 @@ export const DateTimeFormPicker = ({
     setIsDate(value);
   };
   const handleAllday = () => {
-    if (allDay)
-      onChange({
-        start: Timestamp.fromDate(startPickerValues.value),
-        end: Timestamp.fromDate(endPickerValues.value),
-      });
-    else
-      onChange({
-        start: Timestamp.fromDate(startPickerValues.value),
-        end: Timestamp.fromDate(startPickerValues.value),
-      });
+    // la condition est inversée puisqu'on prend la valeur avant update
+    onChange({
+      start: Timestamp.fromDate(startPickerValues.value),
+      end: allDay
+        ? Timestamp.fromDate(endPickerValues.value)
+        : Timestamp.fromDate(startPickerValues.value),
+    });
     setAllDay(!allDay);
   };
   return (
@@ -234,7 +226,7 @@ export const DateTimeFormPicker = ({
       {error && <HelperText type="error">{error.message}</HelperText>}
     </Container>
   );
-};
+}
 
 const styles = StyleSheet.create({
   border: {
