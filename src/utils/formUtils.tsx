@@ -8,13 +8,14 @@ import {
   Path,
   ResolverOptions,
 } from "react-hook-form";
-import { HelperText, TextInput } from "react-native-paper";
+import { HelperText, Switch, TextInput } from "react-native-paper";
 import { Dropdown, MultiSelect } from "react-native-element-dropdown";
 import { FormFieldOptions, FormFieldType } from "@types";
-import { Text } from "@styledComponents";
+import { Row, Text } from "@styledComponents";
 import { colors } from "@theme";
 import { CODE_ENSC } from "data";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { DateTimeFormPicker } from "components/form/dateTimePicker";
 
 export type ControlFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -51,11 +52,13 @@ const errorTxt = {
   invalidLastName: "Nom invalide, certains caractères ne sont pas traités",
   minLenghtPwd: "La longueur minimum est de 4 caractères",
   confirmPwd: "Les mot de passe ne correspondent pas",
-  invalidCode: "Code invalide. Demandez le code de l'année au BDE.",
+  invalidCode: "Code invalide : demandez le code de l'année au BDE",
+  dateOrder: "La date de fin doit être APRES la date de début",
 };
 
 export function getFieldProps<T extends FieldValues>(
   label: string,
+  type?: FormFieldType,
   required?: boolean,
   repeat?: string,
   optionRules?: string[]
@@ -72,6 +75,13 @@ export function getFieldProps<T extends FieldValues>(
       ...rules,
       validate: (value: string) => value === repeat || errorTxt.confirmPwd,
     };
+  if (type === "date") {
+    rules = {
+      ...rules,
+      validate: (value: { start: Date; end: Date }) =>
+        value.start <= value.end || errorTxt.dateOrder,
+    };
+  }
   if (optionRules)
     optionRules.forEach((element) => {
       switch (element) {
@@ -80,6 +90,7 @@ export function getFieldProps<T extends FieldValues>(
             ...rules,
             minLength: { value: 4, message: errorTxt.minLenghtPwd },
           };
+          break;
         case "name":
           rules = {
             ...rules,
@@ -88,6 +99,7 @@ export function getFieldProps<T extends FieldValues>(
               message: errorTxt.invalidName,
             },
           };
+          break;
       }
     });
   return { rules, newLabel };
@@ -113,6 +125,7 @@ export function getFieldInput<T extends FieldValues>({
             ref={ref}
             mode="outlined"
             multiline={options?.multiline}
+            numberOfLines={5}
             label={label}
             onChangeText={onChange}
             onBlur={onBlur}
@@ -151,7 +164,17 @@ export function getFieldInput<T extends FieldValues>({
     case "image":
       break;
     case "date":
-      break;
+      return (
+        <>
+          <DateTimeFormPicker
+            value={value}
+            allDayOption={options?.allDay}
+            onChange={onChange}
+            error={error}
+          />
+          {error && <HelperText type="error">{error.message}</HelperText>}
+        </>
+      );
     case "select":
       return (
         <View>
@@ -255,7 +278,7 @@ const styles = StyleSheet.create({
   container: {
     borderColor: colors.black,
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 5,
     overflow: "hidden",
   },
   inputSearch: { borderRadius: 5, height: 50 },

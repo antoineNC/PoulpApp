@@ -10,8 +10,14 @@ export const formatAllDate = (date: moment.MomentInput) => {
 export const formatDay = (date: moment.MomentInput) => {
   return capitalize(moment(date).format("ddd D MMM YYYY"));
 };
+export const formatHour = (date: moment.MomentInput) => {
+  return capitalize(moment(date).format("HH:mm"));
+};
 
-export const displayDate = (date: { end: Timestamp; start: Timestamp }) => {
+export const displayDateFromTimestamp = (date: {
+  end: Timestamp;
+  start: Timestamp;
+}) => {
   const startDate = date.start.toDate().toUTCString();
   const endDate = date.end.toDate().toUTCString();
   if (startDate === endDate) {

@@ -20,11 +20,12 @@ import { Button } from "react-native-paper";
 import { usePost } from "@firebase";
 import { postTags } from "data";
 import { colors } from "@theme";
+import { Timestamp } from "firebase/firestore";
 
 type FieldNames = {
   title: string;
   description: string;
-  date: number;
+  date?: { start: Timestamp; end: Timestamp };
   tags: string[];
   editor: { value: string; label: string };
   imageFile: string;
@@ -37,13 +38,13 @@ export default function UpdatePostScreen({
   const { post } = route.params;
   const { officeList } = useUnit($officeStore);
   const { updatePost } = usePost();
-  const defaultTags = post?.tags?.map((tag) => ({ value: tag, label: tag }));
   const { control, handleSubmit, setFocus } = useForm<FieldNames>({
     defaultValues: {
       title: post.title,
       description: post.description,
       editor: { value: post.editorId, label: post.editor?.name },
       tags: post.tags,
+      date: post.date,
     },
   });
   const officeChoices = officeList.map((office) => ({
@@ -58,12 +59,14 @@ export default function UpdatePostScreen({
       name: "editor",
       label: "Bureau",
       type: "select",
+      required: true,
       options: { choices: officeChoices },
     },
     {
       name: "title",
       label: "Titre du post",
       type: "text",
+      required: true,
     },
     {
       name: "description",
@@ -76,6 +79,11 @@ export default function UpdatePostScreen({
       label: "Tags",
       type: "chip",
       options: { choices: tagsChoices },
+    },
+    {
+      name: "date",
+      label: "Date de l'événement",
+      type: "date",
     },
   ];
 

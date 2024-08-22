@@ -32,6 +32,7 @@ const screenOptions = {
   headerTintColor: colors.white,
   headerStyle: { backgroundColor: colors.primary },
   headerShadowVisible: false,
+  headerBackTitleVisible: false,
   contentStyle: {
     backgroundColor: colors.primary,
   },

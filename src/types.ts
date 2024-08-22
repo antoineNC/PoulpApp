@@ -1,3 +1,4 @@
+import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { Timestamp } from "firebase/firestore";
 import { InputModeOptions } from "react-native";
 
@@ -118,4 +119,9 @@ export type FormFieldValues<T> = {
 export type DateType = {
   start: string;
   end: string;
+};
+export type DatePickerValues = {
+  show: boolean;
+  mode: "date" | "time";
+  value: Date;
 };

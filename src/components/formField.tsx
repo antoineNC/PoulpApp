@@ -26,6 +26,7 @@ function FormField<T extends FieldValues>(props: FormFieldType<T>) {
   } = props;
   const { newLabel, rules } = getFieldProps<T>(
     label,
+    type,
     required,
     repeat,
     options?.rules

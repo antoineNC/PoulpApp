@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import {
   Text,
   Image,
@@ -10,7 +10,7 @@ import {
 } from "@styledComponents";
 import { ViewPostProps } from "@navigation/navigationTypes";
 import { officeStyles } from "@styles";
-import { displayDate } from "utils/dateUtils";
+import { displayDateFromTimestamp } from "utils/dateUtils";
 import { useEffect, useState } from "react";
 import { DateType } from "@types";
 
@@ -20,14 +20,14 @@ export default function ViewPostScreen({ navigation, route }: ViewPostProps) {
   const [allDay, setAllDay] = useState<boolean>(false);
   useEffect(() => {
     if (post.date) {
-      const result = displayDate(post.date);
+      const result = displayDateFromTimestamp(post.date);
       setAllDay(result.allday);
       setDate(result.date);
     }
   }, []);
   return (
     <ContainerScroll>
-      <Row $padding="0 15px" $justify="flex-end">
+      <View style={{ paddingHorizontal: 15, alignItems: "flex-end" }}>
         <TouchableOpacity
           onPress={() =>
             post.editor &&
@@ -42,7 +42,7 @@ export default function ViewPostScreen({ navigation, route }: ViewPostProps) {
             <Text style={{ marginLeft: 10 }}>{post.editor?.name}</Text>
           </Row>
         </TouchableOpacity>
-      </Row>
+      </View>
       <Body>
         {post.tags?.length && post.tags.length > 0 && (
           <Row>
