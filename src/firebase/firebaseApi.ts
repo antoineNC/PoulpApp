@@ -506,12 +506,7 @@ export const usePost = () => {
     }
   };
 
-  const updatePost = async (props: {
-    editor: { value: string; label: string };
-    title: string;
-    description: string;
-    tags: string[];
-  }) => {
+  const updatePost = async (props: any) => {
     console.log({ props });
   };
 

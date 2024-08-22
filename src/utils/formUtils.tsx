@@ -1,5 +1,4 @@
 import { ReactElement } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
 import {
   Control,
   ControllerFieldState,
@@ -8,16 +7,13 @@ import {
   Path,
   ResolverOptions,
 } from "react-hook-form";
-import { HelperText } from "react-native-paper";
-import { Dropdown } from "react-native-element-dropdown";
 import { FormFieldOptions, FormFieldType } from "@types";
-import { Text } from "@styledComponents";
-import { colors } from "@theme";
 import { CODE_ENSC } from "data";
 import { DateTimeFormPicker } from "components/form/dateTimePicker";
 import { TextInputForm } from "components/form/textInput";
 import { ChipInputForm } from "components/form/chipInput";
 import { SelectInputForm } from "components/form/selectInput";
+import { ImagePickerForm } from "components/form/imagePicker";
 
 export type ControlFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -114,6 +110,7 @@ export function getFieldInput<T extends FieldValues>(
     case "text":
       return <TextInputForm<T> {...props} />;
     case "image":
+      return <ImagePickerForm<T> {...props} />;
       break;
     case "date":
       return <DateTimeFormPicker<T> {...props} />;

@@ -28,7 +28,7 @@ type FieldNames = {
   date?: { start: Timestamp; end: Timestamp };
   tags: string[];
   editor: { value: string; label: string };
-  imageFile: string;
+  imageFile?: string;
 };
 
 export default function UpdatePostScreen({
@@ -45,6 +45,7 @@ export default function UpdatePostScreen({
       editor: { value: post.editorId, label: post.editor?.name },
       tags: post.tags,
       date: post.date,
+      imageFile: post.imageUrl,
     },
   });
   const officeChoices = officeList.map((office) => ({
@@ -84,6 +85,11 @@ export default function UpdatePostScreen({
       name: "date",
       label: "Date de l'événement",
       type: "date",
+    },
+    {
+      name: "imageFile",
+      label: "Image",
+      type: "image",
     },
   ];
 
