@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import {
   Control,
@@ -8,14 +8,16 @@ import {
   Path,
   ResolverOptions,
 } from "react-hook-form";
-import { HelperText, Switch, TextInput } from "react-native-paper";
-import { Dropdown, MultiSelect } from "react-native-element-dropdown";
+import { HelperText } from "react-native-paper";
+import { Dropdown } from "react-native-element-dropdown";
 import { FormFieldOptions, FormFieldType } from "@types";
-import { Row, Text } from "@styledComponents";
+import { Text } from "@styledComponents";
 import { colors } from "@theme";
 import { CODE_ENSC } from "data";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { DateTimeFormPicker } from "components/form/dateTimePicker";
+import { TextInputForm } from "components/form/textInput";
+import { ChipInput } from "components/form/chipInput";
+import { SelectInput } from "components/form/selectInput";
 
 export type ControlFieldProps<T extends FieldValues> = {
   control: Control<T>;
@@ -33,7 +35,7 @@ export type FormFieldProps = {
   submit: (e?: React.BaseSyntheticEvent) => Promise<void>;
 };
 
-type FieldInputProps<T extends FieldValues> = FormFieldProps & {
+export type FieldInputProps<T extends FieldValues> = FormFieldProps & {
   field: ControllerRenderProps<T, Path<T>>;
   fieldState: ControllerFieldState;
 };
@@ -78,8 +80,8 @@ export function getFieldProps<T extends FieldValues>(
   if (type === "date") {
     rules = {
       ...rules,
-      validate: (value: { start: Date; end: Date }) =>
-        value.start <= value.end || errorTxt.dateOrder,
+      validate: (value?: { start: Date; end: Date }) =>
+        value && (value.start <= value.end || errorTxt.dateOrder),
     };
   }
   if (optionRules)
@@ -105,205 +107,30 @@ export function getFieldProps<T extends FieldValues>(
   return { rules, newLabel };
 }
 
-export function getFieldInput<T extends FieldValues>({
-  label,
-  type,
-  options,
-  index,
-  lastInput,
-  setFocus,
-  submit,
-  field: { onChange, onBlur, value, ref },
-  fieldState: { invalid, error },
-}: FieldInputProps<T>): ReactElement {
-  const [hide, setHide] = useState(true);
-  switch (type) {
+export function getFieldInput<T extends FieldValues>(
+  props: FieldInputProps<T>
+): ReactElement {
+  switch (props.type) {
     case "text":
-      return (
-        <View>
-          <TextInput
-            ref={ref}
-            mode="outlined"
-            multiline={options?.multiline}
-            numberOfLines={5}
-            label={label}
-            onChangeText={onChange}
-            onBlur={onBlur}
-            value={value}
-            error={invalid}
-            autoFocus={index === 0}
-            enterKeyHint={lastInput ? "done" : "next"}
-            inputMode={options?.inputMode}
-            autoCapitalize={options?.autoCap}
-            secureTextEntry={options?.secureText && hide}
-            right={
-              options?.secureText ? (
-                hide ? (
-                  <TextInput.Icon
-                    icon="eye"
-                    onPress={() => setHide((prev) => !prev)}
-                  />
-                ) : (
-                  <TextInput.Icon
-                    icon="eye-off"
-                    onPress={() => setHide((prev) => !prev)}
-                  />
-                )
-              ) : null
-            }
-            onSubmitEditing={
-              lastInput
-                ? async (e) => await submit(e)
-                : () => setFocus(index + 1)
-            }
-            style={{ backgroundColor: colors.secondary }}
-          />
-          {error && <HelperText type="error">{error.message}</HelperText>}
-        </View>
-      );
+      return <TextInputForm<T> {...props} />;
     case "image":
       break;
     case "date":
       return (
-        <>
-          <DateTimeFormPicker
-            value={value}
-            allDayOption={options?.allDay}
-            onChange={onChange}
-            error={error}
-          />
-          {error && <HelperText type="error">{error.message}</HelperText>}
-        </>
+        <DateTimeFormPicker
+          value={props.field.value}
+          allDayOption={props.options?.allDay}
+          onChange={props.field.onChange}
+          error={props.fieldState.error}
+        />
       );
     case "select":
-      return (
-        <View>
-          {options?.choices && (
-            <>
-              <Text $dark $size="s" style={styles.label}>
-                {label}
-              </Text>
-              <Dropdown
-                data={options.choices}
-                value={value}
-                valueField="value"
-                labelField="label"
-                onBlur={onBlur}
-                onChange={onChange}
-                style={styles.dropdown}
-                placeholder={"Sélectionner un bureau"}
-                containerStyle={styles.container}
-                activeColor={colors.secondary}
-                mode="modal"
-              />
-            </>
-          )}
-          {error && <HelperText type="error">{error.message}</HelperText>}
-        </View>
-      );
+      return <SelectInput<T> {...props} />;
     case "chip":
-      const renderItem = (item: { value: string; label: string }) => {
-        return (
-          <View key={item.value} style={styles.item}>
-            <Text $dark>{item.label}</Text>
-          </View>
-        );
-      };
-      return (
-        <View>
-          {options?.choices && (
-            <>
-              <Text $dark $size="s" style={styles.label}>
-                {label}
-              </Text>
-              <MultiSelect
-                data={options.choices}
-                value={value}
-                valueField="value"
-                labelField="label"
-                onChange={onChange}
-                onBlur={onBlur}
-                mode="modal"
-                search
-                placeholder="Sélectionner des tags"
-                searchPlaceholder="Chercher..."
-                style={styles.dropdown}
-                containerStyle={styles.container}
-                inputSearchStyle={styles.inputSearch}
-                activeColor={colors.secondary}
-                renderItem={renderItem}
-                renderSelectedItem={(item, unSelect) => (
-                  <TouchableOpacity
-                    key={item.value}
-                    onPress={() => unSelect && unSelect(item)}
-                  >
-                    <View style={styles.selectedStyle}>
-                      <Text $size="m" style={styles.textSelectedStyle}>
-                        {item.label}
-                      </Text>
-                      <AntDesign color="white" name="delete" />
-                    </View>
-                  </TouchableOpacity>
-                )}
-              />
-              {error && <HelperText type="error">{error.message}</HelperText>}
-            </>
-          )}
-        </View>
-      );
+      return <ChipInput<T> {...props} />;
     case "double-select":
       break;
     default:
   }
   return <View></View>;
 }
-
-const styles = StyleSheet.create({
-  // select input
-  dropdown: {
-    height: 50,
-    borderWidth: 0.7,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-  },
-  label: {
-    alignSelf: "flex-start",
-    backgroundColor: colors.secondary,
-    zIndex: 2,
-    left: 15,
-    top: 8,
-    paddingHorizontal: 5,
-  },
-  //list of choices
-  container: {
-    borderColor: colors.black,
-    borderWidth: 1,
-    borderRadius: 5,
-    overflow: "hidden",
-  },
-  inputSearch: { borderRadius: 5, height: 50 },
-  item: {
-    padding: 20,
-  },
-  // chips
-  selectedStyle: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 15,
-    backgroundColor: colors.primary,
-    shadowColor: "#000",
-    marginTop: 8,
-    marginRight: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
-  },
-  textSelectedStyle: { marginRight: 5 },
-});

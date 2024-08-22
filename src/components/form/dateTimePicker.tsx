@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Checkbox, Switch } from "react-native-paper";
+import { Checkbox, HelperText, Switch } from "react-native-paper";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
@@ -231,6 +231,7 @@ export const DateTimeFormPicker = ({
           </View>
         </>
       )}
+      {error && <HelperText type="error">{error.message}</HelperText>}
     </Container>
   );
 };
