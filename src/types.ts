@@ -121,7 +121,7 @@ export type DateType = {
   end: string;
 };
 export type DatePickerValues = {
-  show: boolean;
+  showStart?: boolean;
+  showEnd?: boolean;
   mode: "date" | "time";
-  value: Date;
 };

@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Checkbox, HelperText, Switch } from "react-native-paper";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { Container, Row, Text } from "@styledComponents";
-import { DatePickerValues, Post } from "@types";
+import { DatePickerValues } from "@types";
 import {
   displayDateFromTimestamp,
   formatDay,
@@ -13,7 +11,7 @@ import {
 } from "utils/dateUtils";
 import { colors } from "@theme";
 import { Timestamp } from "firebase/firestore";
-import { FieldError, FieldValues } from "react-hook-form";
+import { FieldValues } from "react-hook-form";
 import { FieldInputProps } from "utils/formUtils";
 
 export function DateTimeFormPicker<T extends FieldValues>({
@@ -22,57 +20,38 @@ export function DateTimeFormPicker<T extends FieldValues>({
   options,
 }: FieldInputProps<T>) {
   const startEqualsEnd = value ? displayDateFromTimestamp(value).allday : false;
-  const [startPickerValues, setStartPickerValues] = useState<DatePickerValues>({
-    show: false,
+  const startDate = value?.start.toDate() || new Date();
+  const endDate = value?.end.toDate() || new Date();
+  const [picker, setPicker] = useState<DatePickerValues>({
     mode: "date",
-    value: value?.start.toDate() || new Date(),
-  });
-  const [endPickerValues, setEndPickerValues] = useState<DatePickerValues>({
-    show: false,
-    mode: "date",
-    value: value?.end.toDate() || new Date(),
+    showStart: false,
+    showEnd: false,
   });
   const [allDay, setAllDay] = useState(options?.allDay || startEqualsEnd);
   const [isDate, setIsDate] = useState(value ? true : false);
   const handleOnChange = (period: "start" | "end", date?: Date) => {
-    if (period === "start") {
-      setStartPickerValues((prev) => ({
-        ...prev,
-        show: false,
-        value: date || prev.value,
-      }));
-      onChange({
-        start: Timestamp.fromDate(date || startPickerValues.value),
-        end: Timestamp.fromDate(endPickerValues.value),
-      });
-    } else {
-      setEndPickerValues((prev) => ({
-        ...prev,
-        show: false,
-        value: date || prev.value,
-      }));
-      onChange({
-        start: Timestamp.fromDate(startPickerValues.value),
-        end: Timestamp.fromDate(date || endPickerValues.value),
-      });
-    }
+    onChange({
+      start: Timestamp.fromDate(period === "start" && date ? date : startDate),
+      end: Timestamp.fromDate(period === "end" && date ? date : endDate),
+    });
+    setPicker((prev) => ({ ...prev, showEnd: false, showStart: false }));
   };
   const handleIsDate = (value: boolean) => {
-    if (value)
-      onChange({
-        start: Timestamp.fromDate(startPickerValues.value),
-        end: Timestamp.fromDate(endPickerValues.value),
-      });
-    else onChange(undefined);
+    onChange(
+      value
+        ? {
+            start: Timestamp.fromDate(startDate),
+            end: Timestamp.fromDate(endDate),
+          }
+        : undefined
+    );
     setIsDate(value);
   };
   const handleAllday = () => {
     // la condition est inversée puisqu'on prend la valeur avant update
     onChange({
-      start: Timestamp.fromDate(startPickerValues.value),
-      end: allDay
-        ? Timestamp.fromDate(endPickerValues.value)
-        : Timestamp.fromDate(startPickerValues.value),
+      start: Timestamp.fromDate(startDate),
+      end: Timestamp.fromDate(allDay ? endDate : startDate),
     });
     setAllDay(!allDay);
   };
@@ -132,15 +111,11 @@ export function DateTimeFormPicker<T extends FieldValues>({
               <Row $justify="space-evenly" style={{ flex: 5 }}>
                 <TouchableOpacity
                   onPress={() => {
-                    setStartPickerValues((prev) => ({
-                      ...prev,
-                      show: true,
-                      mode: "date",
-                    }));
+                    setPicker({ mode: "date", showStart: true });
                   }}
                 >
                   <View style={[styles.border, styles.dateContainer]}>
-                    <Text $dark>{formatDay(startPickerValues.value)}</Text>
+                    <Text $dark>{formatDay(startDate)}</Text>
                   </View>
                 </TouchableOpacity>
                 {!allDay && (
@@ -148,15 +123,11 @@ export function DateTimeFormPicker<T extends FieldValues>({
                     <Text $dark>{" à "}</Text>
                     <TouchableOpacity
                       onPress={() => {
-                        setStartPickerValues((prev) => ({
-                          ...prev,
-                          show: true,
-                          mode: "time",
-                        }));
+                        setPicker({ mode: "time", showStart: true });
                       }}
                     >
                       <View style={[styles.border, styles.dateContainer]}>
-                        <Text $dark>{formatHour(startPickerValues.value)}</Text>
+                        <Text $dark>{formatHour(startDate)}</Text>
                       </View>
                     </TouchableOpacity>
                   </>
@@ -164,11 +135,11 @@ export function DateTimeFormPicker<T extends FieldValues>({
               </Row>
             </Row>
             {/* Start Date picker */}
-            {startPickerValues?.show && (
+            {picker?.showStart && (
               <DateTimePicker
-                value={startPickerValues.value}
+                value={startDate}
                 onChange={(e, date) => handleOnChange("start", date)}
-                mode={startPickerValues.mode}
+                mode={picker.mode}
                 is24Hour
               />
             )}
@@ -182,39 +153,31 @@ export function DateTimeFormPicker<T extends FieldValues>({
                   <Row $justify="space-evenly" style={{ flex: 5 }}>
                     <TouchableOpacity
                       onPress={() => {
-                        setEndPickerValues((prev) => ({
-                          ...prev,
-                          show: true,
-                          mode: "date",
-                        }));
+                        setPicker({ mode: "date", showEnd: true });
                       }}
                     >
                       <View style={[styles.border, styles.dateContainer]}>
-                        <Text $dark>{formatDay(endPickerValues.value)}</Text>
+                        <Text $dark>{formatDay(endDate)}</Text>
                       </View>
                     </TouchableOpacity>
                     <Text $dark>{" à "}</Text>
                     <TouchableOpacity
                       onPress={() => {
-                        setEndPickerValues((prev) => ({
-                          ...prev,
-                          show: true,
-                          mode: "time",
-                        }));
+                        setPicker({ mode: "time", showEnd: true });
                       }}
                     >
                       <View style={[styles.border, styles.dateContainer]}>
-                        <Text $dark>{formatHour(endPickerValues.value)}</Text>
+                        <Text $dark>{formatHour(endDate)}</Text>
                       </View>
                     </TouchableOpacity>
                   </Row>
                 </Row>
                 {/* End Date picker */}
-                {endPickerValues?.show && (
+                {picker?.showEnd && (
                   <DateTimePicker
-                    value={endPickerValues.value}
+                    value={endDate}
                     onChange={(e, date) => handleOnChange("end", date)}
-                    mode={endPickerValues.mode}
+                    mode={picker.mode}
                     is24Hour
                   />
                 )}
