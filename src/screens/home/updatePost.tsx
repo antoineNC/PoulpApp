@@ -1,26 +1,19 @@
-import { TouchableOpacity, View } from "react-native";
-import { useForm } from "react-hook-form";
-import CustomField from "components/formField";
-import {
-  Text,
-  Image,
-  Body,
-  Row,
-  Title2,
-  ContainerScroll,
-  BodyTitle,
-  Container,
-} from "@styledComponents";
-import { UpdatePostProps } from "@navigation/navigationTypes";
-import { authStyles, officeStyles } from "@styles";
-import { FormFieldValues } from "@types";
-import { useUnit } from "effector-react";
-import { $officeStore } from "@context/officeStore";
-import { Button } from "react-native-paper";
-import { usePost } from "@firebase";
-import { postTags } from "data";
-import { colors } from "@theme";
+import { useState } from "react";
+import { View } from "react-native";
 import { Timestamp } from "firebase/firestore";
+import { useForm } from "react-hook-form";
+import { useUnit } from "effector-react";
+import { Button, Modal } from "react-native-paper";
+import Spinner from "react-native-loading-spinner-overlay";
+import { usePost } from "@firebase";
+import { UpdatePostProps } from "@navigation/navigationTypes";
+import { $officeStore } from "@context/officeStore";
+import CustomField from "components/formField";
+import { ContainerScroll } from "@styledComponents";
+import { FormFieldValues } from "@types";
+import { authStyles, officeStyles } from "@styles";
+import { colors } from "@theme";
+import { postTags } from "data";
 
 export type FieldNames = {
   title: string;
@@ -37,6 +30,7 @@ export default function UpdatePostScreen({
 }: UpdatePostProps) {
   const { post } = route.params;
   const { officeList } = useUnit($officeStore);
+  const [loading, setLoading] = useState(false);
   const { updatePost } = usePost();
   const { control, handleSubmit, setFocus } = useForm<FieldNames>({
     defaultValues: {
@@ -94,12 +88,26 @@ export default function UpdatePostScreen({
   ];
 
   const onSubmit = async (data: FieldNames) => {
-    await updatePost({ ...data }, post.id);
-    navigation.goBack();
+    try {
+      setLoading(true);
+      await updatePost({ ...data }, post.id);
+    } catch (e) {
+      console.log("[updatepost]", e);
+    } finally {
+      setLoading(false);
+      navigation.goBack();
+    }
   };
 
   return (
     <ContainerScroll style={officeStyles.container}>
+      {loading && (
+        <Spinner
+          visible={loading}
+          textContent={"Modification..."}
+          textStyle={{ color: colors.white }}
+        />
+      )}
       <View style={authStyles.formList}>
         {values.map((field, index) => (
           <CustomField<FieldNames>
@@ -122,6 +130,7 @@ export default function UpdatePostScreen({
           onPress={handleSubmit(onSubmit)}
           uppercase
           buttonColor={colors.primary}
+          disabled={loading}
         />
       </View>
     </ContainerScroll>

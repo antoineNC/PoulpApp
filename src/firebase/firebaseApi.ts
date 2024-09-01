@@ -509,34 +509,39 @@ export const usePost = () => {
   };
 
   const updatePost = async (props: FieldNames, id: string) => {
-    const updatedFields: Record<string, any> = {
-      title: props.title,
-      description: props.description,
-      editorId: props.editor.value,
-    };
-    if (props.tags) {
-      updatedFields["tags"] = arrayUnion(...props.tags);
+    try {
+      const updatedFields: Record<string, any> = {
+        title: props.title,
+        description: props.description,
+        editorId: props.editor.value,
+      };
+      if (props.tags) {
+        updatedFields["tags"] = arrayUnion(...props.tags);
+      }
+      if (props.imageFile) {
+        if (
+          !props.imageFile.startsWith(
+            "https://firebasestorage.googleapis.com/v0/b/poulpappv2.appspot.com"
+          )
+        ) {
+          const result = await fetch(props.imageFile);
+          const imgBlob = await result.blob();
+          const fileName = id + uuid.v4();
+          const fileRef = ref(imgPostRef, fileName);
+          await uploadBytes(fileRef, imgBlob);
+          updatedFields["imageId"] = fileName;
+        }
+      } else {
+        updatedFields["imageId"] = "";
+      }
+      if (props.date) {
+        updatedFields["date"] = { ...props.date };
+      }
+      const post = doc(postCollection, id);
+      await updateDoc(post, updatedFields);
+    } catch (e) {
+      console.error("[updatepost]", e);
     }
-    if (
-      props.imageFile &&
-      !props.imageFile.startsWith(
-        "https://firebasestorage.googleapis.com/v0/b/poulpappv2.appspot.com"
-      )
-    ) {
-      const result = await fetch(props.imageFile);
-      const imgBlob = await result.blob();
-      const fileName = id + uuid.v4();
-      const fileRef = ref(imgPostRef, fileName);
-      await uploadBytes(fileRef, imgBlob);
-      updatedFields["imageId"] = fileName;
-    } else if (props.imageFile === "") {
-      updatedFields["imageId"] = "";
-    }
-    if (props.date) {
-      updatedFields["date"] = { ...props.date };
-    }
-    const post = doc(postCollection, id);
-    await updateDoc(post, updatedFields);
   };
 
   return { getMorePost, updatePost };
