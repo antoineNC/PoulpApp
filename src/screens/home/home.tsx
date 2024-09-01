@@ -57,15 +57,15 @@ export default function HomeScreen({ navigation }: HomeProps) {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
           return (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => {
-                navigation.navigate("viewPost", { post: item });
-              }}
-              style={{ flex: 1 }}
-            >
-              <PostItem post={item} navigation={navigation} />
-            </TouchableOpacity>
+            // <TouchableOpacity
+            //   key={item.id}
+            //   onPress={() => {
+            //     navigation.navigate("viewPost", { post: item });
+            //   }}
+            //   style={{ flex: 1 }}
+            // >
+            <PostItem post={item} navigation={navigation} />
+            // </TouchableOpacity>
           );
         }}
         ItemSeparatorComponent={() => <View style={{ marginVertical: 10 }} />}
