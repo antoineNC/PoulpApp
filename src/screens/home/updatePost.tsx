@@ -22,7 +22,7 @@ import { postTags } from "data";
 import { colors } from "@theme";
 import { Timestamp } from "firebase/firestore";
 
-type FieldNames = {
+export type FieldNames = {
   title: string;
   description: string;
   date?: { start: Timestamp; end: Timestamp };
@@ -94,7 +94,7 @@ export default function UpdatePostScreen({
   ];
 
   const onSubmit = async (data: FieldNames) => {
-    await updatePost({ ...data });
+    await updatePost({ ...data }, post.id);
     navigation.goBack();
   };
 

@@ -44,7 +44,7 @@ export default function ViewPostScreen({ navigation, route }: ViewPostProps) {
         </TouchableOpacity>
       </View>
       <Body>
-        {post.tags?.length && post.tags.length > 0 && (
+        {post.tags && post.tags.length > 0 && (
           <Row>
             <BodyTitle>Tags : </BodyTitle>
             {post.tags.map((value, index) => (

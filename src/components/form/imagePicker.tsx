@@ -10,7 +10,6 @@ export function ImagePickerForm<T extends FieldValues>({
   field: { value, onChange },
   label,
 }: FieldInputProps<T>) {
-  console.log({ value });
   const image = value;
   const pickImageFromLibrary = async () => {
     // No permissions request is necessary for launching the image library
@@ -20,7 +19,6 @@ export function ImagePickerForm<T extends FieldValues>({
       aspect: [1, 1],
       quality: 1,
     });
-    console.log(result);
     if (!result.canceled) {
       onChange(result.assets[0].uri);
     }
@@ -32,7 +30,6 @@ export function ImagePickerForm<T extends FieldValues>({
       aspect: [1, 1],
       quality: 1,
     });
-    console.log(result);
     if (!result.canceled) {
       onChange(result.assets[0].uri);
     }

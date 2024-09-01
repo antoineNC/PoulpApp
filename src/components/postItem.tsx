@@ -29,7 +29,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
       setAllDay(result.allday);
       setDate(result.date);
     }
-  }, []);
+  }, [post]);
   return (
     <Container key={post.id}>
       <Row $padding="0 15px">
@@ -48,7 +48,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
         <View>
           <Title2>{post.title}</Title2>
           <Row $padding="0 10px">
-            {post.tags?.length &&
+            {post.tags &&
               post.tags.length > 0 &&
               post.tags.map((value, index) => (
                 <Text key={index}>[{value}] </Text>

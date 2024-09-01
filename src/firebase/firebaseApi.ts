@@ -30,15 +30,16 @@ import {
   getDownloadURL,
   getStorage,
   ref,
+  uploadBytes,
 } from "@firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import uuid from "react-native-uuid";
 
 import app from "firebase/firebaseConfig";
 import { actionSession } from "@context/sessionStore";
 import { actionOffice } from "@context/officeStore";
-import { actionStudent } from "@context/studentStore";
 import { actionPost } from "@context/postStore";
-import { QueryConstraint } from "firebase/firestore";
+import { arrayUnion, QueryConstraint } from "firebase/firestore";
 import {
   Club,
   Office,
@@ -48,6 +49,7 @@ import {
   Student,
   UserType,
 } from "@types";
+import { FieldNames } from "@screens/home/updatePost";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -506,8 +508,35 @@ export const usePost = () => {
     }
   };
 
-  const updatePost = async (props: any) => {
-    console.log({ props });
+  const updatePost = async (props: FieldNames, id: string) => {
+    const updatedFields: Record<string, any> = {
+      title: props.title,
+      description: props.description,
+      editorId: props.editor.value,
+    };
+    if (props.tags) {
+      updatedFields["tags"] = arrayUnion(...props.tags);
+    }
+    if (
+      props.imageFile &&
+      !props.imageFile.startsWith(
+        "https://firebasestorage.googleapis.com/v0/b/poulpappv2.appspot.com"
+      )
+    ) {
+      const result = await fetch(props.imageFile);
+      const imgBlob = await result.blob();
+      const fileName = id + uuid.v4();
+      const fileRef = ref(imgPostRef, fileName);
+      await uploadBytes(fileRef, imgBlob);
+      updatedFields["imageId"] = fileName;
+    } else if (props.imageFile === "") {
+      updatedFields["imageId"] = "";
+    }
+    if (props.date) {
+      updatedFields["date"] = { ...props.date };
+    }
+    const post = doc(postCollection, id);
+    await updateDoc(post, updatedFields);
   };
 
   return { getMorePost, updatePost };

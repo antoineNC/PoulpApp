@@ -21,7 +21,7 @@ export function ChipInputForm<T extends FieldValues>({
         </Text>
         <MultiSelect
           data={options.choices}
-          value={value}
+          value={value || []}
           valueField="value"
           labelField="label"
           onChange={onChange}
