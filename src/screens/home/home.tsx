@@ -53,27 +53,17 @@ export default function HomeScreen({ navigation }: HomeProps) {
       <FlatList
         data={postsWithOffice}
         keyExtractor={(item) => item.id}
-        fadingEdgeLength={5}
+        // fadingEdgeLength={5}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => {
-          return (
-            // <TouchableOpacity
-            //   key={item.id}
-            //   onPress={() => {
-            //     navigation.navigate("viewPost", { post: item });
-            //   }}
-            //   style={{ flex: 1 }}
-            // >
-            <PostItem post={item} navigation={navigation} />
-            // </TouchableOpacity>
-          );
-        }}
+        renderItem={({ item }) => (
+          <PostItem post={item} navigation={navigation} />
+        )}
         ItemSeparatorComponent={() => <View style={{ marginVertical: 10 }} />}
         // onEndReached={handleEndReached}
         // onEndReachedThreshold={0.5}
         ListFooterComponent={
           <View style={{ minHeight: 40 }}>
-            {loading ? <ActivityIndicator animating={true} /> : null}
+            {/* {loading ? <ActivityIndicator animating={true} /> : null} */}
           </View>
         }
       />

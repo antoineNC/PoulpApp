@@ -30,7 +30,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
   const { role } = useUnit($sessionStore);
   const [date, setDate] = useState<DateType>({ start: "null", end: "null" });
   const [allDay, setAllDay] = useState<boolean>(false);
-  const [textShown, setTextShown] = useState(false); //To show ur remaining Text
+  const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
   const [showImage, setShowImage] = useState(false);
   useEffect(() => {
@@ -51,31 +51,31 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
     []
   );
   return (
-    <Container key={post.id}>
-      <Row $padding="0 15px">
-        <TouchableOpacity
-          onPress={() =>
-            navigation &&
-            post.editor &&
-            navigation.navigate("officeContainer", {
-              screen: "viewOffice",
-              params: { office: post.editor },
-            })
-          }
-        >
-          <Image source={{ uri: post.editor?.logoUrl }} $size={50} />
-        </TouchableOpacity>
-        <View style={{ flex: 1 }}>
-          <Title2>{post.title}</Title2>
-          <Row $padding="0 10px" style={{ flexWrap: "wrap" }}>
-            {post.tags &&
-              post.tags.map((value, index) => (
-                <Text key={index}>[{value}] </Text>
-              ))}
-          </Row>
-        </View>
-      </Row>
+    <Container>
       <Body>
+        <Row>
+          <TouchableOpacity
+            onPress={() =>
+              navigation &&
+              post.editor &&
+              navigation.navigate("officeContainer", {
+                screen: "viewOffice",
+                params: { office: post.editor },
+              })
+            }
+          >
+            <Image source={{ uri: post.editor?.logoUrl }} $size={50} />
+          </TouchableOpacity>
+          <View style={{ flex: 1 }}>
+            <Title2>{post.title}</Title2>
+            <Row $padding="0 10px" style={{ flexWrap: "wrap" }}>
+              {post.tags &&
+                post.tags.map((value, index) => (
+                  <Text key={index}>[{value}] </Text>
+                ))}
+            </Row>
+          </View>
+        </Row>
         {post.date && (
           <Row>
             <BodyTitle>Date : </BodyTitle>
@@ -97,7 +97,6 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
             </Container>
           </Row>
         )}
-
         <Text
           numberOfLines={textShown ? undefined : 3}
           onTextLayout={onTextLayout}
