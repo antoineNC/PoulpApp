@@ -1,7 +1,5 @@
-import { TouchableOpacity } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { IconButton } from "react-native-paper";
-import Ionicons from "react-native-vector-icons/Ionicons";
 
 import {
   FamCupTabParamList,
@@ -20,7 +18,8 @@ import OfficesScreen from "@screens/office/offices";
 import ViewOfficeScreen from "@screens/office/viewOffice";
 import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
-import { Image, Row, Text, Title2 } from "@styledComponents";
+import { Image, Row, Title2 } from "@styledComponents";
+import CreatePostScreen from "@screens/home/createPost";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -67,6 +66,21 @@ export function HomeNavigator({
           headerTitle: () => (
             <Row>
               <Title2>{route.params.post.title}</Title2>
+            </Row>
+          ),
+        })}
+      />
+      <HomeStack.Screen
+        name="createPost"
+        component={CreatePostScreen}
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitle: () => (
+            <Row>
+              <Title2>Modification du post</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
             </Row>
           ),
         })}

@@ -33,6 +33,7 @@ export type TabBarScreenProps<T extends keyof TabBarParamList> =
 export type HomeTabParamList = {
   home: undefined;
   viewPost: { post: Post };
+  createPost: undefined;
   updatePost: { post: Post };
   calendar: undefined;
 };
@@ -43,6 +44,7 @@ export type HomeTabScreenProps<T extends keyof HomeTabParamList> =
   >;
 export type HomeProps = HomeTabScreenProps<"home">;
 export type ViewPostProps = HomeTabScreenProps<"viewPost">;
+export type CreatePostProps = HomeTabScreenProps<"createPost">;
 export type UpdatePostProps = HomeTabScreenProps<"updatePost">;
 
 // === Office tab
