@@ -10,6 +10,7 @@ import {
 import { AnimatedFAB } from "react-native-paper";
 import { useUnit } from "effector-react";
 
+import { $sessionStore } from "@context/sessionStore";
 import { $postStore } from "@context/postStore";
 import { $officeStore } from "@context/officeStore";
 import { PostItem } from "components/postItem";
@@ -19,6 +20,7 @@ import { HomeProps } from "@navigation/navigationTypes";
 import { Office, Post } from "@types";
 
 export default function HomeScreen({ navigation }: HomeProps) {
+  const { role } = useUnit($sessionStore);
   const { posts, lastVisible } = useUnit($postStore);
   const { officeList } = useUnit($officeStore);
   const { getMorePost } = usePost();
@@ -88,16 +90,19 @@ export default function HomeScreen({ navigation }: HomeProps) {
           </View>
         }
       />
-      <AnimatedFAB
-        icon={"plus"}
-        label={"Créer un post"}
-        extended={isExtended}
-        onPress={() => navigation.navigate("createPost")}
-        visible={true}
-        animateFrom={"right"}
-        iconMode={"static"}
-        style={[styles.fabStyle]}
-      />
+      {["OFFICE_ROLE", "ADMIN_ROLE"].includes(role) && (
+        <AnimatedFAB
+          icon={"plus"}
+          label={"Créer un post"}
+          extended={isExtended}
+          onPress={() => navigation.navigate("createPost")}
+          visible={true}
+          animateFrom={"right"}
+          iconMode={"static"}
+          style={[styles.fabStyle]}
+          variant="secondary"
+        />
+      )}
     </Container>
   );
 }
