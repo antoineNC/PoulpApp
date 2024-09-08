@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { Timestamp } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 import { useUnit } from "effector-react";
-import { Button, Modal } from "react-native-paper";
+import { Button } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 import { usePost } from "@firebase";
 import { UpdatePostProps } from "@navigation/navigationTypes";

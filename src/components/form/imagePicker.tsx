@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Alert, Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { IconButton, MD3Colors } from "react-native-paper";
 import { FieldValues } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
+import ImageView from "react-native-image-viewing";
 import { Container, Row, Text } from "@styledComponents";
 import { FieldInputProps } from "utils/formUtils";
 import { colors } from "@theme";
@@ -11,6 +13,7 @@ export function ImagePickerForm<T extends FieldValues>({
   label,
 }: FieldInputProps<T>) {
   const image = value;
+  const [showImage, setShowImage] = useState(false);
   const pickImageFromLibrary = async () => {
     // No permissions request is necessary for launching the image library
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -90,7 +93,15 @@ export function ImagePickerForm<T extends FieldValues>({
             style={{ position: "absolute", right: 0, zIndex: 10 }}
             onPress={deletePickChoice}
           />
-          <Image source={{ uri: image }} style={styles.image} />
+          <TouchableOpacity onPress={() => setShowImage(true)}>
+            <Image source={{ uri: image }} style={styles.image} />
+          </TouchableOpacity>
+          <ImageView
+            images={[{ uri: image }]}
+            imageIndex={0}
+            visible={showImage}
+            onRequestClose={() => setShowImage(false)}
+          />
         </View>
       )}
     </Container>
