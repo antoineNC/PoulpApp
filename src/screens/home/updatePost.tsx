@@ -15,7 +15,7 @@ import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
 
-export type FieldNames = {
+export type PostFieldNames = {
   title: string;
   description: string;
   date?: { start: Timestamp; end: Timestamp };
@@ -32,7 +32,7 @@ export default function UpdatePostScreen({
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
   const { updatePost } = usePost();
-  const { control, handleSubmit, setFocus } = useForm<FieldNames>({
+  const { control, handleSubmit, setFocus } = useForm<PostFieldNames>({
     defaultValues: {
       title: post.title,
       description: post.description,
@@ -49,7 +49,7 @@ export default function UpdatePostScreen({
   const tagsChoices = postTags
     .sort()
     .map((tag) => ({ value: tag, label: tag }));
-  const values: FormFieldValues<FieldNames> = [
+  const values: FormFieldValues<PostFieldNames> = [
     {
       name: "editor",
       label: "Bureau",
@@ -87,7 +87,7 @@ export default function UpdatePostScreen({
     },
   ];
 
-  const onSubmit = async (data: FieldNames) => {
+  const onSubmit = async (data: PostFieldNames) => {
     try {
       setLoading(true);
       await updatePost({ ...data }, post.id);
@@ -110,7 +110,7 @@ export default function UpdatePostScreen({
       )}
       <View style={authStyles.formList}>
         {values.map((field, index) => (
-          <CustomField<FieldNames>
+          <CustomField<PostFieldNames>
             {...field}
             key={index}
             control={control}

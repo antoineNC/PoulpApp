@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, View, TouchableOpacity } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import {
+  FlatList,
+  View,
+  TouchableOpacity,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  StyleSheet,
+} from "react-native";
+import { AnimatedFAB } from "react-native-paper";
 import { useUnit } from "effector-react";
 
 import { $postStore } from "@context/postStore";
@@ -48,9 +55,23 @@ export default function HomeScreen({ navigation }: HomeProps) {
     }
   }, [loading, lastVisible]);
 
+  const [isExtended, setIsExtended] = useState(true);
+
+  const onScroll = ({
+    nativeEvent,
+  }: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+    setIsExtended(currentScrollPosition <= 0);
+  };
+
+  const fabStyle = { ["right"]: 16 };
+
   return (
     <Container>
       <FlatList
+        onScroll={onScroll}
         data={postsWithOffice}
         keyExtractor={(item) => item.id}
         // fadingEdgeLength={5}
@@ -67,6 +88,24 @@ export default function HomeScreen({ navigation }: HomeProps) {
           </View>
         }
       />
+      <AnimatedFAB
+        icon={"plus"}
+        label={"Créer un post"}
+        extended={isExtended}
+        onPress={() => navigation.navigate("createPost")}
+        visible={true}
+        animateFrom={"right"}
+        iconMode={"static"}
+        style={[styles.fabStyle]}
+      />
     </Container>
   );
 }
+
+const styles = StyleSheet.create({
+  fabStyle: {
+    bottom: 20,
+    right: 16,
+    position: "absolute",
+  },
+});

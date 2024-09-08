@@ -13,17 +13,21 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
+  addDoc,
   updateDoc,
+  setDoc,
+  deleteDoc,
   query,
   where,
-  setDoc,
   orderBy,
   onSnapshot,
   DocumentSnapshot,
-  getDocs,
   QuerySnapshot,
   startAfter,
-  deleteDoc,
+  arrayUnion,
+  QueryConstraint,
+  Timestamp,
 } from "@firebase/firestore";
 import {
   StorageReference,
@@ -40,7 +44,6 @@ import app from "firebase/firebaseConfig";
 import { actionSession } from "@context/sessionStore";
 import { actionOffice } from "@context/officeStore";
 import { actionPost } from "@context/postStore";
-import { arrayUnion, QueryConstraint } from "firebase/firestore";
 import {
   Club,
   Office,
@@ -50,7 +53,7 @@ import {
   Student,
   UserType,
 } from "@types";
-import { FieldNames } from "@screens/home/updatePost";
+import { PostFieldNames } from "@screens/home/updatePost";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -486,7 +489,30 @@ export const usePost = () => {
     }
   };
 
-  const updatePost = async (props: FieldNames, id: string) => {
+  const createPost = async (props: PostFieldNames) => {
+    const updatedFields: Record<string, any> = {
+      title: props.title,
+      description: props.description,
+      editorId: props.editor.value,
+      createdAt: Timestamp.now(),
+    };
+    try {
+      if (props.tags) {
+        updatedFields["tags"] = arrayUnion(...props.tags);
+      }
+      if (props.imageFile) {
+        const name = await uploadImage(props.imageFile, uuid.v4().toString());
+        updatedFields["imageId"] = name;
+      }
+      if (props.date) {
+        updatedFields["date"] = { ...props.date };
+      }
+      const postRef = await addDoc(postCollection, updatedFields);
+      return postRef.id;
+    } catch (e) {}
+  };
+
+  const updatePost = async (props: PostFieldNames, id: string) => {
     try {
       const postRef = doc(postCollection, id);
       const snapshot = await getDoc(postRef);
@@ -538,5 +564,5 @@ export const usePost = () => {
     }
   };
 
-  return { getMorePost, updatePost, deletePost };
+  return { getMorePost, updatePost, deletePost, createPost };
 };

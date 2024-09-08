@@ -24,13 +24,10 @@ export type FieldNames = {
   imageFile?: string;
 };
 
-export default function CreatePostScreen({
-  navigation,
-  route,
-}: CreatePostProps) {
+export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
-  const { updatePost } = usePost();
+  const { createPost } = usePost();
   const { control, handleSubmit, setFocus } = useForm<FieldNames>();
   const officeChoices = officeList.map((office) => ({
     value: office.id,
@@ -80,9 +77,9 @@ export default function CreatePostScreen({
   const onSubmit = async (data: FieldNames) => {
     try {
       setLoading(true);
-      //   await updatePost({ ...data }, post.id);
+      await createPost({ ...data });
     } catch (e) {
-      console.log("[updatepost]", e);
+      console.log("[createpost]", e);
     } finally {
       setLoading(false);
       navigation.goBack();
