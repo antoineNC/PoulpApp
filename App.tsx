@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { GluestackUIProvider } from "@gluestack-ui/themed";
-import { config } from "@gluestack-ui/config";
 
 import RootContainer from "navigation/rootContainer";
 import { subscribeUserState, useAuth } from "@firebase";
@@ -40,9 +38,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
-      <GluestackUIProvider config={config}>
-        <RootContainer />
-      </GluestackUIProvider>
+      <RootContainer />
     </SafeAreaProvider>
   );
 }

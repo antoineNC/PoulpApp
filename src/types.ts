@@ -1,15 +1,19 @@
-type Role = "STUDENT_ROLE" | "OFFICE_ROLE" | "ADMIN_ROLE";
-type UserType = {
+import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { Timestamp } from "firebase/firestore";
+import { InputModeOptions } from "react-native";
+
+export type Role = "STUDENT_ROLE" | "OFFICE_ROLE" | "ADMIN_ROLE";
+export type UserType = {
   id: string;
   mail: string;
 };
-type Student = UserType & {
+export type Student = UserType & {
   lastName: string;
   firstName: string;
   adhesion?: string[];
   memberOf?: string[];
 };
-type Office = UserType & {
+export type Office = UserType & {
   acronym: string;
   name: string;
   description: string;
@@ -21,32 +25,32 @@ type Office = UserType & {
   partnerships?: string[];
   clubs?: string[];
 };
-type Admin = UserType & {
+export type Admin = UserType & {
   name: string;
 };
 
-type SessionType = {
+export type SessionType = {
   user: UserType;
   role: Role;
   connected: boolean;
 };
 
-type Post = {
+export type Post = {
   id: string;
   title: string;
-  createdAt: Date;
+  createdAt: Timestamp;
   editorId: string;
   description?: string;
   imageUrl?: string;
   tags?: Array<string>;
   date?: {
-    start: Date;
-    end: Date;
+    start: Timestamp;
+    end: Timestamp;
   };
   editor?: Office;
 };
 
-type Club = {
+export type Club = {
   id: string;
   name: string;
   officeId: string;
@@ -55,7 +59,7 @@ type Club = {
   logoUrl?: string;
 };
 
-type Partnership = {
+export type Partnership = {
   id: string;
   name: string;
   officeId: string;
@@ -66,15 +70,15 @@ type Partnership = {
   logoUrl?: string;
 };
 
-type RoleOffice = {
+export type RoleOffice = {
   id: string;
   name: string;
 };
 
-type Point = {
+export type Point = {
   id: string;
   titre: string;
-  date: Date;
+  date: Timestamp;
   bleu: number;
   jaune: number;
   orange: number;
@@ -82,8 +86,42 @@ type Point = {
   vert: number;
 };
 
-type FormFieldProps<T> = {
+export type FormFieldType =
+  | "text"
+  | "email"
+  | "password"
+  | "image"
+  | "date"
+  | "chip"
+  | "select"
+  | "double-select";
+
+export type FormFieldOptions = {
+  multiline?: boolean; // text
+  inputMode?: InputModeOptions; // text
+  secureText?: boolean; // text
+  autoCap?: "none" | "sentences" | "words" | "characters";
+  confirm?: boolean; // text
+  rules?: string[]; // text, date
+  allDay?: boolean; // date
+  choices?: { value: string; label: string }[];
+  add?: boolean; // text, select, double-select
+};
+
+export type FormFieldValues<T> = {
   name: keyof T;
-  required: boolean;
-  confirm?: boolean;
+  label: string;
+  type: FormFieldType;
+  required?: boolean;
+  options?: FormFieldOptions;
 }[];
+
+export type DateType = {
+  start: string;
+  end: string;
+};
+export type DatePickerValues = {
+  showStart?: boolean;
+  showEnd?: boolean;
+  mode: "date" | "time";
+};

@@ -1,3 +1,4 @@
+import { Role, SessionType, UserType } from "@types";
 import { createEvent, createStore } from "effector";
 
 export const actionSession = {

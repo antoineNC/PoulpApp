@@ -7,7 +7,7 @@ import {
   MenuNavigator,
   OfficeNavigator,
 } from "@navigation/tabScreenNavigators";
-import { TabBarParamList } from "@navigation/navigation.types";
+import { TabBarParamList } from "@navigation/navigationTypes";
 
 const TabBar = createMaterialBottomTabNavigator<TabBarParamList>();
 

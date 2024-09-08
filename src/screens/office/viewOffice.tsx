@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, FlatList, Linking, TouchableOpacity, View } from "react-native";
 import { useUnit } from "effector-react";
-import { ViewOfficeProps } from "@navigation/navigation.types";
+import { ViewOfficeProps } from "@navigation/navigationTypes";
 import { useStudent } from "@firebase";
 import { $officeStore } from "@context/officeStore";
 import {

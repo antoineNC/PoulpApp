@@ -1,6 +1,5 @@
-import { TouchableOpacity } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { IconButton } from "react-native-paper";
 
 import {
   FamCupTabParamList,
@@ -8,8 +7,10 @@ import {
   MenuTabParamList,
   OfficeTabParamList,
   TabBarScreenProps,
-} from "@navigation/navigation.types";
+} from "@navigation/navigationTypes";
 import HomeScreen from "@screens/home/home";
+import ViewPostScreen from "@screens/home/viewPost";
+import UpdatePostScreen from "@screens/home/updatePost";
 import CalendarScreen from "@screens/home/calendar";
 import { ScoreScreen } from "@screens/famCup/score";
 import { FeedScreen } from "@screens/famCup/feed";
@@ -17,7 +18,8 @@ import OfficesScreen from "@screens/office/offices";
 import ViewOfficeScreen from "@screens/office/viewOffice";
 import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
-import { Image, Row, Text, Title2 } from "@styledComponents";
+import { Image, Row, Title2 } from "@styledComponents";
+import CreatePostScreen from "@screens/home/createPost";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -29,6 +31,7 @@ const screenOptions = {
   headerTintColor: colors.white,
   headerStyle: { backgroundColor: colors.primary },
   headerShadowVisible: false,
+  headerBackTitleVisible: false,
   contentStyle: {
     backgroundColor: colors.primary,
   },
@@ -44,17 +47,58 @@ export function HomeNavigator({
         component={HomeScreen}
         options={{
           title: "Fil d'actualité",
-          headerRight: ({ tintColor }) => (
-            <TouchableOpacity
-              style={{ alignSelf: "center" }}
-              onPress={() =>
-                navigation.navigate("homeContainer", { screen: "calendar" })
-              }
-            >
-              <Ionicons name="calendar-sharp" size={30} color={tintColor} />
-            </TouchableOpacity>
-          ),
+          // headerRight: ({ tintColor }) => (
+          //   <TouchableOpacity
+          //     style={{ alignSelf: "center" }}
+          //     onPress={() =>
+          //       navigation.navigate("homeContainer", { screen: "calendar" })
+          //     }
+          //   >
+          //     <Ionicons name="calendar-sharp" size={30} color={tintColor} />
+          //   </TouchableOpacity>
+          // ),
         }}
+      />
+      <HomeStack.Screen
+        name="viewPost"
+        component={ViewPostScreen}
+        options={({ route }) => ({
+          headerTitle: () => (
+            <Row>
+              <Title2>{route.params.post.title}</Title2>
+            </Row>
+          ),
+        })}
+      />
+      <HomeStack.Screen
+        name="createPost"
+        component={CreatePostScreen}
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitle: () => (
+            <Row>
+              <Title2>Modification du post</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
+        })}
+      />
+      <HomeStack.Screen
+        name="updatePost"
+        component={UpdatePostScreen}
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitle: () => (
+            <Row>
+              <Title2>Modification du post</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
+        })}
       />
       <HomeStack.Screen name="calendar" component={CalendarScreen} />
     </HomeStack.Navigator>

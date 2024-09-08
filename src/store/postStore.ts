@@ -1,6 +1,7 @@
 import { createEffect, createEvent, createStore } from "effector";
 import { usePost } from "@firebase";
 import { DocumentSnapshot } from "firebase/firestore";
+import { Post } from "@types";
 
 type PostStoreType = {
   posts: Post[];

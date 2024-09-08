@@ -1,24 +1,30 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, View, TouchableOpacity, Modal } from "react-native";
-import { ActivityIndicator, Divider } from "react-native-paper";
+import {
+  FlatList,
+  View,
+  TouchableOpacity,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  StyleSheet,
+} from "react-native";
+import { AnimatedFAB } from "react-native-paper";
 import { useUnit } from "effector-react";
 
-import { $postStore, actionPost } from "@context/postStore";
+import { $sessionStore } from "@context/sessionStore";
+import { $postStore } from "@context/postStore";
 import { $officeStore } from "@context/officeStore";
-import { PostDisplay } from "components/postDisplay";
 import { PostItem } from "components/postItem";
 import { Container } from "@styledComponents";
-import { colors } from "@theme";
 import { usePost } from "@firebase";
+import { HomeProps } from "@navigation/navigationTypes";
+import { Office, Post } from "@types";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }: HomeProps) {
+  const { role } = useUnit($sessionStore);
   const { posts, lastVisible } = useUnit($postStore);
   const { officeList } = useUnit($officeStore);
   const { getMorePost } = usePost();
   const [loading, setLoading] = useState(false);
-  const [displayedItem, setDisplayedItem] = useState<Post>(posts[0]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const toggleModal = () => setModalVisible((prev) => !prev);
 
   useEffect(() => {
     const unsubPost = async () => await getMorePost();
@@ -51,47 +57,60 @@ export default function HomeScreen() {
     }
   }, [loading, lastVisible]);
 
+  const [isExtended, setIsExtended] = useState(true);
+
+  const onScroll = ({
+    nativeEvent,
+  }: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+    setIsExtended(currentScrollPosition <= 0);
+  };
+
+  const fabStyle = { ["right"]: 16 };
+
   return (
     <Container>
-      <Modal
-        visible={modalVisible}
-        animationType="fade"
-        onRequestClose={toggleModal}
-        transparent
-      >
-        <PostDisplay post={displayedItem} toggleModal={toggleModal} />
-      </Modal>
       <FlatList
+        onScroll={onScroll}
         data={postsWithOffice}
         keyExtractor={(item) => item.id}
-        fadingEdgeLength={5}
+        // fadingEdgeLength={5}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => {
-                setDisplayedItem(item);
-                toggleModal();
-              }}
-            >
-              <PostItem post={item} />
-            </TouchableOpacity>
-          );
-        }}
-        ItemSeparatorComponent={() => (
-          <Divider
-            style={{ backgroundColor: colors.black, marginVertical: 10 }}
-          />
+        renderItem={({ item }) => (
+          <PostItem post={item} navigation={navigation} />
         )}
+        ItemSeparatorComponent={() => <View style={{ marginVertical: 10 }} />}
         // onEndReached={handleEndReached}
         // onEndReachedThreshold={0.5}
         ListFooterComponent={
           <View style={{ minHeight: 40 }}>
-            {loading ? <ActivityIndicator animating={true} /> : null}
+            {/* {loading ? <ActivityIndicator animating={true} /> : null} */}
           </View>
         }
       />
+      {["OFFICE_ROLE", "ADMIN_ROLE"].includes(role) && (
+        <AnimatedFAB
+          icon={"plus"}
+          label={"Créer un post"}
+          extended={isExtended}
+          onPress={() => navigation.navigate("createPost")}
+          visible={true}
+          animateFrom={"right"}
+          iconMode={"static"}
+          style={[styles.fabStyle]}
+          variant="secondary"
+        />
+      )}
     </Container>
   );
 }
+
+const styles = StyleSheet.create({
+  fabStyle: {
+    bottom: 20,
+    right: 16,
+    position: "absolute",
+  },
+});

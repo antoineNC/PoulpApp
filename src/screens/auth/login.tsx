@@ -5,12 +5,13 @@ import { Button } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { AuthParamList } from "@navigation/navigation.types";
-import CustomField from "components/formField";
-import { colors } from "@theme";
-import { ContainerScroll as Container } from "@styledComponents";
-import { authStyles } from "@styles";
+import { AuthParamList } from "@navigation/navigationTypes";
 import { useAuth } from "@firebase";
+import CustomField from "components/formField";
+import { ContainerScroll as Container } from "@styledComponents";
+import { colors } from "@theme";
+import { authStyles } from "@styles";
+import { FormFieldValues } from "@types";
 
 type FieldNames = {
   email: string;
@@ -24,9 +25,20 @@ export default function LoginScreen({
   const { login } = useAuth();
   const { control, handleSubmit, setFocus } = useForm<FieldNames>();
 
-  const values: FormFieldProps<FieldNames> = [
-    { name: "email", required: true },
-    { name: "password", required: true },
+  const values: FormFieldValues<FieldNames> = [
+    {
+      name: "email",
+      label: "Email",
+      type: "text",
+      required: true,
+      options: { inputMode: "email", autoCap: "none" },
+    },
+    {
+      name: "password",
+      label: "Mot de passe",
+      type: "text",
+      required: true,
+    },
   ];
 
   const onSubmit = async (data: FieldNames) => {
@@ -54,15 +66,14 @@ export default function LoginScreen({
           {values.map((field, index) => (
             <CustomField<FieldNames>
               key={index}
+              {...field}
+              control={control}
               index={index}
               lastInput={index === values.length - 1}
-              control={control}
-              name={field.name}
-              label={field.name}
-              required={field.required}
               setFocus={(index) =>
-                index < values.length ? setFocus(values[index].name) : null
+                index < values.length && setFocus(values[index].name)
               }
+              submit={handleSubmit(onSubmit)}
             />
           ))}
         </View>

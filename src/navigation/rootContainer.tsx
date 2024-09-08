@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useUnit } from "effector-react";
 
 import TabBarContainer from "@navigation/tabBarContainer";
-import { AuthParamList } from "@navigation/navigation.types";
+import { AuthParamList } from "@navigation/navigationTypes";
 import LoginScreen from "@screens/auth/login";
 import SignupScreen from "@screens/auth/signup";
 import { $sessionStore } from "@context/sessionStore";

@@ -1,19 +1,28 @@
 import {
   CompositeScreenProps,
   NavigatorScreenParams,
+  ParamListBase,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Office, Post } from "@types";
 import { MaterialBottomTabScreenProps } from "react-native-paper";
 
+export type ScreenProps<
+  T extends ParamListBase,
+  screen extends keyof T = keyof T
+> = MaterialBottomTabScreenProps<T, screen>;
+
+// === Auth / Connexion
 export type AuthParamList = {
   login: undefined;
   signup: undefined;
   forgotPassword: undefined;
 };
 
+// === TabBar
 export type TabBarParamList = {
   homeContainer: NavigatorScreenParams<HomeTabParamList>;
-  officeContainer: undefined;
+  officeContainer: NavigatorScreenParams<OfficeTabParamList>;
   famCupContainer: undefined;
   menuContainer: undefined;
 };
@@ -23,6 +32,9 @@ export type TabBarScreenProps<T extends keyof TabBarParamList> =
 // === Home tab
 export type HomeTabParamList = {
   home: undefined;
+  viewPost: { post: Post };
+  createPost: undefined;
+  updatePost: { post: Post };
   calendar: undefined;
 };
 export type HomeTabScreenProps<T extends keyof HomeTabParamList> =
@@ -30,26 +42,24 @@ export type HomeTabScreenProps<T extends keyof HomeTabParamList> =
     NativeStackScreenProps<HomeTabParamList, T>,
     TabBarScreenProps<keyof TabBarParamList>
   >;
+export type HomeProps = HomeTabScreenProps<"home">;
+export type ViewPostProps = HomeTabScreenProps<"viewPost">;
+export type CreatePostProps = HomeTabScreenProps<"createPost">;
+export type UpdatePostProps = HomeTabScreenProps<"updatePost">;
 
 // === Office tab
-export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
-  CompositeScreenProps<
-    NativeStackScreenProps<OfficeTabParamList, T>,
-    TabBarScreenProps<keyof TabBarParamList>
-  >;
 export type OfficeTabParamList = {
   offices: undefined;
   viewOffice: { office: Office };
   updateOffice: undefined;
 };
-export type ViewOfficeProps = MaterialBottomTabScreenProps<
-  OfficeTabParamList,
-  "viewOffice"
->;
-export type OfficesProps = MaterialBottomTabScreenProps<
-  OfficeTabParamList,
-  "offices"
->;
+export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
+  CompositeScreenProps<
+    NativeStackScreenProps<OfficeTabParamList, T>,
+    TabBarScreenProps<keyof TabBarParamList>
+  >;
+export type OfficesProps = OfficeTabScreenProps<"offices">;
+export type ViewOfficeProps = OfficeTabScreenProps<"viewOffice">;
 
 // === FamCup tab
 export type FamCupTabParamList = {
