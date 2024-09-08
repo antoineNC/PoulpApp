@@ -137,6 +137,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
             mode="contained-tonal"
             icon="pencil"
             onPress={() => navigation?.navigate("updatePost", { post })}
+            style={{ borderRadius: 10 }}
           >
             Modifier
           </Button>
@@ -156,6 +157,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
                 ]
               )
             }
+            style={{ borderRadius: 10 }}
           >
             Supprimer
           </Button>
