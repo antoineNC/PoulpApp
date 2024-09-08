@@ -23,11 +23,13 @@ import { $sessionStore } from "@context/sessionStore";
 import { officeStyles } from "@styles";
 import { displayDateFromTimestamp } from "utils/dateUtils";
 import { DateType, Post } from "@types";
+import { usePost } from "@firebase";
 
 type PostItemProps = Partial<HomeProps> & { post: Post };
 
 export const PostItem = ({ post, navigation }: PostItemProps) => {
   const { role } = useUnit($sessionStore);
+  const { deletePost } = usePost();
   const [date, setDate] = useState<DateType>({ start: "null", end: "null" });
   const [allDay, setAllDay] = useState<boolean>(false);
   const [textShown, setTextShown] = useState(false);
@@ -142,7 +144,17 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
             mode="contained-tonal"
             icon="delete"
             onPress={() =>
-              Alert.alert("Suppression", "Veux-tu vraiment supprimer ce post ?")
+              Alert.alert(
+                "Suppression",
+                "Veux-tu vraiment supprimer ce post ?",
+                [
+                  {
+                    text: "Oui, supprimer",
+                    onPress: () => deletePost(post.id),
+                  },
+                  { text: "Annuler" },
+                ]
+              )
             }
           >
             Supprimer

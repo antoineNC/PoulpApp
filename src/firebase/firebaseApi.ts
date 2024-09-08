@@ -21,9 +21,9 @@ import {
   onSnapshot,
   DocumentSnapshot,
   getDocs,
-  limit,
   QuerySnapshot,
   startAfter,
+  deleteDoc,
 } from "@firebase/firestore";
 import {
   StorageReference,
@@ -31,6 +31,7 @@ import {
   getStorage,
   ref,
   uploadBytes,
+  deleteObject,
 } from "@firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
@@ -62,6 +63,7 @@ const partnerCollection = collection(db, "Partnership");
 const roleCollection = collection(db, "RoleBureau");
 
 const storage = getStorage();
+const rootRef = ref(storage);
 const assetsRef = ref(storage, "Assets");
 const imgPostRef = ref(storage, "ImgPosts");
 const imgClubPartnerRef = ref(storage, "ImgClubPartenariat");
@@ -69,47 +71,11 @@ const imgClubPartnerRef = ref(storage, "ImgClubPartenariat");
 export const subscribeUserState = (observer: (user: User | null) => void) => {
   return onAuthStateChanged(auth, (user) => observer(user));
 };
-/*Eventually useful */
-
-// const createQuery = (
-//   collection: CollectionReference,
-//   filter?: {
-//     limit?: number;
-//     startAfter?: DocumentSnapshot;
-//     where?: {
-//       field: string | FieldPath;
-//       operation: WhereFilterOp;
-//       value: unknown;
-//     }[];
-//     order?: {
-//       field: string | FieldPath;
-//       direction: OrderByDirection;
-//     };
-//   }
-// ) => {
-//   const queryConstraints: QueryConstraint[] = [];
-//   if (filter) {
-//     if (filter.where?.length) {
-//       filter.where.forEach((element) =>
-//         queryConstraints.push(
-//           where(element.field, element.operation, element.value)
-//         )
-//       );
-//     }
-//     if (filter.order)
-//       queryConstraints.push(
-//         orderBy(filter.order.field, filter.order.direction)
-//       );
-//     if (filter.startAfter) queryConstraints.push(startAfter(filter.startAfter));
-//     if (filter.limit) queryConstraints.push(limit(filter.limit));
-//   }
-//   return query(collection, ...queryConstraints);
-// };
 
 export const useUtils = () => {
   const getImgURL = async (storageRef: StorageReference, id: string) => {
-    const imgRef = ref(storageRef, `/${id}`);
     try {
+      const imgRef = ref(storageRef, `/${id}`);
       const url = await getDownloadURL(imgRef);
       return url;
     } catch (error: any) {
@@ -118,7 +84,7 @@ export const useUtils = () => {
       switch (error.code) {
         case "storage/object-not-found":
           // File doesn't exist
-          break;
+          return undefined;
         case "storage/unauthorized":
           // User doesn't have permission to access the object
           break;
@@ -129,10 +95,22 @@ export const useUtils = () => {
           // Unknown error occurred, inspect the server response
           break;
       }
-      return undefined;
     }
   };
-  return { getImgURL };
+
+  const uploadImage = async (localUri: string, name: string) => {
+    try {
+      const result = await fetch(localUri);
+      const imgBlob = await result.blob();
+      const fileName = name + uuid.v4();
+      const fileRef = ref(imgPostRef, fileName);
+      await uploadBytes(fileRef, imgBlob);
+      return fileName;
+    } catch (e) {
+      console.error("[uploadImage]", e);
+    }
+  };
+  return { getImgURL, uploadImage };
 };
 
 export const useAuth = () => {
@@ -434,18 +412,18 @@ export const useOffice = () => {
 };
 
 export const usePost = () => {
-  const { getImgURL } = useUtils();
+  const { getImgURL, uploadImage } = useUtils();
   const postMapping = async (snapshot: QuerySnapshot) => {
     const postList = snapshot.docs.map(async (doc) => {
       const postData = doc.data();
-      const imageURL =
+      const imageUrl =
         postData.imageId && (await getImgURL(imgPostRef, postData.imageId));
       const post: Post = {
         id: doc.id,
         title: postData.title,
         description: postData.description,
         editorId: postData.editorId,
-        imageUrl: imageURL,
+        imageUrl,
         createdAt: postData.createdAt,
         tags: postData.tags,
         date: postData.date && {
@@ -510,6 +488,9 @@ export const usePost = () => {
 
   const updatePost = async (props: FieldNames, id: string) => {
     try {
+      const postRef = doc(postCollection, id);
+      const snapshot = await getDoc(postRef);
+      const postData = snapshot.exists() ? snapshot.data() : undefined;
       const updatedFields: Record<string, any> = {
         title: props.title,
         description: props.description,
@@ -524,25 +505,38 @@ export const usePost = () => {
             "https://firebasestorage.googleapis.com/v0/b/poulpappv2.appspot.com"
           )
         ) {
-          const result = await fetch(props.imageFile);
-          const imgBlob = await result.blob();
-          const fileName = id + uuid.v4();
-          const fileRef = ref(imgPostRef, fileName);
-          await uploadBytes(fileRef, imgBlob);
-          updatedFields["imageId"] = fileName;
+          const name = await uploadImage(props.imageFile, uuid.v4().toString());
+          updatedFields["imageId"] = name;
+          if (postData?.imageId) {
+            deleteObject(ref(imgPostRef, postData?.imageId));
+          }
         }
       } else {
         updatedFields["imageId"] = "";
+        if (postData?.imageId) {
+          deleteObject(ref(imgPostRef, postData?.imageId));
+        }
       }
       if (props.date) {
         updatedFields["date"] = { ...props.date };
       }
-      const post = doc(postCollection, id);
-      await updateDoc(post, updatedFields);
+      await updateDoc(postRef, updatedFields);
     } catch (e) {
       console.error("[updatepost]", e);
     }
   };
 
-  return { getMorePost, updatePost };
+  const deletePost = async (idPost: string) => {
+    const postRef = doc(postCollection, idPost);
+    const snapshot = await getDoc(postRef);
+    if (snapshot.exists()) {
+      const postData = snapshot.data();
+      if (postData?.imageId) {
+        deleteObject(ref(imgPostRef, postData?.imageId));
+      }
+      await deleteDoc(postRef);
+    }
+  };
+
+  return { getMorePost, updatePost, deletePost };
 };
