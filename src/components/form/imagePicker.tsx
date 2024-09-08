@@ -45,7 +45,6 @@ export function ImagePickerForm<T extends FieldValues>({
         {
           text: "Oui",
           onPress: () => {
-            console.log("OUIIIIIII");
             onChange("");
           },
         },
