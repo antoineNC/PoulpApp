@@ -53,7 +53,7 @@ import {
   Student,
   UserType,
 } from "@types";
-import { PostFieldNames } from "@screens/home/updatePost";
+import { PostFieldNames } from "@types";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),

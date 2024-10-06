@@ -10,25 +10,16 @@ import { CreatePostProps, UpdatePostProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import CustomField from "components/formField";
 import { ContainerScroll } from "@styledComponents";
-import { FormFieldValues } from "@types";
+import { FormFieldValues, PostFieldNames } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
-
-export type FieldNames = {
-  title: string;
-  description: string;
-  date?: { start: Timestamp; end: Timestamp };
-  tags: string[];
-  editor: { value: string; label: string };
-  imageFile?: string;
-};
 
 export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
   const { createPost } = usePost();
-  const { control, handleSubmit, setFocus } = useForm<FieldNames>();
+  const { control, handleSubmit, setFocus } = useForm<PostFieldNames>();
   const officeChoices = officeList.map((office) => ({
     value: office.id,
     label: office.name,
@@ -36,7 +27,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const tagsChoices = postTags
     .sort()
     .map((tag) => ({ value: tag, label: tag }));
-  const values: FormFieldValues<FieldNames> = [
+  const values: FormFieldValues<PostFieldNames> = [
     {
       name: "editor",
       label: "Bureau",
@@ -74,7 +65,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
     },
   ];
 
-  const onSubmit = async (data: FieldNames) => {
+  const onSubmit = async (data: PostFieldNames) => {
     try {
       setLoading(true);
       await createPost({ ...data });
@@ -97,7 +88,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
       )}
       <View style={authStyles.formList}>
         {values.map((field, index) => (
-          <CustomField<FieldNames>
+          <CustomField<PostFieldNames>
             {...field}
             key={index}
             control={control}

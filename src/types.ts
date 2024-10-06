@@ -1,4 +1,3 @@
-import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { Timestamp } from "firebase/firestore";
 import { InputModeOptions } from "react-native";
 
@@ -120,8 +119,18 @@ export type DateType = {
   start: string;
   end: string;
 };
+
 export type DatePickerValues = {
   showStart?: boolean;
   showEnd?: boolean;
   mode: "date" | "time";
+};
+
+export type PostFieldNames = {
+  title: string;
+  description: string;
+  date?: { start: Timestamp; end: Timestamp };
+  tags: string[];
+  editor: { value: string; label: string };
+  imageFile?: string;
 };

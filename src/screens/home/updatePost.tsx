@@ -10,19 +10,10 @@ import { UpdatePostProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import CustomField from "components/formField";
 import { ContainerScroll } from "@styledComponents";
-import { FormFieldValues } from "@types";
+import { FormFieldValues, PostFieldNames } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
-
-export type PostFieldNames = {
-  title: string;
-  description: string;
-  date?: { start: Timestamp; end: Timestamp };
-  tags: string[];
-  editor: { value: string; label: string };
-  imageFile?: string;
-};
 
 export default function UpdatePostScreen({
   navigation,
