@@ -38,6 +38,7 @@ export default function LoginScreen({
       label: "Mot de passe",
       type: "text",
       required: true,
+      options: { secureText: true },
     },
   ];
 

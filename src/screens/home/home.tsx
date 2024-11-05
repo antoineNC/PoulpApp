@@ -39,27 +39,21 @@ export default function HomeScreen({ navigation }: HomeProps) {
     setIsExtended(currentScrollPosition <= 0);
   };
 
-  const fabStyle = { ["right"]: 16 };
-
   return (
     <Container>
       <FlatList
         onScroll={onScroll}
         data={posts}
         keyExtractor={(item) => item.id}
-        // fadingEdgeLength={5}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <PostItem post={item} navigation={navigation} />
         )}
         ItemSeparatorComponent={() => <View style={{ marginVertical: 10 }} />}
-        // onEndReached={handleEndReached}
-        // onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          <View style={{ minHeight: 40 }}>
-            {/* {loading ? <ActivityIndicator animating={true} /> : null} */}
-          </View>
-        }
+        ListFooterComponent={<View style={{ minHeight: 40 }}></View>}
+        // onEndReached={async () => {
+        //   await getMorePost(lastVisible);
+        // }}
       />
       {["OFFICE_ROLE", "ADMIN_ROLE"].includes(role) && (
         <AnimatedFAB

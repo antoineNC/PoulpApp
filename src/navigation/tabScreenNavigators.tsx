@@ -81,7 +81,7 @@ export function HomeNavigator({
           },
           headerTitle: () => (
             <Row>
-              <Title2>Modification du post</Title2>
+              <Title2>Création d'un post</Title2>
               <IconButton icon="pencil" iconColor={colors.white} size={25} />
             </Row>
           ),

@@ -88,7 +88,7 @@ export default function UpdatePostScreen({
       setLoading(true);
       await updatePost({ ...data }, post.id);
     } catch (e) {
-      console.log("[updatepost]", e);
+      console.error("[updatepost]", e);
     } finally {
       setLoading(false);
       navigation.goBack();

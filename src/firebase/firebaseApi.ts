@@ -456,7 +456,7 @@ export const usePost = () => {
   //     //  const lastVisible = snapshot.docs[snapshot.docs.length - 1];
   //     //  return { postList, lastVisible };
   //   } catch (e: any) {
-  //     console.log(`[getAllPost] ${e}\n`);
+  //     console.error(`[getAllPost] ${e}\n`);
   //     throw e;
   //   }
   // };
@@ -484,7 +484,7 @@ export const usePost = () => {
       // const newLastVisible = snapshot.docs[snapshot.docs.length - 1];
       // return { postList, newLastVisible };
     } catch (e: any) {
-      console.log(`[getMorePost] ${e}\n`);
+      console.error(`[getMorePost] ${e}\n`);
       throw e;
     }
   };
