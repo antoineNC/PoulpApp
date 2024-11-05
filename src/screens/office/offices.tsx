@@ -20,7 +20,7 @@ export default function OfficesScreen({ navigation }: OfficesProps) {
           <TouchableOpacity
             key={item.id}
             onPress={() => {
-              navigation.navigate("viewOffice", { office: item });
+              navigation.navigate("viewOffice", { officeId: item.id });
             }}
           >
             <Card

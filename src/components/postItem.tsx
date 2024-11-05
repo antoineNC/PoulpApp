@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useUnit } from "effector-react";
+import { useUnit, useStoreMap } from "effector-react";
 import { Button } from "react-native-paper";
 import ImageView from "react-native-image-viewing";
 import {
@@ -24,6 +24,7 @@ import { officeStyles } from "@styles";
 import { displayDateFromTimestamp } from "utils/dateUtils";
 import { DateType, Post } from "@types";
 import { usePost } from "@firebase";
+import { $officeStore } from "@context/officeStore";
 
 type PostItemProps = Partial<HomeProps> & { post: Post };
 
@@ -35,6 +36,13 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
   const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
   const [showImage, setShowImage] = useState(false);
+  const office = useStoreMap({
+    store: $officeStore,
+    keys: [post.id],
+    fn: (officeStore) =>
+      officeStore.officeList.find((office) => office.id === post.editorId),
+  });
+
   useEffect(() => {
     if (post.date) {
       const result = displayDateFromTimestamp(post.date);
@@ -59,14 +67,14 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           <TouchableOpacity
             onPress={() =>
               navigation &&
-              post.editor &&
+              office &&
               navigation.navigate("officeContainer", {
                 screen: "viewOffice",
-                params: { office: post.editor },
+                params: { officeId: office.id },
               })
             }
           >
-            <Image source={{ uri: post.editor?.logoUrl }} $size={50} />
+            <Image source={{ uri: office?.logoUrl }} $size={50} />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Title2>{post.title}</Title2>

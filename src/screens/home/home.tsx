@@ -12,17 +12,14 @@ import { useUnit } from "effector-react";
 
 import { $sessionStore } from "@context/sessionStore";
 import { $postStore } from "@context/postStore";
-import { $officeStore } from "@context/officeStore";
 import { PostItem } from "components/postItem";
 import { Container } from "@styledComponents";
 import { usePost } from "@firebase";
 import { HomeProps } from "@navigation/navigationTypes";
-import { Office, Post } from "@types";
 
 export default function HomeScreen({ navigation }: HomeProps) {
   const { role } = useUnit($sessionStore);
   const { posts, lastVisible } = useUnit($postStore);
-  const { officeList } = useUnit($officeStore);
   const { getMorePost } = usePost();
   const [loading, setLoading] = useState(false);
 
@@ -30,32 +27,6 @@ export default function HomeScreen({ navigation }: HomeProps) {
     const unsubPost = async () => await getMorePost();
     unsubPost();
   }, []);
-
-  // Create a memoized map of associationId to association
-  const officeMapping = useMemo(() => {
-    const map = new Map<string, Office>();
-    officeList.forEach((office) => {
-      map.set(office.id, office);
-    });
-    return map;
-  }, [officeList]);
-
-  // Merge posts with their corresponding association
-  const postsWithOffice: Post[] = useMemo(() => {
-    const postOffice = posts.map((post) => ({
-      ...post,
-      editor: officeMapping.get(post.editorId),
-    }));
-    return postOffice;
-  }, [posts, officeMapping]);
-
-  const handleEndReached = useCallback(async () => {
-    if (lastVisible) {
-      setLoading(true);
-      await getMorePost(lastVisible);
-      setLoading(false);
-    }
-  }, [loading, lastVisible]);
 
   const [isExtended, setIsExtended] = useState(true);
 
@@ -74,7 +45,7 @@ export default function HomeScreen({ navigation }: HomeProps) {
     <Container>
       <FlatList
         onScroll={onScroll}
-        data={postsWithOffice}
+        data={posts}
         keyExtractor={(item) => item.id}
         // fadingEdgeLength={5}
         showsVerticalScrollIndicator={false}
