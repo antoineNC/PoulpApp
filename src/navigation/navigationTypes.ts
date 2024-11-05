@@ -50,7 +50,7 @@ export type UpdatePostProps = HomeTabScreenProps<"updatePost">;
 // === Office tab
 export type OfficeTabParamList = {
   offices: undefined;
-  viewOffice: { office: Office };
+  viewOffice: { officeId: string };
   updateOffice: undefined;
 };
 export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =

@@ -20,6 +20,8 @@ import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
 import CreatePostScreen from "@screens/home/createPost";
+import { useStoreMap } from "effector-react";
+import { $officeStore } from "@context/officeStore";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -79,7 +81,7 @@ export function HomeNavigator({
           },
           headerTitle: () => (
             <Row>
-              <Title2>Modification du post</Title2>
+              <Title2>Création d'un post</Title2>
               <IconButton icon="pencil" iconColor={colors.white} size={25} />
             </Row>
           ),
@@ -117,12 +119,22 @@ export function OfficeNavigator() {
         name="viewOffice"
         component={ViewOfficeScreen}
         options={({ route }) => ({
-          headerTitle: () => (
-            <Row>
-              <Image $size={45} source={{ uri: route.params.office.logoUrl }} />
-              <Title2>{route.params.office.name}</Title2>
-            </Row>
-          ),
+          headerTitle: () => {
+            const office = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.officeId],
+              fn: (officeStore) =>
+                officeStore.officeList.find(
+                  (office) => office.id === route.params.officeId
+                ),
+            });
+            return (
+              <Row>
+                <Image $size={45} source={{ uri: office?.logoUrl }} />
+                <Title2>{office?.name}</Title2>
+              </Row>
+            );
+          },
         })}
       />
       <OfficeStack.Screen name="updateOffice" component={CalendarScreen} />

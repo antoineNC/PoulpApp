@@ -28,6 +28,7 @@ import {
   arrayUnion,
   QueryConstraint,
   Timestamp,
+  limit,
 } from "@firebase/firestore";
 import {
   StorageReference,
@@ -44,6 +45,7 @@ import app from "firebase/firebaseConfig";
 import { actionSession } from "@context/sessionStore";
 import { actionOffice } from "@context/officeStore";
 import { actionPost } from "@context/postStore";
+import { actionStudent } from "@context/studentStore";
 import {
   Club,
   Office,
@@ -119,6 +121,8 @@ export const useUtils = () => {
 export const useAuth = () => {
   const { getAllOffice, getAllClub, getAllPartnership, getAllRole } =
     useOffice();
+  const { getAllStudent } = useStudent();
+
   const login = async ({
     email,
     password,
@@ -226,6 +230,9 @@ export const useAuth = () => {
     await getAllClub();
     await getAllPartnership();
     await getAllRole();
+    if (role !== "STUDENT_ROLE") {
+      await getAllStudent();
+    }
     actionSession.login({ user, role });
   };
 
@@ -241,28 +248,27 @@ export const useAuth = () => {
 };
 
 export const useStudent = () => {
-  // const getAllStudent = async (getSnapshot: (snapshot: Student[]) => void) => {
-  //   try {
-  //     const q = query(userCollection, where("role", "==", "STUDENT_ROLE"));
-  //     onSnapshot(q, async (snapshot) => {
-  //       const allStudent = snapshot.docs.map(async (doc) => {
-  //         const studentData = doc.data();
-  //         const student: Student = {
-  //           id: doc.id,
-  //           mail: studentData.mail,
-  //           firstName: studentData.firstName,
-  //           lastName: studentData.lastName,
-  //           adhesion: studentData.adhesion,
-  //         };
-  //         return student;
-  //       });
-  //       const allStudentResolved = await Promise.all(allStudent);
-  //       actionStudent.setAllStudent(allStudentResolved);
-  //     });
-  //   } catch (e: any) {
-  //     throw Error(`[getAllStudent] ${e}\n`);
-  //   }
-  // };
+  const getAllStudent = async () => {
+    try {
+      const q = query(userCollection, where("role", "==", "STUDENT_ROLE"));
+      onSnapshot(q, async (snapshot) => {
+        const allStudent = snapshot.docs.map((doc) => {
+          const studentData = doc.data();
+          const student: Student = {
+            id: doc.id,
+            mail: studentData.mail,
+            firstName: studentData.firstName,
+            lastName: studentData.lastName,
+            adhesion: studentData.adhesion,
+          };
+          return student;
+        });
+        actionStudent.setAllStudent(allStudent);
+      });
+    } catch (e: any) {
+      throw Error(`[getAllStudent] ${e}\n`);
+    }
+  };
 
   const getMemberOffice = async (idOffice: string) => {
     try {
@@ -310,7 +316,7 @@ export const useStudent = () => {
       console.error(e);
     }
   };
-  return { getMemberOffice, getStudentById };
+  return { getAllStudent, getMemberOffice, getStudentById };
 };
 
 export const useOffice = () => {
@@ -318,7 +324,6 @@ export const useOffice = () => {
   const getAllOffice = async () => {
     try {
       const q = query(userCollection, where("role", "==", "OFFICE_ROLE"));
-      // TODO : transform to a get function
       onSnapshot(q, async (snapshot) => {
         const allOffice = snapshot.docs.map(async (doc) => {
           const officeData = doc.data();
@@ -344,6 +349,29 @@ export const useOffice = () => {
       });
     } catch (e: any) {
       throw Error(`[getAllOffice] ${e}\n`);
+    }
+  };
+
+  const getClub = async (id: string) => {
+    try {
+      const snapshot = await getDoc(doc(clubCollection, id));
+      if (!snapshot.exists()) {
+        throw Error(`Le club avec l'${id} n'existe pas.`);
+      }
+      const clubData = snapshot.data();
+      const logoUrl = await getImgURL(imgClubPartnerRef, clubData.logoId);
+
+      const club: Club = {
+        id: snapshot.id,
+        name: clubData.name,
+        officeId: clubData.officeId,
+        logoUrl,
+        description: clubData.description,
+        contact: clubData.contact,
+      };
+      return club;
+    } catch (e) {
+      throw Error(`[getClub] ${e}\n`);
     }
   };
 
@@ -456,7 +484,7 @@ export const usePost = () => {
   //     //  const lastVisible = snapshot.docs[snapshot.docs.length - 1];
   //     //  return { postList, lastVisible };
   //   } catch (e: any) {
-  //     console.log(`[getAllPost] ${e}\n`);
+  //     console.error(`[getAllPost] ${e}\n`);
   //     throw e;
   //   }
   // };
@@ -465,7 +493,7 @@ export const usePost = () => {
     try {
       const queryConstraints: QueryConstraint[] = [
         orderBy("createdAt", "desc"),
-        // limit(10),
+        // limit(3),
       ];
       if (lastVisible) queryConstraints.push(startAfter(lastVisible));
       const q = query(postCollection, ...queryConstraints);
@@ -484,7 +512,7 @@ export const usePost = () => {
       // const newLastVisible = snapshot.docs[snapshot.docs.length - 1];
       // return { postList, newLastVisible };
     } catch (e: any) {
-      console.log(`[getMorePost] ${e}\n`);
+      console.error(`[getMorePost] ${e}\n`);
       throw e;
     }
   };

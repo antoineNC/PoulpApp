@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { Timestamp } from "firebase/firestore";
 import { useForm } from "react-hook-form";
-import { useUnit } from "effector-react";
+import { useStoreMap, useUnit } from "effector-react";
 import { Button } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 import { usePost } from "@firebase";
@@ -23,11 +22,17 @@ export default function UpdatePostScreen({
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
   const { updatePost } = usePost();
+  const editor = useStoreMap({
+    store: $officeStore,
+    keys: [post.id],
+    fn: (officeStore) =>
+      officeStore.officeList.find((office) => office.id === post.editorId),
+  });
   const { control, handleSubmit, setFocus } = useForm<PostFieldNames>({
     defaultValues: {
       title: post.title,
       description: post.description,
-      editor: { value: post.editorId, label: post.editor?.name },
+      editor: { value: post.editorId, label: editor?.name },
       tags: post.tags,
       date: post.date,
       imageFile: post.imageUrl,
@@ -83,7 +88,7 @@ export default function UpdatePostScreen({
       setLoading(true);
       await updatePost({ ...data }, post.id);
     } catch (e) {
-      console.log("[updatepost]", e);
+      console.error("[updatepost]", e);
     } finally {
       setLoading(false);
       navigation.goBack();

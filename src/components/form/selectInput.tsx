@@ -1,5 +1,5 @@
-import { FieldValues } from "react-hook-form";
 import { View, StyleSheet } from "react-native";
+import { FieldValues } from "react-hook-form";
 import { HelperText } from "react-native-paper";
 import { Dropdown } from "react-native-element-dropdown";
 import { FieldInputProps } from "utils/formUtils";
@@ -30,7 +30,6 @@ export function SelectInputForm<T extends FieldValues>({
             placeholder={"Sélectionner un bureau"}
             containerStyle={styles.container}
             activeColor={colors.secondary}
-            mode="modal"
           />
         </>
       )}
@@ -57,9 +56,6 @@ const styles = StyleSheet.create({
   },
   //list of choices
   container: {
-    borderColor: colors.black,
-    borderWidth: 1,
     borderRadius: 5,
-    overflow: "hidden",
   },
 });

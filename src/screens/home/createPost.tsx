@@ -70,7 +70,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
       setLoading(true);
       await createPost({ ...data });
     } catch (e) {
-      console.log("[createpost]", e);
+      console.error("[createpost]", e);
     } finally {
       setLoading(false);
       navigation.goBack();

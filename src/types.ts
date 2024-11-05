@@ -46,7 +46,6 @@ export type Post = {
     start: Timestamp;
     end: Timestamp;
   };
-  editor?: Office;
 };
 
 export type Club = {
