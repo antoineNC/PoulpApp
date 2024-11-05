@@ -12,7 +12,7 @@ import { useUnit } from "effector-react";
 
 import { $sessionStore } from "@context/sessionStore";
 import { $postStore } from "@context/postStore";
-import { PostItem } from "components/postItem";
+import { PostItem } from "@screens/home/post/postItem";
 import { Container } from "@styledComponents";
 import { usePost } from "@firebase";
 import { HomeProps } from "@navigation/navigationTypes";

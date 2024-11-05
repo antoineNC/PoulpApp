@@ -9,9 +9,9 @@ import {
   TabBarScreenProps,
 } from "@navigation/navigationTypes";
 import HomeScreen from "@screens/home/home";
-import ViewPostScreen from "@screens/home/viewPost";
-import UpdatePostScreen from "@screens/home/updatePost";
-import CalendarScreen from "@screens/home/calendar";
+// import ViewPostScreen from "@screens/home/viewPost";
+import UpdatePostScreen from "@screens/home/post/updatePost";
+// import CalendarScreen from "@screens/home/calendar";
 import { ScoreScreen } from "@screens/famCup/score";
 import { FeedScreen } from "@screens/famCup/feed";
 import OfficesScreen from "@screens/office/offices";
@@ -19,7 +19,8 @@ import ViewOfficeScreen from "@screens/office/viewOffice";
 import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
-import CreatePostScreen from "@screens/home/createPost";
+import CreatePostScreen from "@screens/home/post/createPost";
+import UpdateOfficeScreen from "@screens/office/updateOffice";
 import { useStoreMap } from "effector-react";
 import { $officeStore } from "@context/officeStore";
 

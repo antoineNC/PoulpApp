@@ -7,7 +7,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 
 import { AuthParamList } from "@navigation/navigationTypes";
 import { useAuth } from "@firebase";
-import CustomField from "components/formField";
+import CustomField from "components/form/formField";
 import { ContainerScroll as Container } from "@styledComponents";
 import { colors } from "@theme";
 import { authStyles } from "@styles";
