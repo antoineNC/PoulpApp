@@ -1,43 +1,25 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { Timestamp } from "firebase/firestore";
 import { useForm } from "react-hook-form";
-import { useStoreMap, useUnit } from "effector-react";
+import { useUnit } from "effector-react";
 import { Button } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 import { usePost } from "@firebase";
-import { UpdatePostProps } from "@navigation/navigationTypes";
+import { CreatePostProps, UpdatePostProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
-import CustomField from "components/formField";
+import CustomField from "components/form/formField";
 import { ContainerScroll } from "@styledComponents";
 import { FormFieldValues, PostFieldNames } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
 
-export default function UpdatePostScreen({
-  navigation,
-  route,
-}: UpdatePostProps) {
-  const { post } = route.params;
+export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
-  const { updatePost } = usePost();
-  const editor = useStoreMap({
-    store: $officeStore,
-    keys: [post.id],
-    fn: (officeStore) =>
-      officeStore.officeList.find((office) => office.id === post.editorId),
-  });
-  const { control, handleSubmit, setFocus } = useForm<PostFieldNames>({
-    defaultValues: {
-      title: post.title,
-      description: post.description,
-      editor: { value: post.editorId, label: editor?.name },
-      tags: post.tags,
-      date: post.date,
-      imageFile: post.imageUrl,
-    },
-  });
+  const { createPost } = usePost();
+  const { control, handleSubmit, setFocus } = useForm<PostFieldNames>();
   const officeChoices = officeList.map((office) => ({
     value: office.id,
     label: office.name,
@@ -86,9 +68,9 @@ export default function UpdatePostScreen({
   const onSubmit = async (data: PostFieldNames) => {
     try {
       setLoading(true);
-      await updatePost({ ...data }, post.id);
+      await createPost({ ...data });
     } catch (e) {
-      console.error("[updatepost]", e);
+      console.error("[createpost]", e);
     } finally {
       setLoading(false);
       navigation.goBack();
@@ -100,7 +82,7 @@ export default function UpdatePostScreen({
       {loading && (
         <Spinner
           visible={loading}
-          textContent={"Modification..."}
+          textContent={"Création..."}
           textStyle={{ color: colors.white }}
         />
       )}
@@ -122,7 +104,7 @@ export default function UpdatePostScreen({
       <View style={authStyles.buttonContainer}>
         <Button
           mode="contained"
-          children="Valider les modifications"
+          children="Publier le post"
           onPress={handleSubmit(onSubmit)}
           uppercase
           buttonColor={colors.primary}
