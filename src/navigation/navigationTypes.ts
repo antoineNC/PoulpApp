@@ -4,7 +4,7 @@ import {
   ParamListBase,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Office, Post } from "@types";
+import { Post } from "@types";
 import { MaterialBottomTabScreenProps } from "react-native-paper";
 
 export type ScreenProps<
@@ -51,7 +51,8 @@ export type UpdatePostProps = HomeTabScreenProps<"updatePost">;
 export type OfficeTabParamList = {
   offices: undefined;
   viewOffice: { officeId: string };
-  updateOffice: undefined;
+  updateOffice: { officeId: string };
+  updateMembers: { officeId: string };
 };
 export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
   CompositeScreenProps<
@@ -60,6 +61,8 @@ export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
   >;
 export type OfficesProps = OfficeTabScreenProps<"offices">;
 export type ViewOfficeProps = OfficeTabScreenProps<"viewOffice">;
+export type UpdateOfficeProps = OfficeTabScreenProps<"updateOffice">;
+export type UpdateMembersProps = OfficeTabScreenProps<"updateMembers">;
 
 // === FamCup tab
 export type FamCupTabParamList = {

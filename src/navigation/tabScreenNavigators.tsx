@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { IconButton } from "react-native-paper";
+import { useStoreMap } from "effector-react";
 
 import {
   FamCupTabParamList,
@@ -10,18 +11,18 @@ import {
 } from "@navigation/navigationTypes";
 import HomeScreen from "@screens/home/home";
 // import ViewPostScreen from "@screens/home/viewPost";
+import CreatePostScreen from "@screens/home/post/createPost";
 import UpdatePostScreen from "@screens/home/post/updatePost";
 // import CalendarScreen from "@screens/home/calendar";
 import { ScoreScreen } from "@screens/famCup/score";
 import { FeedScreen } from "@screens/famCup/feed";
 import OfficesScreen from "@screens/office/offices";
 import ViewOfficeScreen from "@screens/office/viewOffice";
+import UpdateOfficeScreen from "@screens/office/updateOffice";
+import UpdateMembersScreen from "@screens/office/updateMembers";
 import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
-import CreatePostScreen from "@screens/home/post/createPost";
-import UpdateOfficeScreen from "@screens/office/updateOffice";
-import { useStoreMap } from "effector-react";
 import { $officeStore } from "@context/officeStore";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
@@ -62,7 +63,7 @@ export function HomeNavigator({
           // ),
         }}
       />
-      <HomeStack.Screen
+      {/* <HomeStack.Screen
         name="viewPost"
         component={ViewPostScreen}
         options={({ route }) => ({
@@ -72,7 +73,7 @@ export function HomeNavigator({
             </Row>
           ),
         })}
-      />
+      /> */}
       <HomeStack.Screen
         name="createPost"
         component={CreatePostScreen}
@@ -103,7 +104,7 @@ export function HomeNavigator({
           ),
         })}
       />
-      <HomeStack.Screen name="calendar" component={CalendarScreen} />
+      {/* <HomeStack.Screen name="calendar" component={CalendarScreen} /> */}
     </HomeStack.Navigator>
   );
 }
@@ -138,7 +139,56 @@ export function OfficeNavigator() {
           },
         })}
       />
-      <OfficeStack.Screen name="updateOffice" component={CalendarScreen} />
+      <OfficeStack.Screen
+        name="updateOffice"
+        component={UpdateOfficeScreen}
+        options={({ route }) => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitle: () => {
+            const office = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.officeId],
+              fn: (officeStore) =>
+                officeStore.officeList.find(
+                  (office) => office.id === route.params.officeId
+                ),
+            });
+            return (
+              <Row>
+                <Image $size={45} source={{ uri: office?.logoUrl }} />
+                <Title2>{office?.name}</Title2>
+              </Row>
+            );
+          },
+        })}
+      />
+      <OfficeStack.Screen
+        name="updateMembers"
+        component={UpdateMembersScreen}
+        options={({ route }) => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitle: () => {
+            const office = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.officeId],
+              fn: (officeStore) =>
+                officeStore.officeList.find(
+                  (office) => office.id === route.params.officeId
+                ),
+            });
+            return (
+              <Row>
+                <Image $size={45} source={{ uri: office?.logoUrl }} />
+                <Title2>Membres de : {office?.acronym}</Title2>
+              </Row>
+            );
+          },
+        })}
+      />
     </OfficeStack.Navigator>
   );
 }
@@ -164,7 +214,7 @@ export function MenuNavigator() {
         component={ProfileScreen}
         options={{ title: "Menu" }}
       />
-      <MenuStack.Screen name="allSubs" component={CalendarScreen} />
+      {/* <MenuStack.Screen name="allSubs" component={CalendarScreen} /> */}
     </MenuStack.Navigator>
   );
 }

@@ -38,7 +38,7 @@ export function SelectInputForm<T extends FieldValues>({
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   // select input
   dropdown: {
     height: 50,

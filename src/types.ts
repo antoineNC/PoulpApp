@@ -133,3 +133,16 @@ export type PostFieldNames = {
   editor: { value: string; label: string };
   imageFile?: string;
 };
+
+export type OfficeFieldNames = {
+  acronym: string;
+  name: string;
+  description?: string;
+  logoUrl?: string;
+  members?: {
+    idStudent: string;
+    idRole: string;
+  }[];
+  // partnerships?: string[];
+  // clubs?: string[];
+};

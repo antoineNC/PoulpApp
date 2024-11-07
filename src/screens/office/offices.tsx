@@ -48,7 +48,9 @@ export default function OfficesScreen({ navigation }: OfficesProps) {
                 <Button
                   mode="contained-tonal"
                   icon="pencil"
-                  onPress={() => Alert.alert("kaehdv")}
+                  onPress={() =>
+                    navigation.navigate("updateOffice", { officeId: item.id })
+                  }
                 >
                   Modifier
                 </Button>

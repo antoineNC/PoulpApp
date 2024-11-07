@@ -49,6 +49,7 @@ import { actionStudent } from "@context/studentStore";
 import {
   Club,
   Office,
+  OfficeFieldNames,
   Partnership,
   Post,
   RoleOffice,
@@ -56,6 +57,7 @@ import {
   UserType,
 } from "@types";
 import { PostFieldNames } from "@types";
+import { storageUrl } from "data";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -320,7 +322,7 @@ export const useStudent = () => {
 };
 
 export const useOffice = () => {
-  const { getImgURL } = useUtils();
+  const { getImgURL, uploadImage } = useUtils();
   const getAllOffice = async () => {
     try {
       const q = query(userCollection, where("role", "==", "OFFICE_ROLE"));
@@ -349,6 +351,37 @@ export const useOffice = () => {
       });
     } catch (e: any) {
       throw Error(`[getAllOffice] ${e}\n`);
+    }
+  };
+
+  const updateOffice = async (props: OfficeFieldNames, id: string) => {
+    try {
+      const officeRef = doc(userCollection, id);
+      const snapshot = await getDoc(officeRef);
+      const officeData = snapshot.exists() ? snapshot.data() : undefined;
+      const updatedFields: Partial<Office> = {
+        ...props,
+      };
+      if (props.logoUrl) {
+        if (!props.logoUrl.startsWith(storageUrl)) {
+          const name = await uploadImage(
+            props.logoUrl,
+            officeData?.acronym.toLowerCase()
+          );
+          updatedFields["logoUrl"] = name;
+          if (officeData?.logoUrl) {
+            deleteObject(ref(imgPostRef, officeData?.logoUrl));
+          }
+        }
+      } else {
+        updatedFields["logoUrl"] = "";
+        if (officeData?.logoUrl) {
+          deleteObject(ref(imgPostRef, officeData?.logoUrl));
+        }
+      }
+      await updateDoc(officeRef, updatedFields);
+    } catch (e) {
+      console.error("[updatepost]", e);
     }
   };
 
@@ -439,7 +472,13 @@ export const useOffice = () => {
     } catch (e) {}
   };
 
-  return { getAllOffice, getAllClub, getAllPartnership, getAllRole };
+  return {
+    getAllOffice,
+    updateOffice,
+    getAllClub,
+    getAllPartnership,
+    getAllRole,
+  };
 };
 
 export const usePost = () => {
