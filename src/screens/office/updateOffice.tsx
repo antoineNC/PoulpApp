@@ -5,7 +5,7 @@ import { useStoreMap } from "effector-react";
 import { AnimatedFAB } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { useOffice } from "@firebase";
+import { useClub, useOffice, usePartnership } from "@firebase";
 import { UpdateOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import { OfficeFieldNames } from "@types";
@@ -14,7 +14,7 @@ import { ContainerScroll, Text } from "@styledComponents";
 import { colors } from "@theme";
 import { TextInputForm } from "components/form/textInput";
 import { ImagePickerForm } from "components/form/imagePicker";
-import { SmallCardItem } from "./smallCardItem";
+import { SmallCardItem } from "components/smallCardItem";
 import ListMemberForm from "./listMemberForm";
 
 export default function UpdateOfficeScreen({
@@ -24,6 +24,8 @@ export default function UpdateOfficeScreen({
   const { officeId } = route.params;
   const [loading, setLoading] = useState(false);
   const { updateOffice } = useOffice();
+  const { deleteClub } = useClub();
+  const { deletePartnership } = usePartnership();
   const office = useStoreMap({
     store: $officeStore,
     keys: [officeId],
@@ -72,10 +74,9 @@ export default function UpdateOfficeScreen({
     }
   };
 
-  const deleteClub = async (id: string) => {};
+  const onDeleteClub = async (id: string) => await deleteClub(id);
 
-  const deletePartnership = async (id: string) => {};
-
+  const onDeletePartnership = async (id: string) => await deletePartnership(id);
   return (
     <>
       <ContainerScroll style={officeStyles.container}>
@@ -173,7 +174,7 @@ export default function UpdateOfficeScreen({
                       "Supprimer un club",
                       "Voulez-vous vraiment supprimer définitivement ce club ?",
                       [
-                        { text: "OUI", onPress: () => deleteClub(item.id) },
+                        { text: "OUI", onPress: () => onDeleteClub(item.id) },
                         { text: "NON" },
                       ]
                     )
@@ -207,7 +208,7 @@ export default function UpdateOfficeScreen({
                       [
                         {
                           text: "OUI",
-                          onPress: () => deletePartnership(item.id),
+                          onPress: () => onDeletePartnership(item.id),
                         },
                         { text: "NON" },
                       ]

@@ -11,6 +11,8 @@ import {
 } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 
+import { usePartnership } from "@firebase";
+import { $sessionStore } from "@context/sessionStore";
 import { $officeStore } from "@context/officeStore";
 import { UpdatePartnershipProps } from "@navigation/navigationTypes";
 import { FormFieldValues, PartnershipFieldNames } from "@types";
@@ -18,14 +20,13 @@ import { colors } from "@theme";
 import { authStyles, officeStyles } from "@styles";
 import { ContainerScroll, Text } from "@styledComponents";
 import CustomField from "components/form/formField";
-import { $sessionStore } from "@context/sessionStore";
 
 export default function UpdatePartnershipScreen({
   navigation,
   route,
 }: UpdatePartnershipProps) {
   const { partnershipId } = route.params;
-  //   const { updatePartnership } = useOffice();
+  const { updatePartnership } = usePartnership();
   const { officeList } = useUnit($officeStore);
   const { role } = useUnit($sessionStore);
   const [loading, setLoading] = useState(false);
@@ -73,7 +74,6 @@ export default function UpdatePartnershipScreen({
   const { fields, append, remove } = useFieldArray({
     control,
     name: "benefits",
-    rules: {},
   });
 
   const values: FormFieldValues<PartnershipFieldNames> = [
@@ -118,7 +118,7 @@ export default function UpdatePartnershipScreen({
   const onSubmit = async (data: PartnershipFieldNames) => {
     try {
       setLoading(true);
-      //   await updatePartnership({ ...data }, partnershipId);
+      await updatePartnership({ ...data }, partnershipId);
     } catch (e) {
       console.error("[updatepost]", e);
     } finally {

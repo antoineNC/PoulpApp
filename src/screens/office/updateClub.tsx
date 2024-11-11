@@ -4,7 +4,7 @@ import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
 import { AnimatedFAB } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
-import { useOffice } from "@firebase";
+import { useClub } from "@firebase";
 import { $officeStore } from "@context/officeStore";
 import { $sessionStore } from "@context/sessionStore";
 import { ClubFieldNames, FormFieldValues } from "@types";
@@ -19,7 +19,7 @@ export default function UpdateClubScreen({
   route,
 }: UpdateClubProps) {
   const { clubId } = route.params;
-  const { updateClub } = useOffice();
+  const { updateClub } = useClub();
   const { officeList } = useUnit($officeStore);
   const { role } = useUnit($sessionStore);
   const [loading, setLoading] = useState(false);
