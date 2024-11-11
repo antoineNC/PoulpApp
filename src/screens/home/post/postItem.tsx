@@ -27,6 +27,7 @@ import { usePost } from "@firebase";
 import { $officeStore } from "@context/officeStore";
 
 type PostItemProps = Partial<HomeProps> & { post: Post };
+const MAX_LENGTH = 50;
 
 export const PostItem = ({ post, navigation }: PostItemProps) => {
   const { role } = useUnit($sessionStore);
@@ -34,7 +35,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
   const [date, setDate] = useState<DateType>({ start: "null", end: "null" });
   const [allDay, setAllDay] = useState<boolean>(false);
   const [textShown, setTextShown] = useState(false);
-  const [lengthMore, setLengthMore] = useState(false);
+  // const [lengthMore, setLengthMore] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const office = useStoreMap({
     store: $officeStore,
@@ -42,6 +43,8 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
     fn: (officeStore) =>
       officeStore.officeList.find((office) => office.id === post.editorId),
   });
+
+  const lengthMore = post.description && post.description.length > MAX_LENGTH;
 
   useEffect(() => {
     if (post.date) {
@@ -52,14 +55,8 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
   }, [post]);
 
   const toggleNumberOfLines = () => {
-    setTextShown(!textShown);
+    setTextShown((value) => !value);
   };
-  const onTextLayout = useCallback(
-    (e: NativeSyntheticEvent<TextLayoutEventData>) => {
-      setLengthMore(e.nativeEvent.lines.length >= 3);
-    },
-    []
-  );
   return (
     <Container>
       <Body>
@@ -107,29 +104,26 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
             </Container>
           </Row>
         )}
-        <Text
-          numberOfLines={textShown ? undefined : 3}
-          onTextLayout={onTextLayout}
-        >
-          {post.description}
+        <Text>
+          {textShown || !lengthMore
+            ? post.description
+            : `${post.description?.slice(0, MAX_LENGTH)}...`}
         </Text>
         {lengthMore && (
-          <Text
-            onPress={toggleNumberOfLines}
-            style={{ textDecorationLine: "underline" }}
-          >
-            {textShown ? "Voir moins" : "Voir plus"}
-          </Text>
+          <TouchableOpacity onPress={toggleNumberOfLines}>
+            <Text style={{ textDecorationLine: "underline" }}>
+              {textShown ? "Voir moins" : "Voir plus"}
+            </Text>
+          </TouchableOpacity>
         )}
       </Body>
       {post.imageUrl && (
-        <>
-          <TouchableOpacity onPress={() => setShowImage(true)}>
-            <Image
-              source={{ uri: post.imageUrl }}
-              resizeMode="contain"
-              resizeMethod="scale"
-            />
+        <View style={{ flex: 1 }}>
+          <TouchableOpacity
+            onPress={() => setShowImage(true)}
+            style={{ flex: 1 }}
+          >
+            <Image source={{ uri: post.imageUrl }} />
           </TouchableOpacity>
           <ImageView
             images={[{ uri: post.imageUrl }]}
@@ -137,7 +131,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
             visible={showImage}
             onRequestClose={() => setShowImage(false)}
           />
-        </>
+        </View>
       )}
       {["OFFICE_ROLE", "ADMIN_ROLE"].includes(role) && (
         <Row $justify="space-around" $padding="10px 0 0">

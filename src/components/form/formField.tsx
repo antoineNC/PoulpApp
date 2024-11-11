@@ -10,7 +10,7 @@ import {
 type FormFieldType<T extends FieldValues> = FormFieldProps &
   ControlFieldProps<T>;
 
-function FormField<T extends FieldValues>(props: FormFieldType<T>) {
+function CustomField<T extends FieldValues>(props: FormFieldType<T>) {
   const {
     control,
     name,
@@ -53,4 +53,4 @@ function FormField<T extends FieldValues>(props: FormFieldType<T>) {
   );
 }
 
-export default FormField;
+export default CustomField;

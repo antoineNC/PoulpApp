@@ -14,3 +14,5 @@ export const postTags = [
   "Inté",
   "CDF",
 ];
+export const storageUrl =
+  "https://firebasestorage.googleapis.com/v0/b/poulpappv2.appspot.com";

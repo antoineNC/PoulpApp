@@ -1,7 +1,4 @@
-import React, { useState } from "react";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
-import { useStoreMap, useUnit } from "effector-react";
-import { useFieldArray, useForm } from "react-hook-form";
 import {
   AnimatedFAB,
   HelperText,
@@ -9,50 +6,33 @@ import {
   MD3Colors,
   TextInput,
 } from "react-native-paper";
-import Spinner from "react-native-loading-spinner-overlay";
-
-import { usePartnership } from "@firebase";
-import { $sessionStore } from "@context/sessionStore";
-import { $officeStore } from "@context/officeStore";
-import { UpdatePartnershipProps } from "@navigation/navigationTypes";
-import { FormFieldValues, PartnershipFieldNames } from "@types";
-import { colors } from "@theme";
-import { authStyles, officeStyles } from "@styles";
 import { ContainerScroll, Text } from "@styledComponents";
+import { authStyles, officeStyles } from "@styles";
+import { colors } from "@theme";
+import { FormFieldValues, PartnershipFieldNames } from "@types";
 import CustomField from "components/form/formField";
+import Spinner from "react-native-loading-spinner-overlay";
+import {
+  DefaultValues,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 
-export default function UpdatePartnershipScreen({
-  navigation,
-  route,
-}: UpdatePartnershipProps) {
-  const { partnershipId } = route.params;
-  const { updatePartnership } = usePartnership();
-  const { officeList } = useUnit($officeStore);
-  const { role } = useUnit($sessionStore);
-  const [loading, setLoading] = useState(false);
-  const partnership = useStoreMap({
-    store: $officeStore,
-    keys: [partnershipId],
-    fn: (officeStore) =>
-      officeStore.partnershipList.find(
-        (partner) => partner.id === partnershipId
-      ),
-  });
-  if (!partnership) {
-    return <></>;
-  }
-  const office = useStoreMap({
-    store: $officeStore,
-    keys: [partnershipId],
-    fn: (officeStore) =>
-      officeStore.officeList.find(
-        (office) => office.id === partnership.officeId
-      ),
-  });
-  const officeChoices = officeList.map((office) => ({
-    value: office.id,
-    label: office.name,
-  }));
+const PartnershipForm = ({
+  create,
+  loading,
+  fieldItems,
+  defaultValues,
+  onSubmit,
+}: {
+  create: boolean;
+  loading: boolean;
+  fieldItems: FormFieldValues<PartnershipFieldNames>;
+  defaultValues: DefaultValues<PartnershipFieldNames>;
+  onSubmit: SubmitHandler<PartnershipFieldNames>;
+}) => {
+  const loaderTxt = create ? "Création..." : "Modification...";
   const {
     control,
     handleSubmit,
@@ -61,72 +41,12 @@ export default function UpdatePartnershipScreen({
     formState: { errors },
     setValue,
   } = useForm<PartnershipFieldNames>({
-    defaultValues: {
-      ...partnership,
-      office: { label: office?.name, value: office?.id },
-      logoFile: partnership.logoUrl,
-      benefits: partnership.benefits?.map((val) => ({
-        value: val,
-      })),
-    },
+    defaultValues: defaultValues,
   });
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: "benefits",
   });
-
-  const values: FormFieldValues<PartnershipFieldNames> = [
-    {
-      name: "name",
-      label: "Nom",
-      type: "text",
-      required: true,
-    },
-    {
-      name: "description",
-      label: "Description",
-      type: "text",
-      options: { multiline: true },
-    },
-    {
-      name: "address",
-      label: "Adresse",
-      type: "text",
-    },
-    {
-      name: "addressMap",
-      label: "Adresse (lien)",
-      type: "text",
-    },
-    {
-      name: "logoFile",
-      label: "Logo :",
-      type: "image",
-    },
-  ];
-
-  if (role === "ADMIN_ROLE") {
-    values.unshift({
-      name: "office",
-      label: "Géré par",
-      type: "select",
-      options: { choices: officeChoices },
-    });
-  }
-
-  const onSubmit = async (data: PartnershipFieldNames) => {
-    try {
-      setLoading(true);
-      await updatePartnership({ ...data }, partnershipId);
-    } catch (e) {
-      console.error("[updatepost]", e);
-    } finally {
-      setLoading(false);
-      navigation.goBack();
-    }
-  };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -136,20 +56,20 @@ export default function UpdatePartnershipScreen({
         {loading && (
           <Spinner
             visible={loading}
-            textContent={"Modification..."}
+            textContent={loaderTxt}
             textStyle={{ color: colors.white }}
           />
         )}
         <View style={authStyles.formList}>
-          {values.map((field, index) => (
+          {fieldItems.map((field, index) => (
             <CustomField<PartnershipFieldNames>
               {...field}
               key={index}
               control={control}
               index={index}
-              lastInput={index === values.length - 1}
+              lastInput={index === fieldItems.length - 1}
               setFocus={(index) =>
-                index < values.length && setFocus(values[index].name)
+                index < fieldItems.length && setFocus(fieldItems[index].name)
               }
               submit={handleSubmit(onSubmit)}
             />
@@ -216,4 +136,5 @@ export default function UpdatePartnershipScreen({
       />
     </KeyboardAvoidingView>
   );
-}
+};
+export default PartnershipForm;

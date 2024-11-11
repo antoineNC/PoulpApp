@@ -2,7 +2,6 @@ import { useState } from "react";
 import { View } from "react-native";
 import { useForm } from "react-hook-form";
 import { useStoreMap, useUnit } from "effector-react";
-import { Button } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 import { usePost } from "@firebase";
 import { UpdatePostProps } from "@navigation/navigationTypes";
@@ -13,6 +12,7 @@ import { FormFieldValues, PostFieldNames } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
+import { ValidateButton } from "components/validateButton";
 
 export default function UpdatePostScreen({
   navigation,
@@ -78,7 +78,7 @@ export default function UpdatePostScreen({
     },
     {
       name: "imageFile",
-      label: "Image",
+      label: "Image :",
       type: "image",
     },
   ];
@@ -120,13 +120,10 @@ export default function UpdatePostScreen({
         ))}
       </View>
       <View style={authStyles.buttonContainer}>
-        <Button
-          mode="contained"
-          children="Valider les modifications"
+        <ValidateButton
+          text="Valider les modifications"
+          loading={loading}
           onPress={handleSubmit(onSubmit)}
-          uppercase
-          buttonColor={colors.primary}
-          disabled={loading}
         />
       </View>
     </ContainerScroll>

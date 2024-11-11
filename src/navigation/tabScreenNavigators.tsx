@@ -19,8 +19,10 @@ import { FeedScreen } from "@screens/famCup/feed";
 import OfficesScreen from "@screens/office/offices";
 import ViewOfficeScreen from "@screens/office/viewOffice";
 import UpdateOfficeScreen from "@screens/office/updateOffice";
-import UpdateClubScreen from "@screens/office/updateClub";
-import UpdatePartnershipScreen from "@screens/office/updatePartnership";
+import UpdateClubScreen from "@screens/office/club/updateClub";
+import UpdatePartnershipScreen from "@screens/office/partnership/updatePartnership";
+import CreateClubScreen from "@screens/office/club/createClub";
+import CreatePartnershipScreen from "@screens/office/partnership/createPartnership";
 import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
@@ -143,76 +145,76 @@ export function OfficeNavigator() {
       <OfficeStack.Screen
         name="updateOffice"
         component={UpdateOfficeScreen}
-        options={({ route }) => ({
+        options={() => ({
           contentStyle: {
             backgroundColor: colors.secondary,
           },
-          headerTitle: () => {
-            const office = useStoreMap({
-              store: $officeStore,
-              keys: [route.params.officeId],
-              fn: (officeStore) =>
-                officeStore.officeList.find(
-                  (office) => office.id === route.params.officeId
-                ),
-            });
-            return (
-              <Row>
-                <Image $size={45} source={{ uri: office?.logoUrl }} />
-                <Title2>{office?.name}</Title2>
-              </Row>
-            );
+          headerTitle: () => (
+            <Row>
+              <Title2>Modification du bureau</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
+        })}
+      />
+      <OfficeStack.Screen
+        name="createClub"
+        component={CreateClubScreen}
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
           },
+          headerTitle: () => (
+            <Row>
+              <Title2>Création d'un club</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
         })}
       />
       <OfficeStack.Screen
         name="updateClub"
         component={UpdateClubScreen}
-        options={({ route }) => ({
+        options={() => ({
           contentStyle: {
             backgroundColor: colors.secondary,
           },
-          headerTitle: () => {
-            const club = useStoreMap({
-              store: $officeStore,
-              keys: [route.params.clubId],
-              fn: (officeStore) =>
-                officeStore.clubList.find(
-                  (club) => club.id === route.params.clubId
-                ),
-            });
-            return (
-              <Row>
-                <Image $size={45} source={{ uri: club?.logoUrl }} />
-                <Title2>{club?.name}</Title2>
-              </Row>
-            );
+          headerTitle: () => (
+            <Row>
+              <Title2>Modification du club</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
+        })}
+      />
+      <OfficeStack.Screen
+        name="createPartnership"
+        component={CreatePartnershipScreen}
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
           },
+          headerTitle: () => (
+            <Row>
+              <Title2>Création d'un partenariat</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
         })}
       />
       <OfficeStack.Screen
         name="updatePartnership"
         component={UpdatePartnershipScreen}
-        options={({ route }) => ({
+        options={() => ({
           contentStyle: {
             backgroundColor: colors.secondary,
           },
-          headerTitle: () => {
-            const partner = useStoreMap({
-              store: $officeStore,
-              keys: [route.params.partnershipId],
-              fn: (officeStore) =>
-                officeStore.partnershipList.find(
-                  (partner) => partner.id === route.params.partnershipId
-                ),
-            });
-            return (
-              <Row>
-                <Image $size={45} source={{ uri: partner?.logoUrl }} />
-                <Title2>{partner?.name}</Title2>
-              </Row>
-            );
-          },
+          headerTitle: () => (
+            <Row>
+              <Title2>Modification du partenariat</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
         })}
       />
     </OfficeStack.Navigator>

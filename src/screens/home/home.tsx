@@ -50,7 +50,6 @@ export default function HomeScreen({ navigation }: HomeProps) {
           <PostItem post={item} navigation={navigation} />
         )}
         ItemSeparatorComponent={() => <View style={{ marginVertical: 10 }} />}
-        ListFooterComponent={<View style={{ minHeight: 40 }}></View>}
         // onEndReached={async () => {
         //   await getMorePost(lastVisible);
         // }}
@@ -62,9 +61,7 @@ export default function HomeScreen({ navigation }: HomeProps) {
           extended={isExtended}
           onPress={() => navigation.navigate("createPost")}
           visible={true}
-          animateFrom={"right"}
-          iconMode={"static"}
-          style={[styles.fabStyle]}
+          style={styles.fabStyle}
           variant="secondary"
         />
       )}

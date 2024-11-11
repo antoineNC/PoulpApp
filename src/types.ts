@@ -15,8 +15,8 @@ export type Student = UserType & {
 export type Office = UserType & {
   acronym: string;
   name: string;
-  description: string;
-  logoUrl: string;
+  description?: string;
+  logoUrl?: string;
   members?: {
     idStudent: string;
     idRole: string;
@@ -39,7 +39,7 @@ export type Post = {
   editorId: string;
   description?: string;
   imageUrl?: string;
-  tags?: Array<string>;
+  tags?: string[];
   date?: {
     start: Timestamp;
     end: Timestamp;
@@ -125,16 +125,30 @@ export type DatePickerValues = {
 
 export type PostFieldNames = {
   title: string;
-  description: string;
+  description?: string;
   date?: { start: Timestamp; end: Timestamp };
   tags: string[];
   editor: { value: string; label: string };
   imageFile?: string;
 };
 
+export type fb_Post = {
+  title: string;
+  createdAt: Timestamp;
+  editorId: string;
+  description?: string;
+  imageId?: string;
+  tags?: string[];
+  date?: {
+    start: Timestamp;
+    end: Timestamp;
+  };
+};
+
 export type OfficeFieldNames = {
-  acronym?: string;
-  name?: string;
+  acronym: string;
+  name: string;
+  mail: string;
   description?: string;
   logoFile?: string;
   members?: {
@@ -143,20 +157,50 @@ export type OfficeFieldNames = {
   }[];
 };
 
+export type fb_Office = {
+  acronym: string;
+  name: string;
+  mail: string;
+  description?: string;
+  logoId?: string;
+  members?: {
+    idStudent: string;
+    idRole: string;
+  }[];
+};
+
 export type ClubFieldNames = {
-  name?: string;
-  office?: { value: string; label: string };
+  name: string;
+  office: { value: string; label: string };
   description?: string;
   contact?: string;
   logoFile?: string;
 };
 
+export type fb_Club = {
+  name: string;
+  officeId: string;
+  description?: string;
+  contact?: string;
+  logoId?: string;
+};
+
 export type PartnershipFieldNames = {
-  name?: string;
-  office?: { value: string; label: string };
+  name: string;
+  office: { value: string; label: string };
   description?: string;
   address?: string;
   addressMap?: string;
   benefits?: { value: string }[];
   logoFile?: string;
+};
+
+export type fb_Partnership = {
+  name: string;
+  officeId: string;
+  description?: string;
+  address?: string;
+  addressMap?: string;
+  benefits?: string[];
+  logoId?: string;
 };

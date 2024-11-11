@@ -12,6 +12,7 @@ import {
   ContainerScroll,
 } from "@styledComponents";
 import { officeStyles } from "@styles";
+import { colors } from "@theme";
 
 export default function ViewOfficeScreen({ route }: ViewOfficeProps) {
   const { officeId } = route.params;
@@ -121,11 +122,25 @@ export default function ViewOfficeScreen({ route }: ViewOfficeProps) {
             showsHorizontalScrollIndicator={false}
             data={partnerships}
             renderItem={({ item }) => (
-              <View style={{ margin: 10, alignItems: "center" }}>
+              <View
+                style={{
+                  margin: 10,
+                  alignItems: "center",
+                }}
+              >
                 <Image
-                  source={{ uri: item.logoUrl }}
+                  source={
+                    item.logoUrl
+                      ? { uri: item.logoUrl }
+                      : require("@assets/no_image_available.png")
+                  }
                   $size={100}
-                  style={{ borderRadius: 5 }}
+                  style={{
+                    borderRadius: 5,
+                    width: 100,
+                    height: 100,
+                    backgroundColor: colors.secondary,
+                  }}
                 />
                 <Text>{item.name}</Text>
               </View>

@@ -14,7 +14,13 @@ export const SmallCardItem = ({
   return (
     <Card>
       <Card.Cover
-        source={{ uri: logo }}
+        source={
+          logo
+            ? {
+                uri: logo,
+              }
+            : require("@assets/no_image_available.png")
+        }
         resizeMode="contain"
         style={{
           margin: 5,

@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import { View } from "react-native";
 import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
-import { AnimatedFAB } from "react-native-paper";
-import Spinner from "react-native-loading-spinner-overlay";
 import { useClub } from "@firebase";
 import { $officeStore } from "@context/officeStore";
 import { $sessionStore } from "@context/sessionStore";
 import { ClubFieldNames, FormFieldValues } from "@types";
 import { UpdateClubProps } from "@navigation/navigationTypes";
-import { colors } from "@theme";
-import { authStyles, officeStyles } from "@styles";
-import { ContainerScroll } from "@styledComponents";
-import CustomField from "components/form/formField";
+import ClubForm from "./clubForm";
 
 export default function UpdateClubScreen({
   navigation,
@@ -82,6 +76,7 @@ export default function UpdateClubScreen({
       name: "office",
       label: "Géré par",
       type: "select",
+      required: true,
       options: { choices: officeChoices },
     });
   }
@@ -99,46 +94,13 @@ export default function UpdateClubScreen({
   };
 
   return (
-    <>
-      <ContainerScroll style={officeStyles.container}>
-        {loading && (
-          <Spinner
-            visible={loading}
-            textContent={"Modification..."}
-            textStyle={{ color: colors.white }}
-          />
-        )}
-        <View style={authStyles.formList}>
-          {values.map((field, index) => (
-            <CustomField<ClubFieldNames>
-              {...field}
-              key={index}
-              control={control}
-              index={index}
-              lastInput={index === values.length - 1}
-              setFocus={(index) =>
-                index < values.length && setFocus(values[index].name)
-              }
-              submit={handleSubmit(onSubmit)}
-            />
-          ))}
-        </View>
-        <View style={{ height: 100 }} />
-      </ContainerScroll>
-      <AnimatedFAB
-        icon={"content-save"}
-        label={"Enregistrer le club"}
-        extended={true}
-        onPress={handleSubmit(onSubmit)}
-        visible={true}
-        animateFrom="right"
-        style={{
-          position: "absolute",
-          bottom: 20,
-          alignSelf: "center",
-        }}
-        variant="secondary"
-      />
-    </>
+    <ClubForm
+      create={false}
+      loading={loading}
+      control={control}
+      values={values}
+      onSubmit={handleSubmit(onSubmit)}
+      setFocus={setFocus}
+    />
   );
 }

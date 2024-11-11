@@ -53,7 +53,9 @@ export type OfficeTabParamList = {
   viewOffice: { officeId: string };
   updateOffice: { officeId: string };
   updateMembers: { officeId: string };
+  createClub: { officeId: string };
   updateClub: { clubId: string };
+  createPartnership: { officeId: string };
   updatePartnership: { partnershipId: string };
 };
 export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
@@ -65,7 +67,9 @@ export type OfficesProps = OfficeTabScreenProps<"offices">;
 export type ViewOfficeProps = OfficeTabScreenProps<"viewOffice">;
 export type UpdateOfficeProps = OfficeTabScreenProps<"updateOffice">;
 export type UpdateMembersProps = OfficeTabScreenProps<"updateMembers">;
+export type CreateClubProps = OfficeTabScreenProps<"createClub">;
 export type UpdateClubProps = OfficeTabScreenProps<"updateClub">;
+export type CreatePartnershipProps = OfficeTabScreenProps<"createPartnership">;
 export type UpdatePartnershipProps = OfficeTabScreenProps<"updatePartnership">;
 
 // === FamCup tab

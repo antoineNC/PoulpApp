@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FlatList, View, Alert } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useStoreMap } from "effector-react";
-import { AnimatedFAB } from "react-native-paper";
+import { AnimatedFAB, IconButton } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 
 import { useClub, useOffice, usePartnership } from "@firebase";
@@ -79,7 +79,7 @@ export default function UpdateOfficeScreen({
   const onDeletePartnership = async (id: string) => await deletePartnership(id);
   return (
     <>
-      <ContainerScroll style={officeStyles.container}>
+      <ContainerScroll>
         {loading && (
           <Spinner
             visible={loading}
@@ -87,15 +87,16 @@ export default function UpdateOfficeScreen({
             textStyle={{ color: colors.white }}
           />
         )}
-        <View style={authStyles.formList}>
+        <View style={[authStyles.formList, officeStyles.container]}>
           <Controller
             control={control}
             name="acronym"
+            rules={{ required: true }}
             render={({ field, fieldState }) => (
               <TextInputForm
                 field={field}
                 fieldState={fieldState}
-                label="Acronyme"
+                label="Acronyme *"
                 index={0}
                 lastInput={false}
                 setFocus={() => setFocus("name")}
@@ -107,12 +108,30 @@ export default function UpdateOfficeScreen({
           <Controller
             control={control}
             name="name"
+            rules={{ required: true }}
             render={({ field, fieldState }) => (
               <TextInputForm
                 field={field}
                 fieldState={fieldState}
-                label="Nom"
+                label="Nom *"
                 index={1}
+                lastInput={false}
+                setFocus={() => setFocus("description")}
+                type="text"
+                submit={handleSubmit(onSubmit)}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="mail"
+            rules={{ required: true }}
+            render={({ field, fieldState }) => (
+              <TextInputForm
+                field={field}
+                fieldState={fieldState}
+                label="E-mail *"
+                index={2}
                 lastInput={false}
                 setFocus={() => setFocus("description")}
                 type="text"
@@ -129,7 +148,7 @@ export default function UpdateOfficeScreen({
                 fieldState={fieldState}
                 type="text"
                 label="Description"
-                index={2}
+                index={3}
                 lastInput={false}
                 options={{ multiline: true }}
                 setFocus={() => setFocus("logoFile")}
@@ -144,8 +163,8 @@ export default function UpdateOfficeScreen({
               <ImagePickerForm
                 field={field}
                 fieldState={fieldState}
-                label=""
-                index={3}
+                label="Logo :"
+                index={4}
                 lastInput={false}
                 setFocus={() => setFocus("members")}
                 type="image"
@@ -156,68 +175,99 @@ export default function UpdateOfficeScreen({
           <Text $bold $dark>
             Les clubs :
           </Text>
-          <FlatList
-            horizontal
-            data={clubs}
-            contentContainerStyle={{ columnGap: 10, padding: 10 }}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => {
-              return (
-                <SmallCardItem
-                  title={item.name}
-                  logo={item.logoUrl}
-                  onEdit={() =>
-                    navigation.navigate("updateClub", { clubId: item.id })
-                  }
-                  onDelete={() =>
-                    Alert.alert(
-                      "Supprimer un club",
-                      "Voulez-vous vraiment supprimer définitivement ce club ?",
-                      [
-                        { text: "OUI", onPress: () => onDeleteClub(item.id) },
-                        { text: "NON" },
-                      ]
-                    )
+          <View style={{ marginHorizontal: -15 }}>
+            <FlatList
+              horizontal
+              data={clubs}
+              contentContainerStyle={{
+                columnGap: 10,
+                padding: 10,
+              }}
+              showsHorizontalScrollIndicator={false}
+              ListHeaderComponentStyle={{ justifyContent: "center" }}
+              ListHeaderComponent={
+                <IconButton
+                  icon="plus"
+                  mode="contained"
+                  size={40}
+                  style={{ borderRadius: 5 }}
+                  onPress={() =>
+                    navigation.navigate("createClub", { officeId })
                   }
                 />
-              );
-            }}
-          />
+              }
+              renderItem={({ item }) => {
+                return (
+                  <SmallCardItem
+                    title={item.name}
+                    logo={item.logoUrl}
+                    onEdit={() =>
+                      navigation.navigate("updateClub", { clubId: item.id })
+                    }
+                    onDelete={() =>
+                      Alert.alert(
+                        "Supprimer un club",
+                        "Voulez-vous vraiment supprimer définitivement ce club ?",
+                        [
+                          { text: "OUI", onPress: () => onDeleteClub(item.id) },
+                          { text: "NON" },
+                        ]
+                      )
+                    }
+                  />
+                );
+              }}
+            />
+          </View>
           <Text $bold $dark>
             Les partenariats :
           </Text>
-          <FlatList
-            horizontal
-            data={partnerships}
-            contentContainerStyle={{ columnGap: 10, padding: 10 }}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => {
-              return (
-                <SmallCardItem
-                  title={item.name}
-                  logo={item.logoUrl}
-                  onEdit={() =>
-                    navigation.navigate("updatePartnership", {
-                      partnershipId: item.id,
-                    })
-                  }
-                  onDelete={() =>
-                    Alert.alert(
-                      "Supprimer un partenariat",
-                      "Voulez-vous vraiment supprimer définitivement ce partenariat ?",
-                      [
-                        {
-                          text: "OUI",
-                          onPress: () => onDeletePartnership(item.id),
-                        },
-                        { text: "NON" },
-                      ]
-                    )
+          <View style={{ marginHorizontal: -15 }}>
+            <FlatList
+              horizontal
+              data={partnerships}
+              contentContainerStyle={{ columnGap: 10, padding: 10 }}
+              showsHorizontalScrollIndicator={false}
+              ListHeaderComponentStyle={{ justifyContent: "center" }}
+              ListHeaderComponent={
+                <IconButton
+                  icon="plus"
+                  mode="contained"
+                  size={40}
+                  style={{ borderRadius: 5 }}
+                  onPress={() =>
+                    navigation.navigate("createPartnership", { officeId })
                   }
                 />
-              );
-            }}
-          />
+              }
+              renderItem={({ item }) => {
+                return (
+                  <SmallCardItem
+                    title={item.name}
+                    logo={item.logoUrl}
+                    onEdit={() =>
+                      navigation.navigate("updatePartnership", {
+                        partnershipId: item.id,
+                      })
+                    }
+                    onDelete={() =>
+                      Alert.alert(
+                        "Supprimer un partenariat",
+                        "Voulez-vous vraiment supprimer définitivement ce partenariat ?",
+                        [
+                          {
+                            text: "OUI",
+                            onPress: () => onDeletePartnership(item.id),
+                          },
+                          { text: "NON" },
+                        ]
+                      )
+                    }
+                  />
+                );
+              }}
+            />
+          </View>
           <ListMemberForm
             control={control}
             setValue={setValue}
