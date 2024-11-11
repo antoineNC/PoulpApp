@@ -31,12 +31,10 @@ export default function ViewOfficeScreen({ route }: ViewOfficeProps) {
     keys: [officeId],
     fn: (officeStore) => {
       const clubs = officeStore.clubList.filter(
-        (club) => office.clubs?.includes(club.id) && club.officeId === office.id
+        (club) => club.officeId === office.id
       );
       const partnerships = officeStore.partnershipList.filter(
-        (partnership) =>
-          office.partnerships?.includes(partnership.id) &&
-          partnership.officeId === office.id
+        (partnership) => partnership.officeId === office.id
       );
       return [clubs, partnerships, officeStore.roleList];
     },

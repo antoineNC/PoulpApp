@@ -111,7 +111,6 @@ export function getFieldInput<T extends FieldValues>(
       return <TextInputForm<T> {...props} />;
     case "image":
       return <ImagePickerForm<T> {...props} />;
-      break;
     case "date":
       return <DateTimeFormPicker<T> {...props} />;
     case "select":

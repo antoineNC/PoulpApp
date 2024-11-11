@@ -21,8 +21,6 @@ export type Office = UserType & {
     idStudent: string;
     idRole: string;
   }[];
-  partnerships?: string[];
-  clubs?: string[];
 };
 export type Admin = UserType & {
   name: string;
@@ -135,14 +133,30 @@ export type PostFieldNames = {
 };
 
 export type OfficeFieldNames = {
-  acronym: string;
-  name: string;
+  acronym?: string;
+  name?: string;
   description?: string;
-  logoUrl?: string;
+  logoFile?: string;
   members?: {
     idStudent: string;
     idRole: string;
   }[];
-  // partnerships?: string[];
-  // clubs?: string[];
+};
+
+export type ClubFieldNames = {
+  name?: string;
+  office?: { value: string; label: string };
+  description?: string;
+  contact?: string;
+  logoFile?: string;
+};
+
+export type PartnershipFieldNames = {
+  name?: string;
+  office?: { value: string; label: string };
+  description?: string;
+  address?: string;
+  addressMap?: string;
+  benefits?: { value: string }[];
+  logoFile?: string;
 };

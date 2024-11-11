@@ -19,7 +19,8 @@ import { FeedScreen } from "@screens/famCup/feed";
 import OfficesScreen from "@screens/office/offices";
 import ViewOfficeScreen from "@screens/office/viewOffice";
 import UpdateOfficeScreen from "@screens/office/updateOffice";
-import UpdateMembersScreen from "@screens/office/updateMembers";
+import UpdateClubScreen from "@screens/office/updateClub";
+import UpdatePartnershipScreen from "@screens/office/updatePartnership";
 import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
@@ -165,25 +166,50 @@ export function OfficeNavigator() {
         })}
       />
       <OfficeStack.Screen
-        name="updateMembers"
-        component={UpdateMembersScreen}
+        name="updateClub"
+        component={UpdateClubScreen}
         options={({ route }) => ({
           contentStyle: {
             backgroundColor: colors.secondary,
           },
           headerTitle: () => {
-            const office = useStoreMap({
+            const club = useStoreMap({
               store: $officeStore,
-              keys: [route.params.officeId],
+              keys: [route.params.clubId],
               fn: (officeStore) =>
-                officeStore.officeList.find(
-                  (office) => office.id === route.params.officeId
+                officeStore.clubList.find(
+                  (club) => club.id === route.params.clubId
                 ),
             });
             return (
               <Row>
-                <Image $size={45} source={{ uri: office?.logoUrl }} />
-                <Title2>Membres de : {office?.acronym}</Title2>
+                <Image $size={45} source={{ uri: club?.logoUrl }} />
+                <Title2>{club?.name}</Title2>
+              </Row>
+            );
+          },
+        })}
+      />
+      <OfficeStack.Screen
+        name="updatePartnership"
+        component={UpdatePartnershipScreen}
+        options={({ route }) => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitle: () => {
+            const partner = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.partnershipId],
+              fn: (officeStore) =>
+                officeStore.partnershipList.find(
+                  (partner) => partner.id === route.params.partnershipId
+                ),
+            });
+            return (
+              <Row>
+                <Image $size={45} source={{ uri: partner?.logoUrl }} />
+                <Title2>{partner?.name}</Title2>
               </Row>
             );
           },

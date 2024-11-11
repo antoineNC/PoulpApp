@@ -53,6 +53,8 @@ export type OfficeTabParamList = {
   viewOffice: { officeId: string };
   updateOffice: { officeId: string };
   updateMembers: { officeId: string };
+  updateClub: { clubId: string };
+  updatePartnership: { partnershipId: string };
 };
 export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
   CompositeScreenProps<
@@ -63,6 +65,8 @@ export type OfficesProps = OfficeTabScreenProps<"offices">;
 export type ViewOfficeProps = OfficeTabScreenProps<"viewOffice">;
 export type UpdateOfficeProps = OfficeTabScreenProps<"updateOffice">;
 export type UpdateMembersProps = OfficeTabScreenProps<"updateMembers">;
+export type UpdateClubProps = OfficeTabScreenProps<"updateClub">;
+export type UpdatePartnershipProps = OfficeTabScreenProps<"updatePartnership">;
 
 // === FamCup tab
 export type FamCupTabParamList = {
