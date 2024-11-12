@@ -389,6 +389,8 @@ export const useOffice = () => {
           if (officeData.logoId) {
             deleteObject(ref(assetsRef, officeData.logoId));
           }
+        } else {
+          delete updatedFields.logoId;
         }
       } else {
         updatedFields["logoId"] = "";

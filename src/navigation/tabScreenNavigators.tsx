@@ -27,6 +27,8 @@ import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
 import { $officeStore } from "@context/officeStore";
+import ViewClubScreen from "@screens/office/club/viewClub";
+import ViewPartnershipScreen from "@screens/office/partnership/viewPartnership";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -158,6 +160,34 @@ export function OfficeNavigator() {
         })}
       />
       <OfficeStack.Screen
+        name="viewClub"
+        component={ViewClubScreen}
+        options={({ route }) => ({
+          headerTitle: () => {
+            const club = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.clubId],
+              fn: (officeStore) =>
+                officeStore.clubList.find(
+                  (club) => club.id === route.params.clubId
+                ),
+            });
+            return (
+              <Row>
+                {club?.logoUrl && (
+                  <Image
+                    style={{ borderRadius: 5 }}
+                    $size={45}
+                    source={{ uri: club.logoUrl }}
+                  />
+                )}
+                <Title2>{club?.name}</Title2>
+              </Row>
+            );
+          },
+        })}
+      />
+      <OfficeStack.Screen
         name="createClub"
         component={CreateClubScreen}
         options={() => ({
@@ -185,6 +215,34 @@ export function OfficeNavigator() {
               <IconButton icon="pencil" iconColor={colors.white} size={25} />
             </Row>
           ),
+        })}
+      />
+      <OfficeStack.Screen
+        name="viewPartnership"
+        component={ViewPartnershipScreen}
+        options={({ route }) => ({
+          headerTitle: () => {
+            const partner = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.partnershipId],
+              fn: (officeStore) =>
+                officeStore.partnershipList.find(
+                  (partner) => partner.id === route.params.partnershipId
+                ),
+            });
+            return (
+              <Row>
+                {partner?.logoUrl && (
+                  <Image
+                    style={{ borderRadius: 5 }}
+                    $size={45}
+                    source={{ uri: partner.logoUrl }}
+                  />
+                )}
+                <Title2>{partner?.name}</Title2>
+              </Row>
+            );
+          },
         })}
       />
       <OfficeStack.Screen

@@ -14,7 +14,11 @@ export default function OfficesScreen({ navigation }: OfficesProps) {
     <Container>
       <FlatList
         data={officeList}
-        contentContainerStyle={{ rowGap: 20, paddingHorizontal: 20 }}
+        contentContainerStyle={{
+          rowGap: 20,
+          paddingHorizontal: 20,
+          paddingBottom: 100,
+        }}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <TouchableOpacity

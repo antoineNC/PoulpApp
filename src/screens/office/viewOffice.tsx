@@ -14,7 +14,10 @@ import {
 import { officeStyles } from "@styles";
 import { colors } from "@theme";
 
-export default function ViewOfficeScreen({ route }: ViewOfficeProps) {
+export default function ViewOfficeScreen({
+  navigation,
+  route,
+}: ViewOfficeProps) {
   const { officeId } = route.params;
   const office = useStoreMap({
     store: $officeStore,
@@ -102,31 +105,11 @@ export default function ViewOfficeScreen({ route }: ViewOfficeProps) {
             showsHorizontalScrollIndicator={false}
             data={clubs}
             renderItem={({ item }) => (
-              <View style={{ margin: 10, alignItems: "center" }}>
-                <Image
-                  source={{ uri: item.logoUrl }}
-                  $size={100}
-                  style={{ borderRadius: 5 }}
-                />
-                <Text>{item.name}</Text>
-              </View>
-            )}
-          />
-        </View>
-      )}
-      {partnerships && partnerships.length > 0 && (
-        <View>
-          <BodyTitle>Liste des partenariats :</BodyTitle>
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={partnerships}
-            renderItem={({ item }) => (
-              <View
-                style={{
-                  margin: 10,
-                  alignItems: "center",
-                }}
+              <TouchableOpacity
+                style={{ margin: 10, alignItems: "center" }}
+                onPress={() =>
+                  navigation.navigate("viewClub", { clubId: item.id })
+                }
               >
                 <Image
                   source={
@@ -143,7 +126,43 @@ export default function ViewOfficeScreen({ route }: ViewOfficeProps) {
                   }}
                 />
                 <Text>{item.name}</Text>
-              </View>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      )}
+      {partnerships && partnerships.length > 0 && (
+        <View>
+          <BodyTitle>Liste des partenariats :</BodyTitle>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={partnerships}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={{ margin: 10, alignItems: "center" }}
+                onPress={() =>
+                  navigation.navigate("viewPartnership", {
+                    partnershipId: item.id,
+                  })
+                }
+              >
+                <Image
+                  source={
+                    item.logoUrl
+                      ? { uri: item.logoUrl }
+                      : require("@assets/no_image_available.png")
+                  }
+                  $size={100}
+                  style={{
+                    borderRadius: 5,
+                    width: 100,
+                    height: 100,
+                    backgroundColor: colors.secondary,
+                  }}
+                />
+                <Text>{item.name}</Text>
+              </TouchableOpacity>
             )}
           />
         </View>
