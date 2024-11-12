@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { IconButton } from "react-native-paper";
+import { useStoreMap } from "effector-react";
 
 import {
   FamCupTabParamList,
@@ -9,17 +10,25 @@ import {
   TabBarScreenProps,
 } from "@navigation/navigationTypes";
 import HomeScreen from "@screens/home/home";
-import ViewPostScreen from "@screens/home/viewPost";
-import UpdatePostScreen from "@screens/home/updatePost";
-import CalendarScreen from "@screens/home/calendar";
+// import ViewPostScreen from "@screens/home/viewPost";
+import CreatePostScreen from "@screens/home/post/createPost";
+import UpdatePostScreen from "@screens/home/post/updatePost";
+// import CalendarScreen from "@screens/home/calendar";
 import { ScoreScreen } from "@screens/famCup/score";
 import { FeedScreen } from "@screens/famCup/feed";
 import OfficesScreen from "@screens/office/offices";
 import ViewOfficeScreen from "@screens/office/viewOffice";
+import UpdateOfficeScreen from "@screens/office/updateOffice";
+import UpdateClubScreen from "@screens/office/club/updateClub";
+import UpdatePartnershipScreen from "@screens/office/partnership/updatePartnership";
+import CreateClubScreen from "@screens/office/club/createClub";
+import CreatePartnershipScreen from "@screens/office/partnership/createPartnership";
 import { ProfileScreen } from "@screens/menu/profile";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
-import CreatePostScreen from "@screens/home/createPost";
+import { $officeStore } from "@context/officeStore";
+import ViewClubScreen from "@screens/office/club/viewClub";
+import ViewPartnershipScreen from "@screens/office/partnership/viewPartnership";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -59,7 +68,7 @@ export function HomeNavigator({
           // ),
         }}
       />
-      <HomeStack.Screen
+      {/* <HomeStack.Screen
         name="viewPost"
         component={ViewPostScreen}
         options={({ route }) => ({
@@ -69,7 +78,7 @@ export function HomeNavigator({
             </Row>
           ),
         })}
-      />
+      /> */}
       <HomeStack.Screen
         name="createPost"
         component={CreatePostScreen}
@@ -79,7 +88,7 @@ export function HomeNavigator({
           },
           headerTitle: () => (
             <Row>
-              <Title2>Modification du post</Title2>
+              <Title2>Création d'un post</Title2>
               <IconButton icon="pencil" iconColor={colors.white} size={25} />
             </Row>
           ),
@@ -100,7 +109,7 @@ export function HomeNavigator({
           ),
         })}
       />
-      <HomeStack.Screen name="calendar" component={CalendarScreen} />
+      {/* <HomeStack.Screen name="calendar" component={CalendarScreen} /> */}
     </HomeStack.Navigator>
   );
 }
@@ -117,15 +126,155 @@ export function OfficeNavigator() {
         name="viewOffice"
         component={ViewOfficeScreen}
         options={({ route }) => ({
+          headerTitle: () => {
+            const office = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.officeId],
+              fn: (officeStore) =>
+                officeStore.officeList.find(
+                  (office) => office.id === route.params.officeId
+                ),
+            });
+            return (
+              <Row>
+                <Image $size={45} source={{ uri: office?.logoUrl }} />
+                <Title2>{office?.name}</Title2>
+              </Row>
+            );
+          },
+        })}
+      />
+      <OfficeStack.Screen
+        name="updateOffice"
+        component={UpdateOfficeScreen}
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
           headerTitle: () => (
             <Row>
-              <Image $size={45} source={{ uri: route.params.office.logoUrl }} />
-              <Title2>{route.params.office.name}</Title2>
+              <Title2>Modification du bureau</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
             </Row>
           ),
         })}
       />
-      <OfficeStack.Screen name="updateOffice" component={CalendarScreen} />
+      <OfficeStack.Screen
+        name="viewClub"
+        component={ViewClubScreen}
+        options={({ route }) => ({
+          headerTitle: () => {
+            const club = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.clubId],
+              fn: (officeStore) =>
+                officeStore.clubList.find(
+                  (club) => club.id === route.params.clubId
+                ),
+            });
+            return (
+              <Row>
+                {club?.logoUrl && (
+                  <Image
+                    style={{ borderRadius: 5 }}
+                    $size={45}
+                    source={{ uri: club.logoUrl }}
+                  />
+                )}
+                <Title2>{club?.name}</Title2>
+              </Row>
+            );
+          },
+        })}
+      />
+      <OfficeStack.Screen
+        name="createClub"
+        component={CreateClubScreen}
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitle: () => (
+            <Row>
+              <Title2>Création d'un club</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
+        })}
+      />
+      <OfficeStack.Screen
+        name="updateClub"
+        component={UpdateClubScreen}
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitle: () => (
+            <Row>
+              <Title2>Modification du club</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
+        })}
+      />
+      <OfficeStack.Screen
+        name="viewPartnership"
+        component={ViewPartnershipScreen}
+        options={({ route }) => ({
+          headerTitle: () => {
+            const partner = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.partnershipId],
+              fn: (officeStore) =>
+                officeStore.partnershipList.find(
+                  (partner) => partner.id === route.params.partnershipId
+                ),
+            });
+            return (
+              <Row>
+                {partner?.logoUrl && (
+                  <Image
+                    style={{ borderRadius: 5 }}
+                    $size={45}
+                    source={{ uri: partner.logoUrl }}
+                  />
+                )}
+                <Title2>{partner?.name}</Title2>
+              </Row>
+            );
+          },
+        })}
+      />
+      <OfficeStack.Screen
+        name="createPartnership"
+        component={CreatePartnershipScreen}
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitle: () => (
+            <Row>
+              <Title2>Création d'un partenariat</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
+        })}
+      />
+      <OfficeStack.Screen
+        name="updatePartnership"
+        component={UpdatePartnershipScreen}
+        options={() => ({
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          headerTitle: () => (
+            <Row>
+              <Title2>Modification du partenariat</Title2>
+              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+            </Row>
+          ),
+        })}
+      />
     </OfficeStack.Navigator>
   );
 }
@@ -151,7 +300,7 @@ export function MenuNavigator() {
         component={ProfileScreen}
         options={{ title: "Menu" }}
       />
-      <MenuStack.Screen name="allSubs" component={CalendarScreen} />
+      {/* <MenuStack.Screen name="allSubs" component={CalendarScreen} /> */}
     </MenuStack.Navigator>
   );
 }

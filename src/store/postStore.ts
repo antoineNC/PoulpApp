@@ -57,7 +57,8 @@ const $postStore = createStore(defaultPosts)
     loading: false,
   }))
   .on(actionPost.setMorePost, (state, payload) => ({
-    ...payload,
+    lastVisible: payload.lastVisible,
+    posts: payload.posts,
     loading: false,
   }))
   .on(actionPost.resetPosts, (_) => ({

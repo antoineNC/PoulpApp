@@ -25,9 +25,9 @@ import {
   DocumentSnapshot,
   QuerySnapshot,
   startAfter,
-  arrayUnion,
   QueryConstraint,
   Timestamp,
+  deleteField,
 } from "@firebase/firestore";
 import {
   StorageReference,
@@ -44,16 +44,26 @@ import app from "firebase/firebaseConfig";
 import { actionSession } from "@context/sessionStore";
 import { actionOffice } from "@context/officeStore";
 import { actionPost } from "@context/postStore";
+import { actionStudent } from "@context/studentStore";
 import {
   Club,
+  ClubFieldNames,
+  fb_Club,
+  fb_Office,
+  fb_Partnership,
+  fb_Post,
   Office,
+  OfficeFieldNames,
   Partnership,
+  PartnershipFieldNames,
   Post,
   RoleOffice,
   Student,
   UserType,
 } from "@types";
-import { PostFieldNames } from "@screens/home/updatePost";
+import { PostFieldNames } from "@types";
+import { storageUrl } from "data";
+import { formattedToday } from "utils/dateUtils";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -101,12 +111,16 @@ export const useUtils = () => {
     }
   };
 
-  const uploadImage = async (localUri: string, name: string) => {
+  const uploadImage = async (
+    localUri: string,
+    name: string,
+    storageRef: StorageReference
+  ) => {
     try {
       const result = await fetch(localUri);
       const imgBlob = await result.blob();
       const fileName = name + uuid.v4();
-      const fileRef = ref(imgPostRef, fileName);
+      const fileRef = ref(storageRef, fileName);
       await uploadBytes(fileRef, imgBlob);
       return fileName;
     } catch (e) {
@@ -117,8 +131,11 @@ export const useUtils = () => {
 };
 
 export const useAuth = () => {
-  const { getAllOffice, getAllClub, getAllPartnership, getAllRole } =
-    useOffice();
+  const { getAllOffice, getAllRole } = useOffice();
+  const { getAllClub } = useClub();
+  const { getAllPartnership } = usePartnership();
+  const { getAllStudent } = useStudent();
+
   const login = async ({
     email,
     password,
@@ -226,6 +243,9 @@ export const useAuth = () => {
     await getAllClub();
     await getAllPartnership();
     await getAllRole();
+    if (role !== "STUDENT_ROLE") {
+      await getAllStudent();
+    }
     actionSession.login({ user, role });
   };
 
@@ -241,28 +261,27 @@ export const useAuth = () => {
 };
 
 export const useStudent = () => {
-  // const getAllStudent = async (getSnapshot: (snapshot: Student[]) => void) => {
-  //   try {
-  //     const q = query(userCollection, where("role", "==", "STUDENT_ROLE"));
-  //     onSnapshot(q, async (snapshot) => {
-  //       const allStudent = snapshot.docs.map(async (doc) => {
-  //         const studentData = doc.data();
-  //         const student: Student = {
-  //           id: doc.id,
-  //           mail: studentData.mail,
-  //           firstName: studentData.firstName,
-  //           lastName: studentData.lastName,
-  //           adhesion: studentData.adhesion,
-  //         };
-  //         return student;
-  //       });
-  //       const allStudentResolved = await Promise.all(allStudent);
-  //       actionStudent.setAllStudent(allStudentResolved);
-  //     });
-  //   } catch (e: any) {
-  //     throw Error(`[getAllStudent] ${e}\n`);
-  //   }
-  // };
+  const getAllStudent = async () => {
+    try {
+      const q = query(userCollection, where("role", "==", "STUDENT_ROLE"));
+      onSnapshot(q, async (snapshot) => {
+        const allStudent = snapshot.docs.map((doc) => {
+          const studentData = doc.data();
+          const student: Student = {
+            id: doc.id,
+            mail: studentData.mail,
+            firstName: studentData.firstName,
+            lastName: studentData.lastName,
+            adhesion: studentData.adhesion,
+          };
+          return student;
+        });
+        actionStudent.setAllStudent(allStudent);
+      });
+    } catch (e: any) {
+      throw Error(`[getAllStudent] ${e}\n`);
+    }
+  };
 
   const getMemberOffice = async (idOffice: string) => {
     try {
@@ -310,22 +329,20 @@ export const useStudent = () => {
       console.error(e);
     }
   };
-  return { getMemberOffice, getStudentById };
+  return { getAllStudent, getMemberOffice, getStudentById };
 };
 
 export const useOffice = () => {
-  const { getImgURL } = useUtils();
+  const { getImgURL, uploadImage } = useUtils();
   const getAllOffice = async () => {
     try {
       const q = query(userCollection, where("role", "==", "OFFICE_ROLE"));
-      // TODO : transform to a get function
       onSnapshot(q, async (snapshot) => {
         const allOffice = snapshot.docs.map(async (doc) => {
-          const officeData = doc.data();
-          const logo = await getImgURL(
-            assetsRef,
-            `${officeData.acronym.toLowerCase()}.png`
-          );
+          const officeData = doc.data() as fb_Office;
+          const logoUrl =
+            officeData.logoId &&
+            (await getImgURL(assetsRef, officeData.logoId));
           const office: Office = {
             id: doc.id,
             name: officeData.name,
@@ -333,9 +350,7 @@ export const useOffice = () => {
             description: officeData.description,
             mail: officeData.mail,
             members: officeData.members,
-            clubs: officeData.clubs,
-            partnerships: officeData.partnerships,
-            logoUrl: logo || require("@assets/no_image_available.jpg"),
+            logoUrl,
           };
           return office;
         });
@@ -347,12 +362,99 @@ export const useOffice = () => {
     }
   };
 
+  const updateOffice = async (props: OfficeFieldNames, id: string) => {
+    try {
+      const officeRef = doc(userCollection, id);
+      const snapshot = await getDoc(officeRef);
+      if (!snapshot.exists()) {
+        throw "Cet élément n'existe pas";
+      }
+      const officeData = snapshot.data() as fb_Office;
+      const updatedFields: fb_Office = {
+        acronym: props.acronym,
+        name: props.name,
+        mail: props.mail,
+        description: props.description || "",
+        logoId: props.logoFile || "",
+        members: props.members || [],
+      };
+      if (props.logoFile) {
+        if (!props.logoFile.startsWith(storageUrl)) {
+          const name = await uploadImage(
+            props.logoFile,
+            officeData.acronym.toLowerCase(),
+            assetsRef
+          );
+          updatedFields["logoId"] = name;
+          if (officeData.logoId) {
+            deleteObject(ref(assetsRef, officeData.logoId));
+          }
+        } else {
+          delete updatedFields.logoId;
+        }
+      } else {
+        updatedFields["logoId"] = "";
+        if (officeData?.logoId) {
+          deleteObject(ref(imgPostRef, officeData?.logoId));
+        }
+      }
+      await updateDoc(officeRef, updatedFields);
+    } catch (e) {
+      console.error("[updateOffice]", e);
+    }
+  };
+
+  const getAllRole = async () => {
+    try {
+      onSnapshot(roleCollection, async (snapshot) => {
+        const allRole = snapshot.docs.map(
+          (doc) => ({ id: doc.id, ...doc.data() } as RoleOffice)
+        );
+        actionOffice.setAllRole(allRole);
+      });
+    } catch (e) {}
+  };
+
+  return {
+    getAllOffice,
+    updateOffice,
+    getAllRole,
+  };
+};
+
+export const useClub = () => {
+  const { uploadImage, getImgURL } = useUtils();
+  const getClub = async (id: string) => {
+    try {
+      const snapshot = await getDoc(doc(clubCollection, id));
+      if (!snapshot.exists()) {
+        throw Error(`Le club avec l'${id} n'existe pas.`);
+      }
+      const clubData = snapshot.data();
+      const logoUrl = await getImgURL(imgClubPartnerRef, clubData.logoId);
+
+      const club: Club = {
+        id: snapshot.id,
+        name: clubData.name,
+        officeId: clubData.officeId,
+        logoUrl,
+        description: clubData.description,
+        contact: clubData.contact,
+      };
+      return club;
+    } catch (e) {
+      throw Error(`[getClub] ${e}\n`);
+    }
+  };
+
   const getAllClub = async () => {
     try {
       onSnapshot(clubCollection, async (snapshot) => {
         const clubList = snapshot.docs.map(async (doc) => {
-          const clubData = doc.data();
-          const logoUrl = await getImgURL(imgClubPartnerRef, clubData.logoId);
+          const clubData = doc.data() as fb_Club;
+          const logoUrl =
+            clubData.logoId &&
+            (await getImgURL(imgClubPartnerRef, clubData.logoId));
           const club: Club = {
             id: doc.id,
             name: clubData.name,
@@ -371,15 +473,99 @@ export const useOffice = () => {
     }
   };
 
+  const createClub = async (props: ClubFieldNames) => {
+    const clubFields: fb_Club = {
+      name: props.name,
+      officeId: props.office.value,
+      contact: props.contact || "",
+      description: props.description || "",
+      logoId: props.logoFile || "",
+    };
+    try {
+      if (props.logoFile) {
+        const today = formattedToday();
+        const name = await uploadImage(
+          props.logoFile,
+          `${today}_club_`,
+          imgClubPartnerRef
+        );
+        clubFields["logoId"] = name;
+      }
+      const clubRef = await addDoc(clubCollection, clubFields);
+      return clubRef.id;
+    } catch (e) {
+      console.error("[createClub]", e);
+    }
+  };
+
+  const updateClub = async (props: ClubFieldNames, id: string) => {
+    try {
+      const clubRef = doc(clubCollection, id);
+      const snapshot = await getDoc(clubRef);
+      if (!snapshot.exists()) {
+        throw "Cet élément n'existe pas";
+      }
+      const updatedFields: fb_Club = {
+        name: props.name,
+        officeId: props.office.value,
+        contact: props.contact || "",
+        description: props.description || "",
+        logoId: props.logoFile || "",
+      };
+
+      const clubData = snapshot.data() as fb_Club;
+      if (props.logoFile) {
+        if (!props.logoFile.startsWith(storageUrl)) {
+          const today = formattedToday();
+          const name = await uploadImage(
+            props.logoFile,
+            `${today}_club_`,
+            imgClubPartnerRef
+          );
+          updatedFields["logoId"] = name;
+          if (clubData.logoId) {
+            deleteObject(ref(assetsRef, clubData.logoId));
+          }
+        } else {
+          delete updatedFields.logoId;
+        }
+      } else {
+        updatedFields["logoId"] = "";
+        if (clubData?.logoId) {
+          deleteObject(ref(imgPostRef, clubData?.logoId));
+        }
+      }
+      await updateDoc(clubRef, updatedFields);
+    } catch (e) {
+      console.error("[updateClub]", e);
+    }
+  };
+
+  const deleteClub = async (id: string) => {
+    const clubRef = doc(clubCollection, id);
+    const snapshot = await getDoc(clubRef);
+    if (snapshot.exists()) {
+      const clubData = snapshot.data() as fb_Club;
+      if (clubData?.logoId) {
+        deleteObject(ref(imgClubPartnerRef, clubData?.logoId));
+      }
+      await deleteDoc(clubRef);
+    }
+  };
+
+  return { getAllClub, createClub, updateClub, deleteClub };
+};
+
+export const usePartnership = () => {
+  const { uploadImage, getImgURL } = useUtils();
   const getAllPartnership = async () => {
     try {
       onSnapshot(partnerCollection, async (snapshot) => {
         const partnerList = snapshot.docs.map(async (doc) => {
-          const partnerData = doc.data();
-          const logoUrl = await getImgURL(
-            imgClubPartnerRef,
-            partnerData.logoId
-          );
+          const partnerData = doc.data() as fb_Partnership;
+          const logoUrl =
+            partnerData.logoId &&
+            (await getImgURL(imgClubPartnerRef, partnerData.logoId));
           const partnership: Partnership = {
             id: doc.id,
             name: partnerData.name,
@@ -400,25 +586,104 @@ export const useOffice = () => {
     }
   };
 
-  const getAllRole = async () => {
+  const createPartnership = async (props: PartnershipFieldNames) => {
+    const partnerFields: fb_Partnership = {
+      name: props.name,
+      officeId: props.office.value,
+      description: props.description || "",
+      address: props.address || "",
+      addressMap: props.addressMap || "",
+      logoId: props.logoFile || "",
+      benefits: props.benefits?.map(({ value }) => value) || [],
+    };
     try {
-      onSnapshot(roleCollection, async (snapshot) => {
-        const allRole = snapshot.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() } as RoleOffice)
+      if (props.logoFile) {
+        const today = Timestamp.now().seconds;
+        const name = await uploadImage(
+          props.logoFile,
+          `${today}_partner_`,
+          imgClubPartnerRef
         );
-        actionOffice.setAllRole(allRole);
-      });
-    } catch (e) {}
+        partnerFields["logoId"] = name;
+      }
+      const partnerRef = await addDoc(partnerCollection, partnerFields);
+      return partnerRef.id;
+    } catch (e) {
+      console.error("[createPartnership]", e);
+    }
   };
 
-  return { getAllOffice, getAllClub, getAllPartnership, getAllRole };
+  const updatePartnership = async (
+    props: PartnershipFieldNames,
+    id: string
+  ) => {
+    try {
+      const partnerRef = doc(partnerCollection, id);
+      const snapshot = await getDoc(partnerRef);
+      if (!snapshot.exists()) {
+        throw "Cet élément n'existe pas";
+      }
+      const partnerData = snapshot.data() as fb_Partnership;
+      const updatedFields: fb_Partnership = {
+        name: props.name,
+        officeId: props.office.value,
+        description: props.description || "",
+        address: props.address || "",
+        addressMap: props.addressMap || "",
+        logoId: props.logoFile || "",
+        benefits: props.benefits?.map(({ value }) => value) || [],
+      };
+      if (props.logoFile) {
+        if (!props.logoFile.startsWith(storageUrl)) {
+          const today = Timestamp.now().seconds;
+          const name = await uploadImage(
+            props.logoFile,
+            `${today}_partner_`,
+            imgClubPartnerRef
+          );
+          updatedFields["logoId"] = name;
+          if (partnerData.logoId) {
+            deleteObject(ref(assetsRef, partnerData.logoId));
+          }
+        } else {
+          delete updatedFields.logoId;
+        }
+      } else {
+        updatedFields["logoId"] = "";
+        if (partnerData?.logoId) {
+          deleteObject(ref(imgPostRef, partnerData?.logoId));
+        }
+      }
+      await updateDoc(partnerRef, updatedFields);
+    } catch (e) {
+      console.error("[updatePartner]", e);
+    }
+  };
+
+  const deletePartnership = async (id: string) => {
+    const partnerRef = doc(partnerCollection, id);
+    const snapshot = await getDoc(partnerRef);
+    if (snapshot.exists()) {
+      const partnerData = snapshot.data() as fb_Partnership;
+      if (partnerData?.logoId) {
+        deleteObject(ref(imgClubPartnerRef, partnerData?.logoId));
+      }
+      await deleteDoc(partnerRef);
+    }
+  };
+  return {
+    getAllPartnership,
+    createPartnership,
+    updatePartnership,
+    deletePartnership,
+  };
 };
 
 export const usePost = () => {
   const { getImgURL, uploadImage } = useUtils();
   const postMapping = async (snapshot: QuerySnapshot) => {
     const postList = snapshot.docs.map(async (doc) => {
-      const postData = doc.data();
+      const postData = doc.data() as fb_Post;
       const imageUrl =
         postData.imageId && (await getImgURL(imgPostRef, postData.imageId));
       const post: Post = {
@@ -439,33 +704,11 @@ export const usePost = () => {
     return Promise.all(postList);
   };
 
-  // const getAllPost = async () => {
-  //   try {
-  //     const q = query(postCollection, orderBy("createdAt", "desc"), limit(10));
-  //     return onSnapshot(q, async (snap) => {
-  //       const postList = await postMapping(snap);
-  //       const lastVisible = snap.docs[snap.docs.length - 1];
-  //       actionPost.setInitialPost({
-  //         posts: postList,
-  //         lastVisible,
-  //         loading: false,
-  //       });
-  //     });
-  //     //  const snapshot = await getDocs(q);
-  //     //  const postList = await postMapping(snapshot);
-  //     //  const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-  //     //  return { postList, lastVisible };
-  //   } catch (e: any) {
-  //     console.log(`[getAllPost] ${e}\n`);
-  //     throw e;
-  //   }
-  // };
-
   const getMorePost = async (lastVisible?: DocumentSnapshot) => {
     try {
       const queryConstraints: QueryConstraint[] = [
         orderBy("createdAt", "desc"),
-        // limit(10),
+        // limit(3),
       ];
       if (lastVisible) queryConstraints.push(startAfter(lastVisible));
       const q = query(postCollection, ...queryConstraints);
@@ -484,58 +727,68 @@ export const usePost = () => {
       // const newLastVisible = snapshot.docs[snapshot.docs.length - 1];
       // return { postList, newLastVisible };
     } catch (e: any) {
-      console.log(`[getMorePost] ${e}\n`);
+      console.error(`[getMorePost] ${e}\n`);
       throw e;
     }
   };
 
   const createPost = async (props: PostFieldNames) => {
-    const updatedFields: Record<string, any> = {
+    const postFields: fb_Post = {
       title: props.title,
-      description: props.description,
       editorId: props.editor.value,
       createdAt: Timestamp.now(),
+      ...(props.date && { date: props.date }),
+      description: props.description || "",
+      imageId: props.imageFile || "",
+      tags: props.tags || [],
     };
     try {
-      if (props.tags) {
-        updatedFields["tags"] = arrayUnion(...props.tags);
-      }
       if (props.imageFile) {
-        const name = await uploadImage(props.imageFile, uuid.v4().toString());
-        updatedFields["imageId"] = name;
+        const name = await uploadImage(
+          props.imageFile,
+          `${postFields.createdAt.seconds}_`,
+          imgPostRef
+        );
+        postFields["imageId"] = name;
       }
-      if (props.date) {
-        updatedFields["date"] = { ...props.date };
-      }
-      const postRef = await addDoc(postCollection, updatedFields);
+      const postRef = await addDoc(postCollection, postFields);
       return postRef.id;
-    } catch (e) {}
+    } catch (e) {
+      console.error("[createPost]", e);
+    }
   };
 
   const updatePost = async (props: PostFieldNames, id: string) => {
     try {
       const postRef = doc(postCollection, id);
       const snapshot = await getDoc(postRef);
-      const postData = snapshot.exists() ? snapshot.data() : undefined;
-      const updatedFields: Record<string, any> = {
-        title: props.title,
-        description: props.description,
-        editorId: props.editor.value,
-      };
-      if (props.tags) {
-        updatedFields["tags"] = arrayUnion(...props.tags);
+      if (!snapshot.exists()) {
+        throw "Cet élément n'existe pas";
       }
+      const postData = snapshot.data() as fb_Post;
+      const updatedFields: fb_Post = {
+        title: props.title,
+        editorId: props.editor.value,
+        createdAt: postData.createdAt,
+        date: props.date,
+        description: props.description || "",
+        imageId: props.imageFile || "",
+        tags: props.tags || [],
+      };
       if (props.imageFile) {
-        if (
-          !props.imageFile.startsWith(
-            "https://firebasestorage.googleapis.com/v0/b/poulpappv2.appspot.com"
-          )
-        ) {
-          const name = await uploadImage(props.imageFile, uuid.v4().toString());
+        if (!props.imageFile.startsWith(storageUrl)) {
+          const today = Timestamp.now().seconds;
+          const name = await uploadImage(
+            props.imageFile,
+            `${today}_`,
+            imgPostRef
+          );
           updatedFields["imageId"] = name;
           if (postData?.imageId) {
             deleteObject(ref(imgPostRef, postData?.imageId));
           }
+        } else {
+          delete updatedFields.imageId;
         }
       } else {
         updatedFields["imageId"] = "";
@@ -543,10 +796,10 @@ export const usePost = () => {
           deleteObject(ref(imgPostRef, postData?.imageId));
         }
       }
-      if (props.date) {
-        updatedFields["date"] = { ...props.date };
-      }
-      await updateDoc(postRef, updatedFields);
+      await updateDoc(postRef, {
+        ...updatedFields,
+        ...(!updatedFields.date && { date: deleteField() }),
+      });
     } catch (e) {
       console.error("[updatepost]", e);
     }
@@ -556,7 +809,7 @@ export const usePost = () => {
     const postRef = doc(postCollection, idPost);
     const snapshot = await getDoc(postRef);
     if (snapshot.exists()) {
-      const postData = snapshot.data();
+      const postData = snapshot.data() as fb_Post;
       if (postData?.imageId) {
         deleteObject(ref(imgPostRef, postData?.imageId));
       }

@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useUnit } from "effector-react";
+import { useUnit, useStoreMap } from "effector-react";
 import { Button } from "react-native-paper";
 import ImageView from "react-native-image-viewing";
 import {
@@ -24,8 +24,10 @@ import { officeStyles } from "@styles";
 import { displayDateFromTimestamp } from "utils/dateUtils";
 import { DateType, Post } from "@types";
 import { usePost } from "@firebase";
+import { $officeStore } from "@context/officeStore";
 
 type PostItemProps = Partial<HomeProps> & { post: Post };
+const MAX_LENGTH = 50;
 
 export const PostItem = ({ post, navigation }: PostItemProps) => {
   const { role } = useUnit($sessionStore);
@@ -33,8 +35,17 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
   const [date, setDate] = useState<DateType>({ start: "null", end: "null" });
   const [allDay, setAllDay] = useState<boolean>(false);
   const [textShown, setTextShown] = useState(false);
-  const [lengthMore, setLengthMore] = useState(false);
+  // const [lengthMore, setLengthMore] = useState(false);
   const [showImage, setShowImage] = useState(false);
+  const office = useStoreMap({
+    store: $officeStore,
+    keys: [post.id],
+    fn: (officeStore) =>
+      officeStore.officeList.find((office) => office.id === post.editorId),
+  });
+
+  const lengthMore = post.description && post.description.length > MAX_LENGTH;
+
   useEffect(() => {
     if (post.date) {
       const result = displayDateFromTimestamp(post.date);
@@ -44,14 +55,8 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
   }, [post]);
 
   const toggleNumberOfLines = () => {
-    setTextShown(!textShown);
+    setTextShown((value) => !value);
   };
-  const onTextLayout = useCallback(
-    (e: NativeSyntheticEvent<TextLayoutEventData>) => {
-      setLengthMore(e.nativeEvent.lines.length >= 3);
-    },
-    []
-  );
   return (
     <Container>
       <Body>
@@ -59,14 +64,14 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           <TouchableOpacity
             onPress={() =>
               navigation &&
-              post.editor &&
+              office &&
               navigation.navigate("officeContainer", {
                 screen: "viewOffice",
-                params: { office: post.editor },
+                params: { officeId: office.id },
               })
             }
           >
-            <Image source={{ uri: post.editor?.logoUrl }} $size={50} />
+            <Image source={{ uri: office?.logoUrl }} $size={50} />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Title2>{post.title}</Title2>
@@ -99,29 +104,26 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
             </Container>
           </Row>
         )}
-        <Text
-          numberOfLines={textShown ? undefined : 3}
-          onTextLayout={onTextLayout}
-        >
-          {post.description}
+        <Text>
+          {textShown || !lengthMore
+            ? post.description
+            : `${post.description?.slice(0, MAX_LENGTH)}...`}
         </Text>
         {lengthMore && (
-          <Text
-            onPress={toggleNumberOfLines}
-            style={{ textDecorationLine: "underline" }}
-          >
-            {textShown ? "Voir moins" : "Voir plus"}
-          </Text>
+          <TouchableOpacity onPress={toggleNumberOfLines}>
+            <Text style={{ textDecorationLine: "underline" }}>
+              {textShown ? "Voir moins" : "Voir plus"}
+            </Text>
+          </TouchableOpacity>
         )}
       </Body>
       {post.imageUrl && (
-        <>
-          <TouchableOpacity onPress={() => setShowImage(true)}>
-            <Image
-              source={{ uri: post.imageUrl }}
-              resizeMode="contain"
-              resizeMethod="scale"
-            />
+        <View style={{ flex: 1 }}>
+          <TouchableOpacity
+            onPress={() => setShowImage(true)}
+            style={{ flex: 1 }}
+          >
+            <Image source={{ uri: post.imageUrl }} />
           </TouchableOpacity>
           <ImageView
             images={[{ uri: post.imageUrl }]}
@@ -129,7 +131,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
             visible={showImage}
             onRequestClose={() => setShowImage(false)}
           />
-        </>
+        </View>
       )}
       {["OFFICE_ROLE", "ADMIN_ROLE"].includes(role) && (
         <Row $justify="space-around" $padding="10px 0 0">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Alert, Image, StyleSheet, TouchableOpacity, View } from "react-native";
-import { IconButton, MD3Colors } from "react-native-paper";
+import { Button, IconButton, MD3Colors } from "react-native-paper";
 import { FieldValues } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import ImageView from "react-native-image-viewing";
@@ -57,32 +57,8 @@ export function ImagePickerForm<T extends FieldValues>({
   return (
     <Container style={styles.container}>
       <Text $dark $bold>
-        {label} :
+        {label}
       </Text>
-      <Row style={styles.btnContainer}>
-        <TouchableOpacity
-          onPress={pickImageFromLibrary}
-          style={{
-            borderColor: colors.primary,
-            borderRadius: 5,
-            borderWidth: 1,
-            padding: 10,
-          }}
-        >
-          <Text $dark>Choisir dans la galerie</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={pickImageFromCamera}
-          style={{
-            borderColor: colors.primary,
-            borderRadius: 5,
-            borderWidth: 1,
-            padding: 10,
-          }}
-        >
-          <Text $dark>Prendre photo</Text>
-        </TouchableOpacity>
-      </Row>
       {image && (
         <View>
           <IconButton
@@ -103,6 +79,26 @@ export function ImagePickerForm<T extends FieldValues>({
           />
         </View>
       )}
+      <Row style={styles.btnContainer}>
+        <Button
+          mode="outlined"
+          textColor={colors.primary}
+          onPress={pickImageFromLibrary}
+          icon={"folder-image"}
+          style={{ borderRadius: 5 }}
+        >
+          Choisir dans la galerie
+        </Button>
+        <Button
+          mode="outlined"
+          textColor={colors.primary}
+          onPress={pickImageFromCamera}
+          icon={"camera"}
+          style={{ borderRadius: 5 }}
+        >
+          Prendre photo
+        </Button>
+      </Row>
     </Container>
   );
 }

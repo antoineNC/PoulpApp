@@ -4,7 +4,7 @@ import {
   ParamListBase,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Office, Post } from "@types";
+import { Post } from "@types";
 import { MaterialBottomTabScreenProps } from "react-native-paper";
 
 export type ScreenProps<
@@ -50,8 +50,15 @@ export type UpdatePostProps = HomeTabScreenProps<"updatePost">;
 // === Office tab
 export type OfficeTabParamList = {
   offices: undefined;
-  viewOffice: { office: Office };
-  updateOffice: undefined;
+  viewOffice: { officeId: string };
+  updateOffice: { officeId: string };
+  updateMembers: { officeId: string };
+  viewClub: { clubId: string };
+  createClub: { officeId: string };
+  updateClub: { clubId: string };
+  viewPartnership: { partnershipId: string };
+  createPartnership: { officeId: string };
+  updatePartnership: { partnershipId: string };
 };
 export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
   CompositeScreenProps<
@@ -60,6 +67,14 @@ export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
   >;
 export type OfficesProps = OfficeTabScreenProps<"offices">;
 export type ViewOfficeProps = OfficeTabScreenProps<"viewOffice">;
+export type UpdateOfficeProps = OfficeTabScreenProps<"updateOffice">;
+export type UpdateMembersProps = OfficeTabScreenProps<"updateMembers">;
+export type ViewClubProps = OfficeTabScreenProps<"viewClub">;
+export type CreateClubProps = OfficeTabScreenProps<"createClub">;
+export type UpdateClubProps = OfficeTabScreenProps<"updateClub">;
+export type ViewPartnershipProps = OfficeTabScreenProps<"viewPartnership">;
+export type CreatePartnershipProps = OfficeTabScreenProps<"createPartnership">;
+export type UpdatePartnershipProps = OfficeTabScreenProps<"updatePartnership">;
 
 // === FamCup tab
 export type FamCupTabParamList = {

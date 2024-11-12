@@ -1,28 +1,18 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { Timestamp } from "firebase/firestore";
 import { useForm } from "react-hook-form";
-import { useUnit } from "effector-react";
-import { Button } from "react-native-paper";
+import { useStoreMap, useUnit } from "effector-react";
 import Spinner from "react-native-loading-spinner-overlay";
 import { usePost } from "@firebase";
 import { UpdatePostProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
-import CustomField from "components/formField";
+import CustomField from "components/form/formField";
 import { ContainerScroll } from "@styledComponents";
-import { FormFieldValues } from "@types";
+import { FormFieldValues, PostFieldNames } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
-
-export type PostFieldNames = {
-  title: string;
-  description: string;
-  date?: { start: Timestamp; end: Timestamp };
-  tags: string[];
-  editor: { value: string; label: string };
-  imageFile?: string;
-};
+import { ValidateButton } from "components/validateButton";
 
 export default function UpdatePostScreen({
   navigation,
@@ -32,11 +22,17 @@ export default function UpdatePostScreen({
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
   const { updatePost } = usePost();
+  const editor = useStoreMap({
+    store: $officeStore,
+    keys: [post.id],
+    fn: (officeStore) =>
+      officeStore.officeList.find((office) => office.id === post.editorId),
+  });
   const { control, handleSubmit, setFocus } = useForm<PostFieldNames>({
     defaultValues: {
       title: post.title,
       description: post.description,
-      editor: { value: post.editorId, label: post.editor?.name },
+      editor: { value: post.editorId, label: editor?.name },
       tags: post.tags,
       date: post.date,
       imageFile: post.imageUrl,
@@ -82,7 +78,7 @@ export default function UpdatePostScreen({
     },
     {
       name: "imageFile",
-      label: "Image",
+      label: "Image :",
       type: "image",
     },
   ];
@@ -92,7 +88,7 @@ export default function UpdatePostScreen({
       setLoading(true);
       await updatePost({ ...data }, post.id);
     } catch (e) {
-      console.log("[updatepost]", e);
+      console.error("[updatepost]", e);
     } finally {
       setLoading(false);
       navigation.goBack();
@@ -124,13 +120,10 @@ export default function UpdatePostScreen({
         ))}
       </View>
       <View style={authStyles.buttonContainer}>
-        <Button
-          mode="contained"
-          children="Valider les modifications"
+        <ValidateButton
+          text="Valider les modifications"
+          loading={loading}
           onPress={handleSubmit(onSubmit)}
-          uppercase
-          buttonColor={colors.primary}
-          disabled={loading}
         />
       </View>
     </ContainerScroll>

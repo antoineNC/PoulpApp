@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, FlatList, Linking, TouchableOpacity, View } from "react-native";
-import { useUnit } from "effector-react";
+import { useStoreMap } from "effector-react";
 import { ViewOfficeProps } from "@navigation/navigationTypes";
-import { useStudent } from "@firebase";
 import { $officeStore } from "@context/officeStore";
+import { $studentStore } from "@context/studentStore";
 import {
   Row,
   Image,
@@ -13,50 +12,56 @@ import {
   ContainerScroll,
 } from "@styledComponents";
 import { officeStyles } from "@styles";
+import { colors } from "@theme";
 
-export default function ViewOfficeScreen({ route }: ViewOfficeProps) {
-  const { office } = route.params;
-  const { clubList, partnershipList, roleList } = useUnit($officeStore);
-  const { getMemberOffice } = useStudent();
-  const [memberOffice, setMemberOffice] = useState<
-    { role: string; student: string }[]
-  >([]);
+export default function ViewOfficeScreen({
+  navigation,
+  route,
+}: ViewOfficeProps) {
+  const { officeId } = route.params;
+  const office = useStoreMap({
+    store: $officeStore,
+    keys: [officeId],
+    fn: (officeStore) =>
+      officeStore.officeList.find((office) => office.id === officeId),
+  });
 
-  const clubs = useMemo(() => {
-    return office.clubs
-      ?.map((clubId) => clubList.find((club) => club.id === clubId))
-      .filter((value) => value !== undefined);
-  }, [office.clubs]);
-  const partnerships = useMemo(() => {
-    return office.partnerships
-      ?.map((partnerId) =>
-        partnershipList.find((partner) => partner.id === partnerId)
-      )
-      .filter((value) => value !== undefined);
-  }, [office.partnerships]);
+  if (!office) {
+    return <></>;
+  }
 
-  const setMembers = useCallback(async () => {
-    const memberList = [];
-    if (office.members) {
-      const students = await getMemberOffice(office.id);
-      for await (const member of office.members) {
-        const role = roleList.find((role) => role.id === member.idRole);
-        const student = students?.find(
-          (student) => student.id === member.idStudent
+  const [clubs, partnerships, roles] = useStoreMap({
+    store: $officeStore,
+    keys: [officeId],
+    fn: (officeStore) => {
+      const clubs = officeStore.clubList.filter(
+        (club) => club.officeId === office.id
+      );
+      const partnerships = officeStore.partnershipList.filter(
+        (partnership) => partnership.officeId === office.id
+      );
+      return [clubs, partnerships, officeStore.roleList];
+    },
+  });
+
+  const members = useStoreMap({
+    store: $studentStore,
+    keys: [officeId],
+    fn: (students) =>
+      office.members?.map(({ idRole, idStudent }) => {
+        const studentMember = students.find(
+          (student) => student.id === idStudent
         );
-        if (role && student)
-          memberList.push({
-            role: role.name,
-            student: `${student.lastName.toUpperCase()} ${student.firstName}`,
-          });
-      }
-    }
-    setMemberOffice(memberList);
-  }, [roleList]);
-
-  useEffect(() => {
-    setMembers();
-  }, [office.members]);
+        const roleMember = roles.find((role) => role.id === idRole);
+        return {
+          role: `${roleMember?.name}`,
+          student: `${studentMember?.lastName.toUpperCase()} ${
+            studentMember?.firstName
+          }`,
+        };
+      }),
+    defaultValue: [],
+  });
 
   const handlePress = async (url: string) => {
     // Checking if the link is supported for links with custom URL scheme.
@@ -81,10 +86,10 @@ export default function ViewOfficeScreen({ route }: ViewOfficeProps) {
         <BodyTitle>Description :</BodyTitle>
         <Text>{office.description}</Text>
       </View>
-      {memberOffice.length > 0 && (
+      {members.length > 0 && (
         <View style={officeStyles.borderRounded}>
           <BodyTitle>Liste des membres :</BodyTitle>
-          {memberOffice.map((member, index) => (
+          {members.map((member, index) => (
             <Row key={index} style={{ marginVertical: 5 }}>
               <Text style={{ flex: 1 }}>{member.role} :</Text>
               <Text style={{ flex: 2 }}>{member.student}</Text>
@@ -100,14 +105,28 @@ export default function ViewOfficeScreen({ route }: ViewOfficeProps) {
             showsHorizontalScrollIndicator={false}
             data={clubs}
             renderItem={({ item }) => (
-              <View style={{ margin: 10, alignItems: "center" }}>
+              <TouchableOpacity
+                style={{ margin: 10, alignItems: "center" }}
+                onPress={() =>
+                  navigation.navigate("viewClub", { clubId: item.id })
+                }
+              >
                 <Image
-                  source={{ uri: item.logoUrl }}
+                  source={
+                    item.logoUrl
+                      ? { uri: item.logoUrl }
+                      : require("@assets/no_image_available.png")
+                  }
                   $size={100}
-                  style={{ borderRadius: 5 }}
+                  style={{
+                    borderRadius: 5,
+                    width: 100,
+                    height: 100,
+                    backgroundColor: colors.secondary,
+                  }}
                 />
                 <Text>{item.name}</Text>
-              </View>
+              </TouchableOpacity>
             )}
           />
         </View>
@@ -120,14 +139,30 @@ export default function ViewOfficeScreen({ route }: ViewOfficeProps) {
             showsHorizontalScrollIndicator={false}
             data={partnerships}
             renderItem={({ item }) => (
-              <View style={{ margin: 10, alignItems: "center" }}>
+              <TouchableOpacity
+                style={{ margin: 10, alignItems: "center" }}
+                onPress={() =>
+                  navigation.navigate("viewPartnership", {
+                    partnershipId: item.id,
+                  })
+                }
+              >
                 <Image
-                  source={{ uri: item.logoUrl }}
+                  source={
+                    item.logoUrl
+                      ? { uri: item.logoUrl }
+                      : require("@assets/no_image_available.png")
+                  }
                   $size={100}
-                  style={{ borderRadius: 5 }}
+                  style={{
+                    borderRadius: 5,
+                    width: 100,
+                    height: 100,
+                    backgroundColor: colors.secondary,
+                  }}
                 />
                 <Text>{item.name}</Text>
-              </View>
+              </TouchableOpacity>
             )}
           />
         </View>

@@ -29,3 +29,14 @@ export const displayDateFromTimestamp = (date: {
     return { allday: false, date: { start, end } };
   }
 };
+
+export const formattedToday = () => {
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const yyyy = today.getFullYear();
+  const HH = today.getHours();
+  const MM = today.getMinutes();
+  const ss = today.getSeconds();
+  return `${yyyy}${mm}${dd}_${HH}${MM}${ss}_`;
+};

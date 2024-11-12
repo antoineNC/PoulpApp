@@ -14,13 +14,17 @@ export default function OfficesScreen({ navigation }: OfficesProps) {
     <Container>
       <FlatList
         data={officeList}
-        contentContainerStyle={{ rowGap: 20, paddingHorizontal: 20 }}
+        contentContainerStyle={{
+          rowGap: 20,
+          paddingHorizontal: 20,
+          paddingBottom: 100,
+        }}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <TouchableOpacity
             key={item.id}
             onPress={() => {
-              navigation.navigate("viewOffice", { office: item });
+              navigation.navigate("viewOffice", { officeId: item.id });
             }}
           >
             <Card
@@ -48,7 +52,9 @@ export default function OfficesScreen({ navigation }: OfficesProps) {
                 <Button
                   mode="contained-tonal"
                   icon="pencil"
-                  onPress={() => Alert.alert("kaehdv")}
+                  onPress={() =>
+                    navigation.navigate("updateOffice", { officeId: item.id })
+                  }
                 >
                   Modifier
                 </Button>
