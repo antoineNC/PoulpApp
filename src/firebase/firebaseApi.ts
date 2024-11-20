@@ -243,7 +243,7 @@ export const useAuth = () => {
     await getAllClub();
     await getAllPartnership();
     await getAllRole();
-    if (role !== "STUDENT_ROLE") {
+    if (role !== "STUDENT") {
       await getAllStudent();
     }
     actionSession.login({ user, role });
@@ -263,7 +263,7 @@ export const useAuth = () => {
 export const useStudent = () => {
   const getAllStudent = async () => {
     try {
-      const q = query(userCollection, where("role", "==", "STUDENT_ROLE"));
+      const q = query(userCollection, where("role", "==", "STUDENT"));
       onSnapshot(q, async (snapshot) => {
         const allStudent = snapshot.docs.map((doc) => {
           const studentData = doc.data();
@@ -283,39 +283,39 @@ export const useStudent = () => {
     }
   };
 
-  const getMemberOffice = async (idOffice: string) => {
-    try {
-      const q = query(
-        userCollection,
-        where("role", "==", "STUDENT_ROLE"),
-        where("memberOf", "array-contains", idOffice)
-      );
-      const snapshot = await getDocs(q);
-      const members: Student[] = snapshot.docs.map((student) => {
-        const studentData = student.data();
-        return {
-          id: student.id,
-          mail: studentData.mail,
-          firstName: studentData.firstName,
-          lastName: studentData.lastName,
-          adhesion: studentData.adhesion,
-          memberOf: studentData.memberOf,
-        };
-      });
-      return members;
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  // const getMemberOffice = async (idOffice: string) => {
+  //   try {
+  //     const q = query(
+  //       userCollection,
+  //       where("role", "==", "STUDENT"),
+  //       where("memberOf", "array-contains", idOffice)
+  //     );
+  //     const snapshot = await getDocs(q);
+  //     const members: Student[] = snapshot.docs.map((student) => {
+  //       const studentData = student.data();
+  //       return {
+  //         id: student.id,
+  //         mail: studentData.mail,
+  //         firstName: studentData.firstName,
+  //         lastName: studentData.lastName,
+  //         adhesion: studentData.adhesion,
+  //         memberOf: studentData.memberOf,
+  //       };
+  //     });
+  //     return members;
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
-  const getStudentById = async (id: string) => {
+  const getStudent = async (id: string) => {
     try {
       const snapshot = await getDoc(doc(userCollection, id));
       if (!snapshot.exists()) {
         throw Error(`L'étudiant.e ${id} n'existe pas.`);
       }
       const studentData = snapshot.data();
-      if (studentData.role !== "STUDENT_ROLE") {
+      if (studentData.role !== "STUDENT") {
         throw Error(`L'étudiant.e ${id} n'existe pas.`);
       }
       const student: Student = {
@@ -329,14 +329,17 @@ export const useStudent = () => {
       console.error(e);
     }
   };
-  return { getAllStudent, getMemberOffice, getStudentById };
+  return { getAllStudent, getStudent };
 };
 
 export const useOffice = () => {
   const { getImgURL, uploadImage } = useUtils();
   const getAllOffice = async () => {
     try {
-      const q = query(userCollection, where("role", "==", "OFFICE_ROLE"));
+      const q = query(
+        userCollection,
+        where("role", "in", ["BDE", "BDS", "BDA", "I2C"])
+      );
       onSnapshot(q, async (snapshot) => {
         const allOffice = snapshot.docs.map(async (doc) => {
           const officeData = doc.data() as fb_Office;

@@ -80,7 +80,7 @@ export default function UpdatePartnershipScreen({
     },
   ];
 
-  if (role === "ADMIN_ROLE") {
+  if (role === "ADMIN") {
     fields.unshift({
       name: "office",
       label: "Géré par",

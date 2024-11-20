@@ -60,7 +60,7 @@ export default function CreateClubScreen({
     },
   ];
 
-  if (role === "ADMIN_ROLE") {
+  if (role === "ADMIN") {
     values.unshift({
       name: "office",
       label: "Géré par",
