@@ -1,7 +1,8 @@
 import { Timestamp } from "firebase/firestore";
 import { InputModeOptions } from "react-native";
 
-export type Role = "STUDENT_ROLE" | "OFFICE_ROLE" | "ADMIN_ROLE";
+const Roles = ["STUDENT", "BDE", "BDA", "BDS", "I2C", "BDF", "ADMIN"] as const;
+export type Role = (typeof Roles)[number];
 export type UserType = {
   id: string;
   mail: string;

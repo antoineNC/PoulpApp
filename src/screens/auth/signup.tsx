@@ -83,7 +83,7 @@ export default function SignupScreen({
       setLoading(false);
     } catch (e: any) {
       setLoading(false);
-      throw Error("Login Error :", e);
+      throw Error("signup Error :", e);
     }
   };
 

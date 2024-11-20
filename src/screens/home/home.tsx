@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   View,
-  TouchableOpacity,
   NativeSyntheticEvent,
   NativeScrollEvent,
   StyleSheet,
@@ -10,17 +9,17 @@ import {
 import { AnimatedFAB } from "react-native-paper";
 import { useUnit } from "effector-react";
 
-import { $sessionStore } from "@context/sessionStore";
 import { $postStore } from "@context/postStore";
 import { PostItem } from "@screens/home/post/postItem";
 import { Container } from "@styledComponents";
 import { usePost } from "@firebase";
 import { HomeProps } from "@navigation/navigationTypes";
+import { useRight } from "utils/rights";
 
 export default function HomeScreen({ navigation }: HomeProps) {
-  const { role } = useUnit($sessionStore);
   const { posts, lastVisible } = useUnit($postStore);
   const { getMorePost } = usePost();
+  const { hasRight } = useRight();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -54,7 +53,7 @@ export default function HomeScreen({ navigation }: HomeProps) {
         //   await getMorePost(lastVisible);
         // }}
       />
-      {["OFFICE_ROLE", "ADMIN_ROLE"].includes(role) && (
+      {hasRight("POST", "CREATE") && (
         <AnimatedFAB
           icon={"plus"}
           label={"Créer un post"}

@@ -86,7 +86,11 @@ export default function ViewPartnershipScreen({
           <Row style={{ flexWrap: "wrap" }}>
             <BodyTitle>Contact : </BodyTitle>
             {partnership.addressMap ? (
-              <Link onPress={() => handlePress(partnership.addressMap)}>
+              <Link
+                onPress={() =>
+                  partnership.addressMap && handlePress(partnership.addressMap)
+                }
+              >
                 {partnership.address}
               </Link>
             ) : (
