@@ -16,6 +16,7 @@ import { TextInputForm } from "components/form/textInput";
 import { ImagePickerForm } from "components/form/imagePicker";
 import { SmallCardItem } from "components/smallCardItem";
 import ListMemberForm from "./listMemberForm";
+import { useRight } from "utils/rights";
 
 export default function UpdateOfficeScreen({
   navigation,
@@ -26,6 +27,7 @@ export default function UpdateOfficeScreen({
   const { updateOffice } = useOffice();
   const { deleteClub } = useClub();
   const { deletePartnership } = usePartnership();
+  const { hasRight } = useRight();
   const office = useStoreMap({
     store: $officeStore,
     keys: [officeId],
@@ -172,53 +174,60 @@ export default function UpdateOfficeScreen({
               />
             )}
           />
-          <Text $bold $dark>
-            Les clubs :
-          </Text>
-          <View style={{ marginHorizontal: -15 }}>
-            <FlatList
-              horizontal
-              data={clubs}
-              contentContainerStyle={{
-                columnGap: 10,
-                padding: 10,
-              }}
-              showsHorizontalScrollIndicator={false}
-              ListHeaderComponentStyle={{ justifyContent: "center" }}
-              ListHeaderComponent={
-                <IconButton
-                  icon="plus"
-                  mode="contained"
-                  size={40}
-                  style={{ borderRadius: 5 }}
-                  onPress={() =>
-                    navigation.navigate("createClub", { officeId })
+          {hasRight("CLUB", "DISPLAY") && (
+            <>
+              <Text $bold $dark>
+                Les clubs :
+              </Text>
+              <View style={{ marginHorizontal: -15 }}>
+                <FlatList
+                  horizontal
+                  data={clubs}
+                  contentContainerStyle={{
+                    columnGap: 10,
+                    padding: 10,
+                  }}
+                  showsHorizontalScrollIndicator={false}
+                  ListHeaderComponentStyle={{ justifyContent: "center" }}
+                  ListHeaderComponent={
+                    <IconButton
+                      icon="plus"
+                      mode="contained"
+                      size={40}
+                      style={{ borderRadius: 5 }}
+                      onPress={() =>
+                        navigation.navigate("createClub", { officeId })
+                      }
+                    />
                   }
+                  renderItem={({ item }) => {
+                    return (
+                      <SmallCardItem
+                        title={item.name}
+                        logo={item.logoUrl}
+                        onEdit={() =>
+                          navigation.navigate("updateClub", { clubId: item.id })
+                        }
+                        onDelete={() =>
+                          Alert.alert(
+                            "Supprimer un club",
+                            "Voulez-vous vraiment supprimer définitivement ce club ?",
+                            [
+                              {
+                                text: "OUI",
+                                onPress: () => onDeleteClub(item.id),
+                              },
+                              { text: "NON" },
+                            ]
+                          )
+                        }
+                      />
+                    );
+                  }}
                 />
-              }
-              renderItem={({ item }) => {
-                return (
-                  <SmallCardItem
-                    title={item.name}
-                    logo={item.logoUrl}
-                    onEdit={() =>
-                      navigation.navigate("updateClub", { clubId: item.id })
-                    }
-                    onDelete={() =>
-                      Alert.alert(
-                        "Supprimer un club",
-                        "Voulez-vous vraiment supprimer définitivement ce club ?",
-                        [
-                          { text: "OUI", onPress: () => onDeleteClub(item.id) },
-                          { text: "NON" },
-                        ]
-                      )
-                    }
-                  />
-                );
-              }}
-            />
-          </View>
+              </View>
+            </>
+          )}
           <Text $bold $dark>
             Les partenariats :
           </Text>

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 
 import { usePartnership } from "@firebase";
-import { $sessionStore } from "@context/sessionStore";
 import { $officeStore } from "@context/officeStore";
 import { UpdatePartnershipProps } from "@navigation/navigationTypes";
 import { FormFieldValues, PartnershipFieldNames } from "@types";
 import PartnershipForm from "./partnershipForm";
+import { useRight } from "utils/rights";
 
 export default function UpdatePartnershipScreen({
   navigation,
@@ -14,8 +14,8 @@ export default function UpdatePartnershipScreen({
 }: UpdatePartnershipProps) {
   const { partnershipId } = route.params;
   const { updatePartnership } = usePartnership();
+  const { isAdmin } = useRight();
   const { officeList } = useUnit($officeStore);
-  const { role } = useUnit($sessionStore);
   const [loading, setLoading] = useState(false);
   const partnership = useStoreMap({
     store: $officeStore,
@@ -80,7 +80,7 @@ export default function UpdatePartnershipScreen({
     },
   ];
 
-  if (role === "ADMIN") {
+  if (isAdmin) {
     fields.unshift({
       name: "office",
       label: "Géré par",

@@ -4,10 +4,10 @@ import { useForm } from "react-hook-form";
 
 import { useClub } from "@firebase";
 import { $officeStore } from "@context/officeStore";
-import { $sessionStore } from "@context/sessionStore";
 import { ClubFieldNames, FormFieldValues } from "@types";
 import { CreateClubProps } from "@navigation/navigationTypes";
 import ClubForm from "./clubForm";
+import { useRight } from "utils/rights";
 
 export default function CreateClubScreen({
   navigation,
@@ -16,7 +16,7 @@ export default function CreateClubScreen({
   const { officeId } = route.params;
   const { createClub } = useClub();
   const { officeList } = useUnit($officeStore);
-  const { role } = useUnit($sessionStore);
+  const { isAdmin } = useRight();
   const [loading, setLoading] = useState(false);
 
   const office = useStoreMap({
@@ -60,7 +60,7 @@ export default function CreateClubScreen({
     },
   ];
 
-  if (role === "ADMIN") {
+  if (isAdmin) {
     values.unshift({
       name: "office",
       label: "Géré par",

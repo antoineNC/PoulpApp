@@ -6,9 +6,11 @@ import { $officeStore } from "@context/officeStore";
 import { Container, Image, Text, Title2 } from "@styledComponents";
 import { colors } from "@theme";
 import { OfficesProps } from "@navigation/navigationTypes";
+import { useRight } from "utils/rights";
 
 export default function OfficesScreen({ navigation }: OfficesProps) {
   const { officeList } = useUnit($officeStore);
+  const { hasRight } = useRight();
 
   return (
     <Container>
@@ -32,6 +34,7 @@ export default function OfficesScreen({ navigation }: OfficesProps) {
                 backgroundColor: colors.primary,
                 borderWidth: 0.5,
                 borderColor: colors.secondary,
+                paddingBottom: 15,
               }}
             >
               <Card.Title
@@ -48,17 +51,19 @@ export default function OfficesScreen({ navigation }: OfficesProps) {
               <Card.Content>
                 <Text>{item.description}</Text>
               </Card.Content>
-              <Card.Actions>
-                <Button
-                  mode="contained-tonal"
-                  icon="pencil"
-                  onPress={() =>
-                    navigation.navigate("updateOffice", { officeId: item.id })
-                  }
-                >
-                  Modifier
-                </Button>
-              </Card.Actions>
+              {hasRight("OFFICE", "UPDATE", item.id) && (
+                <Card.Actions>
+                  <Button
+                    mode="contained-tonal"
+                    icon="pencil"
+                    onPress={() =>
+                      navigation.navigate("updateOffice", { officeId: item.id })
+                    }
+                  >
+                    Modifier
+                  </Button>
+                </Card.Actions>
+              )}
             </Card>
           </TouchableOpacity>
         )}

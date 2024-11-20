@@ -77,7 +77,7 @@ export default function ViewClubScreen({ navigation, route }: ViewClubProps) {
         {club.contact && (
           <Row style={{ flexWrap: "wrap" }}>
             <BodyTitle>Contact : </BodyTitle>
-            <Link onPress={() => handlePress(club.contact)}>
+            <Link onPress={() => club.contact && handlePress(club.contact)}>
               {club.contact}
             </Link>
           </Row>

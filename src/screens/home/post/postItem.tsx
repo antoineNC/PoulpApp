@@ -1,12 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import {
-  Alert,
-  NativeSyntheticEvent,
-  TextLayoutEventData,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { useUnit, useStoreMap } from "effector-react";
+import { useEffect, useState } from "react";
+import { Alert, TouchableOpacity, View } from "react-native";
+import { useStoreMap } from "effector-react";
 import { Button } from "react-native-paper";
 import ImageView from "react-native-image-viewing";
 import {
@@ -19,9 +13,9 @@ import {
   Container,
 } from "@styledComponents";
 import { HomeProps } from "@navigation/navigationTypes";
-import { $sessionStore } from "@context/sessionStore";
 import { officeStyles } from "@styles";
 import { displayDateFromTimestamp } from "utils/dateUtils";
+import { useRight } from "utils/rights";
 import { DateType, Post } from "@types";
 import { usePost } from "@firebase";
 import { $officeStore } from "@context/officeStore";
@@ -30,8 +24,8 @@ type PostItemProps = Partial<HomeProps> & { post: Post };
 const MAX_LENGTH = 50;
 
 export const PostItem = ({ post, navigation }: PostItemProps) => {
-  const { role } = useUnit($sessionStore);
   const { deletePost } = usePost();
+  const { hasRight } = useRight();
   const [date, setDate] = useState<DateType>({ start: "null", end: "null" });
   const [allDay, setAllDay] = useState<boolean>(false);
   const [textShown, setTextShown] = useState(false);
@@ -133,8 +127,8 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           />
         </View>
       )}
-      {["OFFICE_ROLE", "ADMIN_ROLE"].includes(role) && (
-        <Row $justify="space-around" $padding="10px 0 0">
+      <Row $justify="space-around" $padding="10px 0 0">
+        {hasRight("POST", "UPDATE") && (
           <Button
             mode="contained-tonal"
             icon="pencil"
@@ -143,6 +137,8 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           >
             Modifier
           </Button>
+        )}
+        {hasRight("POST", "DELETE") && (
           <Button
             mode="contained-tonal"
             icon="delete"
@@ -163,8 +159,8 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           >
             Supprimer
           </Button>
-        </Row>
-      )}
+        )}
+      </Row>
     </Container>
   );
 };
