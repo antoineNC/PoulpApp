@@ -16,7 +16,7 @@ import { usePost } from "@firebase";
 import { HomeProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
 
-export default function HomeScreen({ navigation }: HomeProps) {
+export default function FeedScreen({ navigation }: HomeProps) {
   const { posts, lastVisible } = useUnit($postStore);
   const { getMorePost } = usePost();
   const { hasRight } = useRight();

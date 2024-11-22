@@ -5,10 +5,10 @@ import { useUnit } from "effector-react";
 import { $officeStore } from "@context/officeStore";
 import { Container, Image, Text, Title2 } from "@styledComponents";
 import { colors } from "@theme";
-import { OfficesProps } from "@navigation/navigationTypes";
+import { ListOfficeProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
 
-export default function OfficesScreen({ navigation }: OfficesProps) {
+export default function ListOfficeScreen({ navigation }: ListOfficeProps) {
   const { officeList } = useUnit($officeStore);
   const { hasRight } = useRight();
 
