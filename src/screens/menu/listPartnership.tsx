@@ -1,33 +1,66 @@
 import { $officeStore } from "@context/officeStore";
-import { useUnit } from "effector-react";
+import { useStoreMap, useUnit } from "effector-react";
 import { useState } from "react";
 import { FlatList, TouchableOpacity } from "react-native";
-import { Card, Searchbar } from "react-native-paper";
+import { Card, Chip, Searchbar } from "react-native-paper";
 import { ListPartnershipProps } from "@navigation/navigationTypes";
-import { Image } from "@styledComponents";
+import { Container, Image, Row } from "@styledComponents";
 import { colors } from "@theme";
 
 export default function ListPartnershipScreen({
   navigation,
 }: ListPartnershipProps) {
   const { partnershipList } = useUnit($officeStore);
+  const officeList = useStoreMap({
+    store: $officeStore,
+    keys: [],
+    fn: (officeStore) => {
+      const offices = officeStore.officeList.filter((office) =>
+        ["BDE", "BDA", "BDS", "I2C"].includes(office.acronym.toUpperCase())
+      );
+      return offices;
+    },
+  });
   const [query, setQuery] = useState("");
+  const [filterOffice, setFilterOffice] = useState<Array<string>>([]);
   const filteredPartner = partnershipList.filter((partner) => {
     const partnerName = partner.name.toUpperCase();
     const partnerDesc = partner.description?.toUpperCase();
     const queryText = query.toUpperCase();
-    return (
+
+    const queryFound =
       partnerName.indexOf(queryText) > -1 ||
-      (partnerDesc && partnerDesc.indexOf(queryText) > -1)
-    );
+      (partnerDesc && partnerDesc.indexOf(queryText) > -1);
+    const filterByOffice =
+      filterOffice.length > 0 ? filterOffice.includes(partner.officeId) : true;
+
+    return queryFound && filterByOffice;
   });
   return (
-    <>
+    <Container>
       <Searchbar
         placeholder="Sélectionner un partenariat"
         onChangeText={setQuery}
         value={query}
       />
+      <Row style={{ columnGap: 20, margin: 10, marginLeft: 30 }}>
+        {officeList.map((office) => (
+          <Chip
+            key={office.id}
+            selected={filterOffice.includes(office.id)}
+            onPress={() => {
+              const index = filterOffice.indexOf(office.id);
+              if (index > -1) {
+                setFilterOffice(
+                  filterOffice.filter((value) => value !== office.id)
+                );
+              } else setFilterOffice([...filterOffice, office.id]);
+            }}
+          >
+            {office.acronym}
+          </Chip>
+        ))}
+      </Row>
       <FlatList
         data={filteredPartner}
         contentContainerStyle={{
@@ -65,6 +98,6 @@ export default function ListPartnershipScreen({
           </TouchableOpacity>
         )}
       />
-    </>
+    </Container>
   );
 }

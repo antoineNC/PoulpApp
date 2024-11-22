@@ -1,3 +1,4 @@
+import { useAuth } from "@firebase";
 import { MenuProps } from "@navigation/navigationTypes";
 import { ContainerScroll, Row, Text } from "@styledComponents";
 import { TouchableOpacity } from "react-native";
@@ -20,6 +21,7 @@ const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
 );
 
 export default function MenuScreen({ navigation }: MenuProps) {
+  const { signout } = useAuth();
   return (
     <ContainerScroll>
       <Divider />
@@ -41,7 +43,7 @@ export default function MenuScreen({ navigation }: MenuProps) {
       <Divider />
       <Item text="Détails" />
       <Divider />
-      <Item text="Se déconnecter" />
+      <Item text="Se déconnecter" onPress={signout} />
       <Divider />
     </ContainerScroll>
   );

@@ -338,7 +338,7 @@ export function MenuNavigator() {
       <MenuStack.Screen
         name="listPartnership"
         component={ListPartnershipScreen}
-        options={{ title: "Liste des clubs" }}
+        options={{ title: "Liste des partenariats" }}
       />
       <MenuStack.Screen
         name="viewPartnership"
