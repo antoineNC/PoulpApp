@@ -92,8 +92,8 @@ export type MenuTabParamList = {
   menu: undefined;
   listClub: undefined;
   viewClub: { clubId: string };
-  profile: undefined;
-  allSubs: undefined;
+  listPartnership: undefined;
+  viewPartnership: { partnershipId: string };
 };
 export type MenuTabScreenProps<T extends keyof MenuTabParamList> =
   CompositeScreenProps<
@@ -104,6 +104,8 @@ export type MenuTabScreenProps<T extends keyof MenuTabParamList> =
 export type MenuProps = MenuTabScreenProps<"menu">;
 export type ListClubProps = MenuTabScreenProps<"listClub">;
 export type ViewClubMenuProps = OfficeTabScreenProps<"viewClub">;
+export type ListPartnershipProps = MenuTabScreenProps<"listPartnership">;
+export type ViewPartnershipMenuProps = OfficeTabScreenProps<"viewPartnership">;
 
 declare global {
   namespace ReactNavigation {

@@ -30,6 +30,8 @@ import ViewPartnershipScreen from "@screens/office/partnership/viewPartnership";
 import MenuScreen from "@screens/menu/menu";
 import ListClubScreen from "@screens/menu/listClub";
 import ViewClubMenuScreen from "@screens/menu/viewClub";
+import ListPartnershipScreen from "@screens/menu/listPartnership";
+import ViewPartnershipMenuScreen from "@screens/menu/viewPartnership";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -333,7 +335,39 @@ export function MenuNavigator() {
           },
         })}
       />
-      {/* <MenuStack.Screen name="allSubs" component={CalendarScreen} /> */}
+      <MenuStack.Screen
+        name="listPartnership"
+        component={ListPartnershipScreen}
+        options={{ title: "Liste des clubs" }}
+      />
+      <MenuStack.Screen
+        name="viewPartnership"
+        component={ViewPartnershipMenuScreen}
+        options={({ route }) => ({
+          headerTitle: () => {
+            const partner = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.partnershipId],
+              fn: (officeStore) =>
+                officeStore.partnershipList.find(
+                  (partner) => partner.id === route.params.partnershipId
+                ),
+            });
+            return (
+              <Row>
+                {partner?.logoUrl && (
+                  <Image
+                    style={{ borderRadius: 5 }}
+                    $size={45}
+                    source={{ uri: partner.logoUrl }}
+                  />
+                )}
+                <Title2>{partner?.name}</Title2>
+              </Row>
+            );
+          },
+        })}
+      />
     </MenuStack.Navigator>
   );
 }

@@ -32,7 +32,10 @@ export default function MenuScreen({ navigation }: MenuProps) {
         onPress={() => navigation.navigate("listClub")}
       />
       <Divider />
-      <Item text="Liste des partenariats" />
+      <Item
+        text="Liste des partenariats"
+        onPress={() => navigation.navigate("listPartnership")}
+      />
       <Divider />
       <Item text="Notifications" />
       <Divider />
