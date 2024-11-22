@@ -3,10 +3,10 @@ import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { ClubFieldNames, FormFieldValues } from "@types";
 import CustomField from "components/form/formField";
+import { FloatingValidateBtn } from "components/validateButton";
 import { Control, UseFormSetFocus } from "react-hook-form";
 import { View } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
-import { AnimatedFAB } from "react-native-paper";
 
 const ClubForm = ({
   create,
@@ -51,20 +51,7 @@ const ClubForm = ({
         </View>
         <View style={{ height: 100 }} />
       </ContainerScroll>
-      <AnimatedFAB
-        icon={"content-save"}
-        label={"Enregistrer le club"}
-        extended={true}
-        onPress={onSubmit}
-        visible={true}
-        animateFrom="right"
-        style={{
-          position: "absolute",
-          bottom: 20,
-          alignSelf: "center",
-        }}
-        variant="secondary"
-      />
+      <FloatingValidateBtn label="Enregistrer le club" onPress={onSubmit} />
     </>
   );
 };

@@ -15,8 +15,9 @@ import { colors } from "@theme";
 import { TextInputForm } from "components/form/textInput";
 import { ImagePickerForm } from "components/form/imagePicker";
 import { SmallCardItem } from "components/smallCardItem";
-import ListMemberForm from "./listMemberForm";
+import ListMemberForm from "../../components/listMemberForm";
 import { useRight } from "utils/rights";
+import { FloatingValidateBtn } from "components/validateButton";
 
 export default function UpdateOfficeScreen({
   navigation,
@@ -286,19 +287,9 @@ export default function UpdateOfficeScreen({
         </View>
         <View style={{ height: 100 }} />
       </ContainerScroll>
-      <AnimatedFAB
-        icon={"content-save"}
-        label={"Enregistrer les informations du bureau"}
-        extended={true}
+      <FloatingValidateBtn
+        label="Enregistrer les informations du bureau"
         onPress={handleSubmit(onSubmit)}
-        visible={true}
-        animateFrom="right"
-        style={{
-          position: "absolute",
-          bottom: 20,
-          alignSelf: "center",
-        }}
-        variant="secondary"
       />
     </>
   );

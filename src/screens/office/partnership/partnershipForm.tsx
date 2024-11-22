@@ -1,6 +1,5 @@
 import { KeyboardAvoidingView, Platform, View } from "react-native";
 import {
-  AnimatedFAB,
   HelperText,
   IconButton,
   MD3Colors,
@@ -18,6 +17,7 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
+import { FloatingValidateBtn } from "components/validateButton";
 
 const PartnershipForm = ({
   create,
@@ -120,19 +120,9 @@ const PartnershipForm = ({
         </View>
         <View style={{ height: 100 }} />
       </ContainerScroll>
-      <AnimatedFAB
-        icon={"content-save"}
-        label={"Enregistrer le partenariat"}
-        extended={true}
+      <FloatingValidateBtn
+        label="Enregistrer le partenariat"
         onPress={handleSubmit(onSubmit)}
-        visible={true}
-        animateFrom="right"
-        style={{
-          position: "absolute",
-          bottom: 20,
-          alignSelf: "center",
-        }}
-        variant="secondary"
       />
     </KeyboardAvoidingView>
   );

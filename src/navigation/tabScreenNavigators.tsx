@@ -9,14 +9,12 @@ import {
   OfficeTabParamList,
   TabBarScreenProps,
 } from "@navigation/navigationTypes";
-import HomeScreen from "@screens/home/home";
-// import ViewPostScreen from "@screens/home/viewPost";
+import FeedScreen from "@screens/home/feed";
 import CreatePostScreen from "@screens/home/post/createPost";
 import UpdatePostScreen from "@screens/home/post/updatePost";
 // import CalendarScreen from "@screens/home/calendar";
 import { ScoreScreen } from "@screens/famCup/score";
-import { FeedScreen } from "@screens/famCup/feed";
-import OfficesScreen from "@screens/office/offices";
+import ListOfficeScreen from "@screens/office/listOffice";
 import ViewOfficeScreen from "@screens/office/viewOffice";
 import UpdateOfficeScreen from "@screens/office/updateOffice";
 import UpdateClubScreen from "@screens/office/club/updateClub";
@@ -29,6 +27,9 @@ import { Image, Row, Title2 } from "@styledComponents";
 import { $officeStore } from "@context/officeStore";
 import ViewClubScreen from "@screens/office/club/viewClub";
 import ViewPartnershipScreen from "@screens/office/partnership/viewPartnership";
+import MenuScreen from "@screens/menu/menu";
+import ListClubScreen from "@screens/menu/listClub";
+import ViewClubMenuScreen from "@screens/menu/viewClub";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -53,7 +54,7 @@ export function HomeNavigator({
     <HomeStack.Navigator screenOptions={screenOptions} initialRouteName="home">
       <HomeStack.Screen
         name="home"
-        component={HomeScreen}
+        component={FeedScreen}
         options={{
           title: "Fil d'actualité",
           // headerRight: ({ tintColor }) => (
@@ -118,8 +119,8 @@ export function OfficeNavigator() {
   return (
     <OfficeStack.Navigator screenOptions={screenOptions}>
       <OfficeStack.Screen
-        name="offices"
-        component={OfficesScreen}
+        name="listOffice"
+        component={ListOfficeScreen}
         options={{ title: "Bureaux" }}
       />
       <OfficeStack.Screen
@@ -287,7 +288,6 @@ export function FamCupNavigator() {
         component={ScoreScreen}
         options={{ title: "Tableau des scores" }}
       />
-      <FamCupStack.Screen name="feed" component={FeedScreen} />
     </FamCupStack.Navigator>
   );
 }
@@ -296,9 +296,42 @@ export function MenuNavigator() {
   return (
     <MenuStack.Navigator screenOptions={screenOptions}>
       <MenuStack.Screen
-        name="profile"
-        component={ProfileScreen}
+        name="menu"
+        component={MenuScreen}
         options={{ title: "Menu" }}
+      />
+      <MenuStack.Screen
+        name="listClub"
+        component={ListClubScreen}
+        options={{ title: "Liste des clubs" }}
+      />
+      <MenuStack.Screen
+        name="viewClub"
+        component={ViewClubMenuScreen}
+        options={({ route }) => ({
+          headerTitle: () => {
+            const club = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.clubId],
+              fn: (officeStore) =>
+                officeStore.clubList.find(
+                  (club) => club.id === route.params.clubId
+                ),
+            });
+            return (
+              <Row>
+                {club?.logoUrl && (
+                  <Image
+                    style={{ borderRadius: 5 }}
+                    $size={45}
+                    source={{ uri: club.logoUrl }}
+                  />
+                )}
+                <Title2>{club?.name}</Title2>
+              </Row>
+            );
+          },
+        })}
       />
       {/* <MenuStack.Screen name="allSubs" component={CalendarScreen} /> */}
     </MenuStack.Navigator>

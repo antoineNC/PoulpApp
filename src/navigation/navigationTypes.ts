@@ -49,7 +49,7 @@ export type UpdatePostProps = HomeTabScreenProps<"updatePost">;
 
 // === Office tab
 export type OfficeTabParamList = {
-  offices: undefined;
+  listOffice: undefined;
   viewOffice: { officeId: string };
   updateOffice: { officeId: string };
   updateMembers: { officeId: string };
@@ -65,7 +65,7 @@ export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
     NativeStackScreenProps<OfficeTabParamList, T>,
     TabBarScreenProps<keyof TabBarParamList>
   >;
-export type OfficesProps = OfficeTabScreenProps<"offices">;
+export type ListOfficeProps = OfficeTabScreenProps<"listOffice">;
 export type ViewOfficeProps = OfficeTabScreenProps<"viewOffice">;
 export type UpdateOfficeProps = OfficeTabScreenProps<"updateOffice">;
 export type UpdateMembersProps = OfficeTabScreenProps<"updateMembers">;
@@ -89,6 +89,9 @@ export type FamCupTabScreenProps<T extends keyof FamCupTabParamList> =
 
 // === Menu tab
 export type MenuTabParamList = {
+  menu: undefined;
+  listClub: undefined;
+  viewClub: { clubId: string };
   profile: undefined;
   allSubs: undefined;
 };
@@ -97,6 +100,10 @@ export type MenuTabScreenProps<T extends keyof MenuTabParamList> =
     NativeStackScreenProps<MenuTabParamList, T>,
     TabBarScreenProps<keyof TabBarParamList>
   >;
+
+export type MenuProps = MenuTabScreenProps<"menu">;
+export type ListClubProps = MenuTabScreenProps<"listClub">;
+export type ViewClubMenuProps = OfficeTabScreenProps<"viewClub">;
 
 declare global {
   namespace ReactNavigation {
