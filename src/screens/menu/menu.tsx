@@ -27,7 +27,7 @@ export default function MenuScreen({ navigation }: MenuProps) {
       <Divider />
       <Item text="Mes adhésions" />
       <Divider />
-      <Item text="Calendrier" />
+      <Item text="Calendrier" onPress={() => navigation.navigate("calendar")} />
       <Divider />
       <Item
         text="Liste de clubs"

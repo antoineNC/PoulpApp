@@ -90,6 +90,9 @@ export type FamCupTabScreenProps<T extends keyof FamCupTabParamList> =
 // === Menu tab
 export type MenuTabParamList = {
   menu: undefined;
+  listAdhesion: undefined;
+  listAdherent: undefined;
+  calendar: undefined;
   listClub: undefined;
   viewClub: { clubId: string };
   listPartnership: undefined;

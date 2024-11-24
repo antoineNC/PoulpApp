@@ -12,26 +12,27 @@ import {
 import FeedScreen from "@screens/home/feed";
 import CreatePostScreen from "@screens/home/post/createPost";
 import UpdatePostScreen from "@screens/home/post/updatePost";
-// import CalendarScreen from "@screens/home/calendar";
-import { ScoreScreen } from "@screens/famCup/score";
 import ListOfficeScreen from "@screens/office/listOffice";
 import ViewOfficeScreen from "@screens/office/viewOffice";
 import UpdateOfficeScreen from "@screens/office/updateOffice";
 import UpdateClubScreen from "@screens/office/club/updateClub";
-import UpdatePartnershipScreen from "@screens/office/partnership/updatePartnership";
 import CreateClubScreen from "@screens/office/club/createClub";
-import CreatePartnershipScreen from "@screens/office/partnership/createPartnership";
-import { ProfileScreen } from "@screens/menu/profile";
-import { colors } from "@theme";
-import { Image, Row, Title2 } from "@styledComponents";
-import { $officeStore } from "@context/officeStore";
 import ViewClubScreen from "@screens/office/club/viewClub";
+import UpdatePartnershipScreen from "@screens/office/partnership/updatePartnership";
+import CreatePartnershipScreen from "@screens/office/partnership/createPartnership";
 import ViewPartnershipScreen from "@screens/office/partnership/viewPartnership";
+import { ScoreScreen } from "@screens/famCup/score";
 import MenuScreen from "@screens/menu/menu";
+import CalendarScreen from "@screens/menu/calendar";
+import ListAdhesion from "@screens/menu/listAdhesion";
+import ListAdherent from "@screens/menu/listAdherent";
 import ListClubScreen from "@screens/menu/listClub";
 import ViewClubMenuScreen from "@screens/menu/viewClub";
 import ListPartnershipScreen from "@screens/menu/listPartnership";
 import ViewPartnershipMenuScreen from "@screens/menu/viewPartnership";
+import { colors } from "@theme";
+import { Image, Row, Title2 } from "@styledComponents";
+import { $officeStore } from "@context/officeStore";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -112,7 +113,6 @@ export function HomeNavigator({
           ),
         })}
       />
-      {/* <HomeStack.Screen name="calendar" component={CalendarScreen} /> */}
     </HomeStack.Navigator>
   );
 }
@@ -301,6 +301,21 @@ export function MenuNavigator() {
         name="menu"
         component={MenuScreen}
         options={{ title: "Menu" }}
+      />
+      <MenuStack.Screen
+        name="listAdhesion"
+        component={ListAdhesion}
+        options={{ title: "Mes adhésions" }}
+      />
+      <MenuStack.Screen
+        name="listAdherent"
+        component={ListAdherent}
+        options={{ title: "Mes adhérent.es" }}
+      />
+      <MenuStack.Screen
+        name="calendar"
+        component={CalendarScreen}
+        options={{ title: "Calendrier" }}
       />
       <MenuStack.Screen
         name="listClub"
