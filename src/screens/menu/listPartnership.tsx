@@ -36,6 +36,14 @@ export default function ListPartnershipScreen({
 
     return queryFound && filterByOffice;
   });
+
+  const selectOffice = (id: string) => {
+    const index = filterOffice.indexOf(id);
+    if (index > -1) {
+      setFilterOffice(filterOffice.filter((value) => value !== id));
+    } else setFilterOffice([...filterOffice, id]);
+  };
+
   return (
     <Container>
       <Searchbar
@@ -48,14 +56,7 @@ export default function ListPartnershipScreen({
           <Chip
             key={office.id}
             selected={filterOffice.includes(office.id)}
-            onPress={() => {
-              const index = filterOffice.indexOf(office.id);
-              if (index > -1) {
-                setFilterOffice(
-                  filterOffice.filter((value) => value !== office.id)
-                );
-              } else setFilterOffice([...filterOffice, office.id]);
-            }}
+            onPress={() => selectOffice(office.id)}
           >
             {office.acronym}
           </Chip>
