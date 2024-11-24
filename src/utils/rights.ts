@@ -58,6 +58,8 @@ const rights: { [key in Role]: { [key in Module]: Right[] } } = {
 export const useRight = () => {
   const { user, role } = useUnit($sessionStore);
   const isAdmin = role === "ADMIN";
+  const isOffice = ["BDE", "I2C", "BDA", "BDS"].includes(role);
+  const isStudent = role === "STUDENT";
   const hasRight = (module: Module, right: Right, officeId?: string) => {
     if (rights[role][module].includes(right)) {
       if (["POST", "OFFICE"].includes(module) && allCrud.includes(right)) {
@@ -68,5 +70,5 @@ export const useRight = () => {
       return true;
     } else return false;
   };
-  return { hasRight, isAdmin };
+  return { hasRight, isAdmin, isOffice, isStudent };
 };

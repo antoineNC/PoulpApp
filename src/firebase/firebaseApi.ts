@@ -28,6 +28,10 @@ import {
   QueryConstraint,
   Timestamp,
   deleteField,
+  runTransaction,
+  DocumentReference,
+  arrayUnion,
+  arrayRemove,
 } from "@firebase/firestore";
 import {
   StorageReference,
@@ -134,7 +138,7 @@ export const useAuth = () => {
   const { getAllOffice, getAllRole } = useOffice();
   const { getAllClub } = useClub();
   const { getAllPartnership } = usePartnership();
-  const { getAllStudent } = useStudent();
+  const { getAllStudent, getStudent } = useStudent();
 
   const login = async ({
     email,
@@ -239,14 +243,19 @@ export const useAuth = () => {
 
   const loginHandle = async (id: string) => {
     const { user, role } = await getCurrentUser(id);
+    actionSession.login({ user, role });
     await getAllOffice();
     await getAllClub();
     await getAllPartnership();
     await getAllRole();
     if (role !== "STUDENT") {
       await getAllStudent();
+    } else {
+      const student = await getStudent(id);
+      if (student) {
+        actionSession.setStudent(student);
+      }
     }
-    actionSession.login({ user, role });
   };
 
   return {
@@ -283,31 +292,6 @@ export const useStudent = () => {
     }
   };
 
-  // const getMemberOffice = async (idOffice: string) => {
-  //   try {
-  //     const q = query(
-  //       userCollection,
-  //       where("role", "==", "STUDENT"),
-  //       where("memberOf", "array-contains", idOffice)
-  //     );
-  //     const snapshot = await getDocs(q);
-  //     const members: Student[] = snapshot.docs.map((student) => {
-  //       const studentData = student.data();
-  //       return {
-  //         id: student.id,
-  //         mail: studentData.mail,
-  //         firstName: studentData.firstName,
-  //         lastName: studentData.lastName,
-  //         adhesion: studentData.adhesion,
-  //         memberOf: studentData.memberOf,
-  //       };
-  //     });
-  //     return members;
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
-
   const getStudent = async (id: string) => {
     try {
       const snapshot = await getDoc(doc(userCollection, id));
@@ -323,13 +307,54 @@ export const useStudent = () => {
         firstName: studentData.firstName,
         lastName: studentData.lastName,
         mail: studentData.mail,
+        adhesion: studentData.adhesion,
       };
       return student;
     } catch (e) {
-      console.error(e);
+      console.error("[get student]", e);
     }
   };
-  return { getAllStudent, getStudent };
+
+  const setStudentAdhesion = async (
+    officeId: string,
+    studentList: { id: string; isAdherent: boolean }[]
+  ) => {
+    try {
+      await runTransaction(db, async (transaction) => {
+        const changes: { ref: DocumentReference; isAdherent: boolean }[] = [];
+        // all reads need to be executed before all writes
+        for (const student of studentList) {
+          const studentRef = doc(userCollection, student.id);
+          const studentDoc = await transaction.get(studentRef);
+          if (!studentDoc.exists()) {
+            throw Error(`L'étudiant.e ${student.id} n'existe pas.`);
+          }
+          const hasChanged =
+            (studentDoc.data().adhesion?.includes(officeId) &&
+              !student.isAdherent) ||
+            (!studentDoc.data().adhesion?.includes(officeId) &&
+              student.isAdherent);
+
+          if (hasChanged) {
+            changes.push({ ref: studentRef, isAdherent: student.isAdherent });
+          }
+        }
+        for (const element of changes) {
+          if (element.isAdherent) {
+            transaction.update(element.ref, { adhesion: arrayUnion(officeId) });
+          } else {
+            transaction.update(element.ref, {
+              adhesion: arrayRemove(officeId),
+            });
+          }
+        }
+      });
+    } catch (e) {
+      console.error("[set student adhesion]", e);
+    }
+  };
+
+  return { getAllStudent, getStudent, setStudentAdhesion };
 };
 
 export const useOffice = () => {

@@ -72,17 +72,6 @@ export function HomeNavigator({
           // ),
         }}
       />
-      {/* <HomeStack.Screen
-        name="viewPost"
-        component={ViewPostScreen}
-        options={({ route }) => ({
-          headerTitle: () => (
-            <Row>
-              <Title2>{route.params.post.title}</Title2>
-            </Row>
-          ),
-        })}
-      /> */}
       <HomeStack.Screen
         name="createPost"
         component={CreatePostScreen}

@@ -1,8 +1,9 @@
-import { Role, SessionType, UserType } from "@types";
+import { Role, SessionType, Student, UserType } from "@types";
 import { createEvent, createStore } from "effector";
 
 export const actionSession = {
   login: createEvent<{ user: UserType; role: Role }>("LOGIN"),
+  setStudent: createEvent<Student>("SET STUDENT USER"),
   logout: createEvent("LOGOUT"),
 };
 
@@ -17,5 +18,9 @@ export const $sessionStore = createStore<SessionType>(defaultSession)
     user,
     role,
     connected: true,
+  }))
+  .on(actionSession.setStudent, (state, payload) => ({
+    ...state,
+    student: payload,
   }))
   .reset(actionSession.logout);

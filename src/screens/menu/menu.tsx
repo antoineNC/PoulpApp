@@ -3,6 +3,7 @@ import { MenuProps } from "@navigation/navigationTypes";
 import { ContainerScroll, Row, Text } from "@styledComponents";
 import { TouchableOpacity } from "react-native";
 import { Divider, Icon } from "react-native-paper";
+import { useRight } from "utils/rights";
 
 const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
   <TouchableOpacity onPress={onPress}>
@@ -22,10 +23,27 @@ const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
 
 export default function MenuScreen({ navigation }: MenuProps) {
   const { signout } = useAuth();
+  const { isStudent, isOffice } = useRight();
   return (
     <ContainerScroll>
-      <Divider />
-      <Item text="Mes adhésions" />
+      {isStudent && (
+        <>
+          <Divider />
+          <Item
+            text="Mes adhésions"
+            onPress={() => navigation.navigate("listAdhesion")}
+          />
+        </>
+      )}
+      {isOffice && (
+        <>
+          <Divider />
+          <Item
+            text="Mes adhérent.es"
+            onPress={() => navigation.navigate("listAdherent")}
+          />
+        </>
+      )}
       <Divider />
       <Item text="Calendrier" onPress={() => navigation.navigate("calendar")} />
       <Divider />
