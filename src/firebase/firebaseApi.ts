@@ -317,38 +317,28 @@ export const useStudent = () => {
 
   const setStudentAdhesion = async (
     officeId: string,
-    studentList: { id: string; isAdherent: boolean }[]
+    studentId: string,
+    isAdherent: boolean
   ) => {
     try {
-      await runTransaction(db, async (transaction) => {
-        const changes: { ref: DocumentReference; isAdherent: boolean }[] = [];
-        // all reads need to be executed before all writes
-        for (const student of studentList) {
-          const studentRef = doc(userCollection, student.id);
-          const studentDoc = await transaction.get(studentRef);
-          if (!studentDoc.exists()) {
-            throw Error(`L'étudiant.e ${student.id} n'existe pas.`);
-          }
-          const hasChanged =
-            (studentDoc.data().adhesion?.includes(officeId) &&
-              !student.isAdherent) ||
-            (!studentDoc.data().adhesion?.includes(officeId) &&
-              student.isAdherent);
+      const studentRef = doc(userCollection, studentId);
+      const studentDoc = await getDoc(studentRef);
+      if (!studentDoc.exists()) {
+        throw Error(`L'étudiant.e ${studentId} n'existe pas.`);
+      }
+      const hasChanged =
+        (studentDoc.data().adhesion?.includes(officeId) && !isAdherent) ||
+        (!studentDoc.data().adhesion?.includes(officeId) && isAdherent);
 
-          if (hasChanged) {
-            changes.push({ ref: studentRef, isAdherent: student.isAdherent });
-          }
+      if (hasChanged) {
+        if (isAdherent) {
+          await updateDoc(studentRef, { adhesion: arrayUnion(officeId) });
+        } else {
+          await updateDoc(studentRef, {
+            adhesion: arrayRemove(officeId),
+          });
         }
-        for (const element of changes) {
-          if (element.isAdherent) {
-            transaction.update(element.ref, { adhesion: arrayUnion(officeId) });
-          } else {
-            transaction.update(element.ref, {
-              adhesion: arrayRemove(officeId),
-            });
-          }
-        }
-      });
+      }
     } catch (e) {
       console.error("[set student adhesion]", e);
     }

@@ -8,6 +8,7 @@ import { Checkbox, Searchbar } from "react-native-paper";
 
 export default function ListAdherent() {
   // TODO :  GET OFFICE ID
+  const officeId = "ZN39sNfvmfeMxUU0jxZkCUjVgT23";
   const { setStudentAdhesion } = useStudent();
   const studentList = useUnit($studentStore);
   const sortedStudentList = studentList.sort((studA, studB) =>
@@ -23,13 +24,8 @@ export default function ListAdherent() {
     );
   });
 
-  const onSubmit = async (id: string, isAdherent: boolean) => {
-    // const mappedAdherent = adherents.map((value) => ({
-    //   id: value.id,
-    //   isAdherent:
-    //     value.adhesion?.includes("ZN39sNfvmfeMxUU0jxZkCUjVgT23") || false,
-    // }));
-    // await setStudentAdhesion("ZN39sNfvmfeMxUU0jxZkCUjVgT23", mappedAdherent);
+  const onSubmit = async (studentId: string, isAdherent: boolean) => {
+    await setStudentAdhesion(officeId, studentId, isAdherent);
     // TODO : LOADING SCREEN
   };
 
@@ -45,13 +41,9 @@ export default function ListAdherent() {
         renderItem={({ item }) => (
           <Checkbox.Item
             label={`${item.firstName} ${item.lastName}`}
-            status={
-              item.adhesion?.includes("ZN39sNfvmfeMxUU0jxZkCUjVgT23")
-                ? "checked"
-                : "unchecked"
-            }
+            status={item.adhesion?.includes(officeId) ? "checked" : "unchecked"}
             onPress={() => {
-              if (item.adhesion?.includes("ZN39sNfvmfeMxUU0jxZkCUjVgT23")) {
+              if (item.adhesion?.includes(officeId)) {
                 Alert.alert(
                   "Fin de l'adhésion",
                   `Souhaitez-vous mettre fin à l'adhésion de ${item.firstName} ${item.lastName}`,
