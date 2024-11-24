@@ -50,6 +50,7 @@ export default function ListPartnershipScreen({
         placeholder="Sélectionner un partenariat"
         onChangeText={setQuery}
         value={query}
+        style={{ borderRadius: 5, marginHorizontal: 10 }}
       />
       <Row style={{ columnGap: 20, margin: 10, marginLeft: 30 }}>
         {officeList.map((office) => (

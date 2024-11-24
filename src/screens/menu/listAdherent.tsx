@@ -1,10 +1,11 @@
-import { $studentStore } from "@context/studentStore";
-import { useStudent } from "@firebase";
-import { Container } from "@styledComponents";
-import { useUnit } from "effector-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Alert, FlatList } from "react-native";
+import { useUnit } from "effector-react";
 import { Checkbox, Searchbar } from "react-native-paper";
+import { useStudent } from "@firebase";
+import { $studentStore } from "@context/studentStore";
+import { Container } from "@styledComponents";
+import { colors } from "@theme";
 
 export default function ListAdherent() {
   // TODO :  GET OFFICE ID
@@ -35,6 +36,7 @@ export default function ListAdherent() {
         placeholder="Chercher un nom"
         onChangeText={setQuery}
         value={query}
+        style={{ borderRadius: 5, marginHorizontal: 10 }}
       />
       <FlatList
         data={filter}
