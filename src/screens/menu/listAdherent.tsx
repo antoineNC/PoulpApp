@@ -42,6 +42,9 @@ export default function ListAdherent() {
         data={filter}
         renderItem={({ item }) => (
           <Checkbox.Item
+            color={colors.white}
+            uncheckedColor={colors.black}
+            labelStyle={{ color: colors.white }}
             label={`${item.firstName} ${item.lastName}`}
             status={item.adhesion?.includes(officeId) ? "checked" : "unchecked"}
             onPress={() => {
