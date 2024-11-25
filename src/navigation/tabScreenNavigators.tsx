@@ -10,6 +10,7 @@ import {
   TabBarScreenProps,
 } from "@navigation/navigationTypes";
 import FeedScreen from "@screens/home/feed";
+import CalendarScreen from "@screens/home/calendar";
 import CreatePostScreen from "@screens/home/post/createPost";
 import UpdatePostScreen from "@screens/home/post/updatePost";
 import ListOfficeScreen from "@screens/office/listOffice";
@@ -23,7 +24,7 @@ import CreatePartnershipScreen from "@screens/office/partnership/createPartnersh
 import ViewPartnershipScreen from "@screens/office/partnership/viewPartnership";
 import { ScoreScreen } from "@screens/famCup/score";
 import MenuScreen from "@screens/menu/menu";
-import CalendarScreen from "@screens/menu/calendar";
+import CalendarMenuScreen from "@screens/menu/calendar";
 import ListAdhesion from "@screens/menu/listAdhesion";
 import ListAdherent from "@screens/menu/listAdherent";
 import ListClubScreen from "@screens/menu/listClub";
@@ -54,22 +55,32 @@ export function HomeNavigator({
   navigation,
 }: TabBarScreenProps<"homeContainer">) {
   return (
-    <HomeStack.Navigator screenOptions={screenOptions} initialRouteName="home">
+    <HomeStack.Navigator screenOptions={screenOptions} initialRouteName="feed">
       <HomeStack.Screen
-        name="home"
+        name="feed"
         component={FeedScreen}
-        options={{
+        options={({}) => ({
           title: "Fil d'actualité",
-          // headerRight: ({ tintColor }) => (
-          //   <TouchableOpacity
-          //     style={{ alignSelf: "center" }}
-          //     onPress={() =>
-          //       navigation.navigate("homeContainer", { screen: "calendar" })
-          //     }
-          //   >
-          //     <Ionicons name="calendar-sharp" size={30} color={tintColor} />
-          //   </TouchableOpacity>
-          // ),
+          headerRight: () => (
+            <IconButton
+              icon="calendar-month-outline"
+              size={30}
+              iconColor={colors.white}
+              onPress={() =>
+                navigation.navigate("homeContainer", {
+                  screen: "calendar",
+                  params: {},
+                })
+              }
+            />
+          ),
+        })}
+      />
+      <HomeStack.Screen
+        name="calendar"
+        component={CalendarScreen}
+        options={{
+          title: "Calendrier",
         }}
       />
       <HomeStack.Screen
@@ -303,7 +314,7 @@ export function MenuNavigator() {
       />
       <MenuStack.Screen
         name="calendar"
-        component={CalendarScreen}
+        component={CalendarMenuScreen}
         options={{ title: "Calendrier" }}
       />
       <MenuStack.Screen
