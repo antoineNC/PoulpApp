@@ -62,7 +62,10 @@ export const useRight = () => {
   const isStudent = role === "STUDENT";
   const hasRight = (module: Module, right: Right, officeId?: string) => {
     if (rights[role][module].includes(right)) {
-      if (["POST", "OFFICE"].includes(module) && allCrud.includes(right)) {
+      if (
+        ["POST", "OFFICE"].includes(module) &&
+        ["UPDATE", "DELETE"].includes(right)
+      ) {
         if (officeId === user.id || isAdmin) {
           return true;
         } else return false;
