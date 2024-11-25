@@ -31,6 +31,9 @@ export type SessionType = {
   user: UserType;
   role: Role;
   connected: boolean;
+  student?: Student;
+  office?: Office;
+  admin?: Admin;
 };
 
 export type Post = {

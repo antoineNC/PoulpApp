@@ -9,26 +9,31 @@ import {
   OfficeTabParamList,
   TabBarScreenProps,
 } from "@navigation/navigationTypes";
-import HomeScreen from "@screens/home/home";
-// import ViewPostScreen from "@screens/home/viewPost";
+import FeedScreen from "@screens/home/feed";
+import CalendarScreen from "@screens/home/calendar";
 import CreatePostScreen from "@screens/home/post/createPost";
 import UpdatePostScreen from "@screens/home/post/updatePost";
-// import CalendarScreen from "@screens/home/calendar";
-import { ScoreScreen } from "@screens/famCup/score";
-import { FeedScreen } from "@screens/famCup/feed";
-import OfficesScreen from "@screens/office/offices";
+import ListOfficeScreen from "@screens/office/listOffice";
 import ViewOfficeScreen from "@screens/office/viewOffice";
 import UpdateOfficeScreen from "@screens/office/updateOffice";
 import UpdateClubScreen from "@screens/office/club/updateClub";
-import UpdatePartnershipScreen from "@screens/office/partnership/updatePartnership";
 import CreateClubScreen from "@screens/office/club/createClub";
+import ViewClubScreen from "@screens/office/club/viewClub";
+import UpdatePartnershipScreen from "@screens/office/partnership/updatePartnership";
 import CreatePartnershipScreen from "@screens/office/partnership/createPartnership";
-import { ProfileScreen } from "@screens/menu/profile";
+import ViewPartnershipScreen from "@screens/office/partnership/viewPartnership";
+import { ScoreScreen } from "@screens/famCup/score";
+import MenuScreen from "@screens/menu/menu";
+import CalendarMenuScreen from "@screens/menu/calendar";
+import ListAdhesion from "@screens/menu/listAdhesion";
+import ListAdherent from "@screens/menu/listAdherent";
+import ListClubScreen from "@screens/menu/listClub";
+import ViewClubMenuScreen from "@screens/menu/viewClub";
+import ListPartnershipScreen from "@screens/menu/listPartnership";
+import ViewPartnershipMenuScreen from "@screens/menu/viewPartnership";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
 import { $officeStore } from "@context/officeStore";
-import ViewClubScreen from "@screens/office/club/viewClub";
-import ViewPartnershipScreen from "@screens/office/partnership/viewPartnership";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -50,35 +55,34 @@ export function HomeNavigator({
   navigation,
 }: TabBarScreenProps<"homeContainer">) {
   return (
-    <HomeStack.Navigator screenOptions={screenOptions} initialRouteName="home">
+    <HomeStack.Navigator screenOptions={screenOptions} initialRouteName="feed">
       <HomeStack.Screen
-        name="home"
-        component={HomeScreen}
-        options={{
+        name="feed"
+        component={FeedScreen}
+        options={({}) => ({
           title: "Fil d'actualité",
-          // headerRight: ({ tintColor }) => (
-          //   <TouchableOpacity
-          //     style={{ alignSelf: "center" }}
-          //     onPress={() =>
-          //       navigation.navigate("homeContainer", { screen: "calendar" })
-          //     }
-          //   >
-          //     <Ionicons name="calendar-sharp" size={30} color={tintColor} />
-          //   </TouchableOpacity>
-          // ),
-        }}
-      />
-      {/* <HomeStack.Screen
-        name="viewPost"
-        component={ViewPostScreen}
-        options={({ route }) => ({
-          headerTitle: () => (
-            <Row>
-              <Title2>{route.params.post.title}</Title2>
-            </Row>
+          headerRight: () => (
+            <IconButton
+              icon="calendar-month-outline"
+              size={30}
+              iconColor={colors.white}
+              onPress={() =>
+                navigation.navigate("homeContainer", {
+                  screen: "calendar",
+                  params: {},
+                })
+              }
+            />
           ),
         })}
-      /> */}
+      />
+      <HomeStack.Screen
+        name="calendar"
+        component={CalendarScreen}
+        options={{
+          title: "Calendrier",
+        }}
+      />
       <HomeStack.Screen
         name="createPost"
         component={CreatePostScreen}
@@ -109,7 +113,6 @@ export function HomeNavigator({
           ),
         })}
       />
-      {/* <HomeStack.Screen name="calendar" component={CalendarScreen} /> */}
     </HomeStack.Navigator>
   );
 }
@@ -118,8 +121,8 @@ export function OfficeNavigator() {
   return (
     <OfficeStack.Navigator screenOptions={screenOptions}>
       <OfficeStack.Screen
-        name="offices"
-        component={OfficesScreen}
+        name="listOffice"
+        component={ListOfficeScreen}
         options={{ title: "Bureaux" }}
       />
       <OfficeStack.Screen
@@ -287,7 +290,6 @@ export function FamCupNavigator() {
         component={ScoreScreen}
         options={{ title: "Tableau des scores" }}
       />
-      <FamCupStack.Screen name="feed" component={FeedScreen} />
     </FamCupStack.Navigator>
   );
 }
@@ -296,11 +298,91 @@ export function MenuNavigator() {
   return (
     <MenuStack.Navigator screenOptions={screenOptions}>
       <MenuStack.Screen
-        name="profile"
-        component={ProfileScreen}
+        name="menu"
+        component={MenuScreen}
         options={{ title: "Menu" }}
       />
-      {/* <MenuStack.Screen name="allSubs" component={CalendarScreen} /> */}
+      <MenuStack.Screen
+        name="listAdhesion"
+        component={ListAdhesion}
+        options={{ title: "Mes adhésions" }}
+      />
+      <MenuStack.Screen
+        name="listAdherent"
+        component={ListAdherent}
+        options={{ title: "Mes adhérent.es" }}
+      />
+      <MenuStack.Screen
+        name="calendar"
+        component={CalendarMenuScreen}
+        options={{ title: "Calendrier" }}
+      />
+      <MenuStack.Screen
+        name="listClub"
+        component={ListClubScreen}
+        options={{ title: "Liste des clubs" }}
+      />
+      <MenuStack.Screen
+        name="viewClub"
+        component={ViewClubMenuScreen}
+        options={({ route }) => ({
+          headerTitle: () => {
+            const club = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.clubId],
+              fn: (officeStore) =>
+                officeStore.clubList.find(
+                  (club) => club.id === route.params.clubId
+                ),
+            });
+            return (
+              <Row>
+                {club?.logoUrl && (
+                  <Image
+                    style={{ borderRadius: 5 }}
+                    $size={45}
+                    source={{ uri: club.logoUrl }}
+                  />
+                )}
+                <Title2>{club?.name}</Title2>
+              </Row>
+            );
+          },
+        })}
+      />
+      <MenuStack.Screen
+        name="listPartnership"
+        component={ListPartnershipScreen}
+        options={{ title: "Liste des partenariats" }}
+      />
+      <MenuStack.Screen
+        name="viewPartnership"
+        component={ViewPartnershipMenuScreen}
+        options={({ route }) => ({
+          headerTitle: () => {
+            const partner = useStoreMap({
+              store: $officeStore,
+              keys: [route.params.partnershipId],
+              fn: (officeStore) =>
+                officeStore.partnershipList.find(
+                  (partner) => partner.id === route.params.partnershipId
+                ),
+            });
+            return (
+              <Row>
+                {partner?.logoUrl && (
+                  <Image
+                    style={{ borderRadius: 5 }}
+                    $size={45}
+                    source={{ uri: partner.logoUrl }}
+                  />
+                )}
+                <Title2>{partner?.name}</Title2>
+              </Row>
+            );
+          },
+        })}
+      />
     </MenuStack.Navigator>
   );
 }

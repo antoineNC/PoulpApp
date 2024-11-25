@@ -12,7 +12,7 @@ import { FormFieldValues, PostFieldNames } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
-import { ValidateButton } from "components/validateButton";
+import { FloatingValidateBtn } from "components/validateButton";
 
 export default function UpdatePostScreen({
   navigation,
@@ -96,36 +96,37 @@ export default function UpdatePostScreen({
   };
 
   return (
-    <ContainerScroll style={officeStyles.container}>
-      {loading && (
-        <Spinner
-          visible={loading}
-          textContent={"Modification..."}
-          textStyle={{ color: colors.white }}
-        />
-      )}
-      <View style={authStyles.formList}>
-        {values.map((field, index) => (
-          <CustomField<PostFieldNames>
-            {...field}
-            key={index}
-            control={control}
-            index={index}
-            lastInput={index === values.length - 1}
-            setFocus={(index) =>
-              index < values.length && setFocus(values[index].name)
-            }
-            submit={handleSubmit(onSubmit)}
+    <>
+      <ContainerScroll style={officeStyles.container}>
+        {loading && (
+          <Spinner
+            visible={loading}
+            textContent={"Modification..."}
+            textStyle={{ color: colors.white }}
           />
-        ))}
-      </View>
-      <View style={authStyles.buttonContainer}>
-        <ValidateButton
-          text="Valider les modifications"
-          loading={loading}
-          onPress={handleSubmit(onSubmit)}
-        />
-      </View>
-    </ContainerScroll>
+        )}
+        <View style={authStyles.formList}>
+          {values.map((field, index) => (
+            <CustomField<PostFieldNames>
+              {...field}
+              key={index}
+              control={control}
+              index={index}
+              lastInput={index === values.length - 1}
+              setFocus={(index) =>
+                index < values.length && setFocus(values[index].name)
+              }
+              submit={handleSubmit(onSubmit)}
+            />
+          ))}
+        </View>
+        <View style={{ height: 100 }} />
+      </ContainerScroll>
+      <FloatingValidateBtn
+        disabled={loading}
+        label="Valider les modifications"
+        onPress={handleSubmit(onSubmit)}
+      />
+    </>
   );
 }

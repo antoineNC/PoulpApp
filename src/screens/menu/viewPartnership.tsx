@@ -1,10 +1,10 @@
-import { ViewPartnershipProps } from "@navigation/navigationTypes";
+import { ViewPartnershipMenuProps } from "@navigation/navigationTypes";
 import PartnershipDisplay from "components/partnershipDisplay";
 
-export default function ViewPartnershipScreen({
+export default function ViewPartnershipMenuScreen({
   navigation,
   route,
-}: ViewPartnershipProps) {
+}: ViewPartnershipMenuProps) {
   const { partnershipId } = route.params;
   return (
     <PartnershipDisplay

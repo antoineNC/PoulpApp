@@ -4,8 +4,9 @@ import {
   ParamListBase,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Post } from "@types";
 import { MaterialBottomTabScreenProps } from "react-native-paper";
+import { Post } from "@types";
+import { Timestamp } from "firebase/firestore";
 
 export type ScreenProps<
   T extends ParamListBase,
@@ -24,32 +25,33 @@ export type TabBarParamList = {
   homeContainer: NavigatorScreenParams<HomeTabParamList>;
   officeContainer: NavigatorScreenParams<OfficeTabParamList>;
   famCupContainer: undefined;
-  menuContainer: undefined;
+  menuContainer: NavigatorScreenParams<MenuTabParamList>;
 };
 export type TabBarScreenProps<T extends keyof TabBarParamList> =
   MaterialBottomTabScreenProps<TabBarParamList, T>;
 
 // === Home tab
 export type HomeTabParamList = {
-  home: undefined;
+  feed: undefined;
+  calendar: { postDate?: Timestamp };
   viewPost: { post: Post };
   createPost: undefined;
   updatePost: { post: Post };
-  calendar: undefined;
 };
 export type HomeTabScreenProps<T extends keyof HomeTabParamList> =
   CompositeScreenProps<
     NativeStackScreenProps<HomeTabParamList, T>,
     TabBarScreenProps<keyof TabBarParamList>
   >;
-export type HomeProps = HomeTabScreenProps<"home">;
+export type FeedProps = HomeTabScreenProps<"feed">;
+export type CalendarProps = HomeTabScreenProps<"calendar">;
 export type ViewPostProps = HomeTabScreenProps<"viewPost">;
 export type CreatePostProps = HomeTabScreenProps<"createPost">;
 export type UpdatePostProps = HomeTabScreenProps<"updatePost">;
 
 // === Office tab
 export type OfficeTabParamList = {
-  offices: undefined;
+  listOffice: undefined;
   viewOffice: { officeId: string };
   updateOffice: { officeId: string };
   updateMembers: { officeId: string };
@@ -65,7 +67,7 @@ export type OfficeTabScreenProps<T extends keyof OfficeTabParamList> =
     NativeStackScreenProps<OfficeTabParamList, T>,
     TabBarScreenProps<keyof TabBarParamList>
   >;
-export type OfficesProps = OfficeTabScreenProps<"offices">;
+export type ListOfficeProps = OfficeTabScreenProps<"listOffice">;
 export type ViewOfficeProps = OfficeTabScreenProps<"viewOffice">;
 export type UpdateOfficeProps = OfficeTabScreenProps<"updateOffice">;
 export type UpdateMembersProps = OfficeTabScreenProps<"updateMembers">;
@@ -89,14 +91,27 @@ export type FamCupTabScreenProps<T extends keyof FamCupTabParamList> =
 
 // === Menu tab
 export type MenuTabParamList = {
-  profile: undefined;
-  allSubs: undefined;
+  menu: undefined;
+  calendar: undefined;
+  listAdhesion: undefined;
+  listAdherent: undefined;
+  listClub: undefined;
+  viewClub: { clubId: string };
+  listPartnership: undefined;
+  viewPartnership: { partnershipId: string };
 };
 export type MenuTabScreenProps<T extends keyof MenuTabParamList> =
   CompositeScreenProps<
     NativeStackScreenProps<MenuTabParamList, T>,
     TabBarScreenProps<keyof TabBarParamList>
   >;
+
+export type MenuProps = MenuTabScreenProps<"menu">;
+export type CalendarMenuProps = MenuTabScreenProps<"calendar">;
+export type ListClubProps = MenuTabScreenProps<"listClub">;
+export type ViewClubMenuProps = OfficeTabScreenProps<"viewClub">;
+export type ListPartnershipProps = MenuTabScreenProps<"listPartnership">;
+export type ViewPartnershipMenuProps = OfficeTabScreenProps<"viewPartnership">;
 
 declare global {
   namespace ReactNavigation {

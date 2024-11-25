@@ -1,5 +1,5 @@
 import { colors } from "@theme";
-import { Button } from "react-native-paper";
+import { AnimatedFAB, Button } from "react-native-paper";
 
 export const ValidateButton = ({
   text,
@@ -30,3 +30,29 @@ export const ValidateButton = ({
     />
   );
 };
+
+export const FloatingValidateBtn = ({
+  label,
+  onPress,
+  disabled,
+}: {
+  label: string;
+  onPress: () => void;
+  disabled?: boolean;
+}) => (
+  <AnimatedFAB
+    icon={"content-save"}
+    label={label}
+    extended={true}
+    onPress={onPress}
+    visible={true}
+    animateFrom="right"
+    style={{
+      position: "absolute",
+      bottom: 20,
+      alignSelf: "center",
+    }}
+    variant="secondary"
+    disabled={disabled}
+  />
+);

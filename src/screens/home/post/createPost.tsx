@@ -14,6 +14,7 @@ import { FormFieldValues, PostFieldNames } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
+import { FloatingValidateBtn } from "components/validateButton";
 
 export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const { officeList } = useUnit($officeStore);
@@ -78,39 +79,37 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
   };
 
   return (
-    <ContainerScroll style={officeStyles.container}>
-      {loading && (
-        <Spinner
-          visible={loading}
-          textContent={"Création..."}
-          textStyle={{ color: colors.white }}
-        />
-      )}
-      <View style={authStyles.formList}>
-        {values.map((field, index) => (
-          <CustomField<PostFieldNames>
-            {...field}
-            key={index}
-            control={control}
-            index={index}
-            lastInput={index === values.length - 1}
-            setFocus={(index) =>
-              index < values.length && setFocus(values[index].name)
-            }
-            submit={handleSubmit(onSubmit)}
+    <>
+      <ContainerScroll style={officeStyles.container}>
+        {loading && (
+          <Spinner
+            visible={loading}
+            textContent={"Création..."}
+            textStyle={{ color: colors.white }}
           />
-        ))}
-      </View>
-      <View style={authStyles.buttonContainer}>
-        <Button
-          mode="contained"
-          children="Publier le post"
-          onPress={handleSubmit(onSubmit)}
-          uppercase
-          buttonColor={colors.primary}
-          disabled={loading}
-        />
-      </View>
-    </ContainerScroll>
+        )}
+        <View style={authStyles.formList}>
+          {values.map((field, index) => (
+            <CustomField<PostFieldNames>
+              {...field}
+              key={index}
+              control={control}
+              index={index}
+              lastInput={index === values.length - 1}
+              setFocus={(index) =>
+                index < values.length && setFocus(values[index].name)
+              }
+              submit={handleSubmit(onSubmit)}
+            />
+          ))}
+        </View>
+        <View style={{ height: 100 }} />
+      </ContainerScroll>
+      <FloatingValidateBtn
+        disabled={loading}
+        label="Publier le post"
+        onPress={handleSubmit(onSubmit)}
+      />
+    </>
   );
 }

@@ -12,7 +12,7 @@ import {
   BodyTitle,
   Container,
 } from "@styledComponents";
-import { HomeProps } from "@navigation/navigationTypes";
+import { FeedProps } from "@navigation/navigationTypes";
 import { officeStyles } from "@styles";
 import { displayDateFromTimestamp } from "utils/dateUtils";
 import { useRight } from "utils/rights";
@@ -20,7 +20,7 @@ import { DateType, Post } from "@types";
 import { usePost } from "@firebase";
 import { $officeStore } from "@context/officeStore";
 
-type PostItemProps = Partial<HomeProps> & { post: Post };
+type PostItemProps = Partial<FeedProps> & { post: Post };
 const MAX_LENGTH = 50;
 
 export const PostItem = ({ post, navigation }: PostItemProps) => {
@@ -81,20 +81,28 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           <Row>
             <BodyTitle>Date : </BodyTitle>
             <Container style={officeStyles.borderRounded}>
-              {allDay ? (
-                <Text>{date.start} (toute la journée)</Text>
-              ) : (
-                <>
-                  <Row>
-                    <BodyTitle>Début : </BodyTitle>
-                    <Text>{date.start}</Text>
-                  </Row>
-                  <Row>
-                    <BodyTitle>Fin : </BodyTitle>
-                    <Text>{date.end}</Text>
-                  </Row>
-                </>
-              )}
+              <TouchableOpacity
+                onPress={() =>
+                  navigation?.navigate("calendar", {
+                    postDate: post.date?.start,
+                  })
+                }
+              >
+                {allDay ? (
+                  <Text>{date.start} (toute la journée)</Text>
+                ) : (
+                  <>
+                    <Row>
+                      <BodyTitle>Début : </BodyTitle>
+                      <Text>{date.start}</Text>
+                    </Row>
+                    <Row>
+                      <BodyTitle>Fin : </BodyTitle>
+                      <Text>{date.end}</Text>
+                    </Row>
+                  </>
+                )}
+              </TouchableOpacity>
             </Container>
           </Row>
         )}
@@ -128,7 +136,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
         </View>
       )}
       <Row $justify="space-around" $padding="10px 0 0">
-        {hasRight("POST", "UPDATE") && (
+        {hasRight("POST", "UPDATE", office?.id) && (
           <Button
             mode="contained-tonal"
             icon="pencil"
@@ -138,7 +146,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
             Modifier
           </Button>
         )}
-        {hasRight("POST", "DELETE") && (
+        {hasRight("POST", "DELETE", office?.id) && (
           <Button
             mode="contained-tonal"
             icon="delete"

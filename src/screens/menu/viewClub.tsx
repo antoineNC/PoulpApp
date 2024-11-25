@@ -1,7 +1,10 @@
-import { ViewClubProps } from "@navigation/navigationTypes";
+import { ViewClubMenuProps } from "@navigation/navigationTypes";
 import ClubDisplay from "components/clubDisplay";
 
-export default function ViewClubScreen({ navigation, route }: ViewClubProps) {
+export default function ViewClubMenuScreen({
+  navigation,
+  route,
+}: ViewClubMenuProps) {
   const { clubId } = route.params;
   return (
     <ClubDisplay

@@ -13,10 +13,10 @@ import { $postStore } from "@context/postStore";
 import { PostItem } from "@screens/home/post/postItem";
 import { Container } from "@styledComponents";
 import { usePost } from "@firebase";
-import { HomeProps } from "@navigation/navigationTypes";
+import { FeedProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
 
-export default function HomeScreen({ navigation }: HomeProps) {
+export default function FeedScreen({ navigation }: FeedProps) {
   const { posts, lastVisible } = useUnit($postStore);
   const { getMorePost } = usePost();
   const { hasRight } = useRight();
