@@ -77,13 +77,13 @@ export type RoleOffice = {
 
 export type Point = {
   id: string;
-  titre: string;
+  title: string;
   date: Timestamp;
-  bleu: number;
-  jaune: number;
+  blue: number;
+  yellow: number;
   orange: number;
-  rouge: number;
-  vert: number;
+  red: number;
+  green: number;
 };
 
 export type FormFieldType =
