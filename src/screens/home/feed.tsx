@@ -20,14 +20,13 @@ export default function FeedScreen({ navigation }: FeedProps) {
   const { posts, lastVisible } = useUnit($postStore);
   const { getMorePost } = usePost();
   const { hasRight } = useRight();
+  const [isExtended, setIsExtended] = useState(true);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubPost = async () => await getMorePost();
     unsubPost();
   }, []);
-
-  const [isExtended, setIsExtended] = useState(true);
 
   const onScroll = ({
     nativeEvent,

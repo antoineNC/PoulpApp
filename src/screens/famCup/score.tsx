@@ -1,18 +1,27 @@
-import { useFont } from "@shopify/react-native-skia";
-import { Container } from "@styledComponents";
-import { FlatList, View } from "react-native";
-import { CartesianChart, Bar } from "victory-native";
-import inter from "@assets/fonts/inter-variable.ttf";
 import { useCallback, useEffect, useState } from "react";
-import { colors } from "@theme";
-import { Divider } from "react-native-paper";
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from "react-native";
 import { useUnit } from "effector-react";
+import { AnimatedFAB, Divider } from "react-native-paper";
+import { CartesianChart, Bar } from "victory-native";
+import { useFont } from "@shopify/react-native-skia";
+import { ScoreProps } from "@navigation/navigationTypes";
 import { $pointStore } from "@context/pointStore";
-import { Text } from "@styledComponents";
+import { formatDay } from "utils/dateUtils";
+import { useRight } from "utils/rights";
+import inter from "@assets/fonts/inter-variable.ttf";
+import { colors } from "@theme";
+import { Container, Row, Title2, Text } from "@styledComponents";
 
-export function ScoreScreen() {
+export default function ScoreScreen({ navigation }: ScoreProps) {
   const listPoint = useUnit($pointStore);
-  console.log(listPoint);
+  const { hasRight } = useRight();
+  const [isExtended, setIsExtended] = useState(true);
   const [score, setScore] = useState<{ family: string; score: number }[]>([
     {
       family: "Rouge",
@@ -35,6 +44,7 @@ export function ScoreScreen() {
       score: 0,
     },
   ]);
+  const maxScore = Math.max(...score.map((el) => el.score));
   const font = useFont(inter, 12);
   const getColor = useCallback((family: string) => {
     switch (family) {
@@ -52,8 +62,14 @@ export function ScoreScreen() {
         break;
     }
   }, []);
-  const maxScore = Math.max(...score.map((el) => el.score));
+  const onScroll = ({
+    nativeEvent,
+  }: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
 
+    setIsExtended(currentScrollPosition <= 0);
+  };
   useEffect(() => {
     const newScore = {
       red: 0,
@@ -113,18 +129,60 @@ export function ScoreScreen() {
       </View>
       <Divider style={{ marginVertical: 20 }} />
       <FlatList
+        onScroll={onScroll}
         data={listPoint}
-        renderItem={({ item }) => (
-          <View>
-            <Text>TITRE : {item.title}</Text>
-            <Text>BLEU : {item.blue}</Text>
-            <Text>VERT : {item.green}</Text>
-            <Text>ORANGE : {item.orange}</Text>
-            <Text>ROUGE : {item.red}</Text>
-            <Text>JAUNE : {item.yellow}</Text>
-          </View>
-        )}
+        contentContainerStyle={{ rowGap: 15 }}
+        renderItem={({ item, index }) => {
+          const date = formatDay(item.date.toDate());
+          return (
+            <View key={index} style={{ marginHorizontal: 15 }}>
+              <Title2>{item.title}</Title2>
+              <Text>{date}</Text>
+              <Row $justify="space-between" $padding="10px 0">
+                <View style={{ alignItems: "center" }}>
+                  <Text>Rouge</Text>
+                  <Text>{item.red}</Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text>Jaune</Text>
+                  <Text>{item.yellow}</Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text>Bleu</Text>
+                  <Text>{item.blue}</Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text>Orange</Text>
+                  <Text>{item.orange}</Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text>Vert</Text>
+                  <Text>{item.green}</Text>
+                </View>
+              </Row>
+            </View>
+          );
+        }}
       />
+      {hasRight("POINT", "CREATE") && (
+        <AnimatedFAB
+          icon={"plus"}
+          label={"Ajouter des points"}
+          extended={isExtended}
+          onPress={() => navigation.navigate("createScore")}
+          visible={true}
+          style={styles.fabStyle}
+          variant="secondary"
+        />
+      )}
     </Container>
   );
 }
+
+const styles = StyleSheet.create({
+  fabStyle: {
+    bottom: 20,
+    right: 16,
+    position: "absolute",
+  },
+});
