@@ -26,7 +26,7 @@ export const Title1 = styled(Text)`
 export const Title2 = styled(Text)`
   font-size: ${fontSize.l}px;
   font-weight: bold;
-  padding: 0 10px;
+  padding: 10px 0;
 `;
 
 export const BodyTitle = styled(Text)`

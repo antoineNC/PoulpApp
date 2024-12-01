@@ -81,9 +81,9 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           >
             <Image source={{ uri: office?.logoUrl }} $size={50} />
           </TouchableOpacity>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, paddingHorizontal: 10 }}>
             <Title2>{post.title}</Title2>
-            <Row $padding="0 10px" style={{ flexWrap: "wrap" }}>
+            <Row style={{ flexWrap: "wrap" }}>
               {post.tags &&
                 post.tags.map((value, index) => (
                   <Text key={index}>[{value}] </Text>
