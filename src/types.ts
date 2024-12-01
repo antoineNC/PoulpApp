@@ -208,3 +208,13 @@ export type fb_Partnership = {
   benefits?: string[];
   logoId?: string;
 };
+
+export type PointsFieldNames = {
+  title: string;
+  date: Timestamp;
+  blue: number;
+  yellow: number;
+  orange: number;
+  red: number;
+  green: number;
+};

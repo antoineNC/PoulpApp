@@ -59,6 +59,7 @@ import {
   Partnership,
   PartnershipFieldNames,
   Point,
+  PointsFieldNames,
   Post,
   RoleOffice,
   Student,
@@ -823,7 +824,8 @@ export const usePoint = () => {
   const getAllPoint = async () => {
     try {
       const q = query(
-        pointCollection
+        pointCollection,
+        orderBy("date", "desc")
         // where("role", "in", ["BDE", "BDS", "BDA", "I2C"])
       );
       onSnapshot(q, async (snapshot) => {
@@ -849,5 +851,55 @@ export const usePoint = () => {
     }
   };
 
-  return { getAllPoint };
+  const createPoint = async (props: PointsFieldNames) => {
+    const pointFields = {
+      title: props.title,
+      date: props.date,
+      blue: props.blue,
+      red: props.red,
+      yellow: props.yellow,
+      orange: props.orange,
+      green: props.green,
+    };
+    try {
+      const pointRef = await addDoc(pointCollection, pointFields);
+      return pointRef.id;
+    } catch (e) {
+      console.error("[create point]", e);
+    }
+  };
+
+  const updatePoint = async (props: PointsFieldNames, id: string) => {
+    try {
+      const pointRef = doc(pointCollection, id);
+      const snapshot = await getDoc(pointRef);
+      if (!snapshot.exists()) {
+        throw "Cet élément n'existe pas";
+      }
+      const updatedFields = {
+        title: props.title,
+        date: props.date,
+        blue: props.blue,
+        red: props.red,
+        yellow: props.yellow,
+        orange: props.orange,
+        green: props.green,
+      };
+      await updateDoc(pointRef, {
+        ...updatedFields,
+      });
+    } catch (e) {
+      console.error("[update point]", e);
+    }
+  };
+
+  const deletePoint = async (idPoint: string) => {
+    const pointRef = doc(pointCollection, idPoint);
+    const snapshot = await getDoc(pointRef);
+    if (snapshot.exists()) {
+      await deleteDoc(pointRef);
+    }
+  };
+
+  return { getAllPoint, createPoint, updatePoint, deletePoint };
 };

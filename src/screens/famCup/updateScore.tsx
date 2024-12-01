@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { CreateScoreProps } from "@navigation/navigationTypes";
+import { UpdateScoreProps } from "@navigation/navigationTypes";
 import { Container, Row, Text } from "@styledComponents";
 import { HelperText, TextInput } from "react-native-paper";
 import { Timestamp } from "firebase/firestore";
@@ -13,19 +13,24 @@ import { FloatingValidateBtn } from "components/validateButton";
 import { PointInputController } from "components/pointInput";
 import { PointsFieldNames } from "@types";
 import { usePoint } from "@firebase";
+import { useStoreMap } from "effector-react";
+import { $pointStore } from "@context/pointStore";
 
-export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
-  const { createPoint } = usePoint();
+export default function UpdateScoreScreen({
+  navigation,
+  route,
+}: UpdateScoreProps) {
+  const { idPoint } = route.params;
+  const point = useStoreMap({
+    store: $pointStore,
+    keys: [idPoint],
+    fn: (pointList) => pointList.find((point) => point.id === idPoint),
+  });
+  const { updatePoint } = usePoint();
   const [loading, setLoading] = useState(false);
   const { control, handleSubmit } = useForm<PointsFieldNames>({
     defaultValues: {
-      date: Timestamp.now(),
-      title: "",
-      blue: 0,
-      yellow: 0,
-      orange: 0,
-      red: 0,
-      green: 0,
+      ...point,
     },
   });
 
@@ -48,7 +53,7 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
         green: Number(data.green),
       };
       setLoading(true);
-      await createPoint({ ...formattedData });
+      await updatePoint({ ...formattedData }, idPoint);
     } catch (e) {
       console.error("[create score]", e);
     } finally {
@@ -158,7 +163,7 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
       </View>
       <FloatingValidateBtn
         disabled={loading}
-        label="Ajouter les points"
+        label="Enregistrer"
         onPress={handleSubmit(onSubmit)}
       />
     </Container>
