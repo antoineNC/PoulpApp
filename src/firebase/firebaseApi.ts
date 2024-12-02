@@ -28,8 +28,6 @@ import {
   QueryConstraint,
   Timestamp,
   deleteField,
-  runTransaction,
-  DocumentReference,
   arrayUnion,
   arrayRemove,
 } from "@firebase/firestore";
@@ -60,6 +58,8 @@ import {
   OfficeFieldNames,
   Partnership,
   PartnershipFieldNames,
+  Point,
+  PointsFieldNames,
   Post,
   RoleOffice,
   Student,
@@ -68,6 +68,7 @@ import {
 import { PostFieldNames } from "@types";
 import { storageUrl } from "data";
 import { formattedToday } from "utils/dateUtils";
+import { actionPoint } from "@context/pointStore";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -78,6 +79,7 @@ const postCollection = collection(db, "Post");
 const clubCollection = collection(db, "Club");
 const partnerCollection = collection(db, "Partnership");
 const roleCollection = collection(db, "RoleBureau");
+const pointCollection = collection(db, "Point");
 
 const storage = getStorage();
 const rootRef = ref(storage);
@@ -139,6 +141,7 @@ export const useAuth = () => {
   const { getAllClub } = useClub();
   const { getAllPartnership } = usePartnership();
   const { getAllStudent, getStudent } = useStudent();
+  const { getAllPoint } = usePoint();
 
   const login = async ({
     email,
@@ -248,6 +251,7 @@ export const useAuth = () => {
     await getAllClub();
     await getAllPartnership();
     await getAllRole();
+    await getAllPoint();
     if (role !== "STUDENT") {
       await getAllStudent();
     } else {
@@ -442,28 +446,6 @@ export const useOffice = () => {
 
 export const useClub = () => {
   const { uploadImage, getImgURL } = useUtils();
-  const getClub = async (id: string) => {
-    try {
-      const snapshot = await getDoc(doc(clubCollection, id));
-      if (!snapshot.exists()) {
-        throw Error(`Le club avec l'${id} n'existe pas.`);
-      }
-      const clubData = snapshot.data();
-      const logoUrl = await getImgURL(imgClubPartnerRef, clubData.logoId);
-
-      const club: Club = {
-        id: snapshot.id,
-        name: clubData.name,
-        officeId: clubData.officeId,
-        logoUrl,
-        description: clubData.description,
-        contact: clubData.contact,
-      };
-      return club;
-    } catch (e) {
-      throw Error(`[getClub] ${e}\n`);
-    }
-  };
 
   const getAllClub = async () => {
     try {
@@ -836,4 +818,88 @@ export const usePost = () => {
   };
 
   return { getMorePost, updatePost, deletePost, createPost };
+};
+
+export const usePoint = () => {
+  const getAllPoint = async () => {
+    try {
+      const q = query(
+        pointCollection,
+        orderBy("date", "desc")
+        // where("role", "in", ["BDE", "BDS", "BDA", "I2C"])
+      );
+      onSnapshot(q, async (snapshot) => {
+        const allPoint = snapshot.docs.map(async (doc) => {
+          const pointData = doc.data();
+          const office: Point = {
+            id: doc.id,
+            title: pointData.title,
+            date: pointData.date,
+            blue: pointData.blue,
+            green: pointData.green,
+            orange: pointData.orange,
+            red: pointData.red,
+            yellow: pointData.yellow,
+          };
+          return office;
+        });
+        const allPointResolved = await Promise.all(allPoint);
+        actionPoint.setPoint(allPointResolved);
+      });
+    } catch (e: any) {
+      throw Error(`[get points] ${e}\n`);
+    }
+  };
+
+  const createPoint = async (props: PointsFieldNames) => {
+    const pointFields = {
+      title: props.title,
+      date: props.date,
+      blue: props.blue,
+      red: props.red,
+      yellow: props.yellow,
+      orange: props.orange,
+      green: props.green,
+    };
+    try {
+      const pointRef = await addDoc(pointCollection, pointFields);
+      return pointRef.id;
+    } catch (e) {
+      console.error("[create point]", e);
+    }
+  };
+
+  const updatePoint = async (props: PointsFieldNames, id: string) => {
+    try {
+      const pointRef = doc(pointCollection, id);
+      const snapshot = await getDoc(pointRef);
+      if (!snapshot.exists()) {
+        throw "Cet élément n'existe pas";
+      }
+      const updatedFields = {
+        title: props.title,
+        date: props.date,
+        blue: props.blue,
+        red: props.red,
+        yellow: props.yellow,
+        orange: props.orange,
+        green: props.green,
+      };
+      await updateDoc(pointRef, {
+        ...updatedFields,
+      });
+    } catch (e) {
+      console.error("[update point]", e);
+    }
+  };
+
+  const deletePoint = async (idPoint: string) => {
+    const pointRef = doc(pointCollection, idPoint);
+    const snapshot = await getDoc(pointRef);
+    if (snapshot.exists()) {
+      await deleteDoc(pointRef);
+    }
+  };
+
+  return { getAllPoint, createPoint, updatePoint, deletePoint };
 };

@@ -175,7 +175,8 @@ export default function UpdateOfficeScreen({
               />
             )}
           />
-          {hasRight("CLUB", "DISPLAY") && (
+          {/* TODO : gérer le display des clubs plus proprement */}
+          {office.acronym !== "I2C" && (
             <>
               <Text $bold $dark>
                 Les clubs :

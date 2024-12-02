@@ -22,7 +22,9 @@ import ViewClubScreen from "@screens/office/club/viewClub";
 import UpdatePartnershipScreen from "@screens/office/partnership/updatePartnership";
 import CreatePartnershipScreen from "@screens/office/partnership/createPartnership";
 import ViewPartnershipScreen from "@screens/office/partnership/viewPartnership";
-import { ScoreScreen } from "@screens/famCup/score";
+import ScoreScreen from "@screens/famCup/score";
+import CreateScoreScreen from "@screens/famCup/createScore";
+import UpdateScoreScreen from "@screens/famCup/updateScore";
 import MenuScreen from "@screens/menu/menu";
 import CalendarMenuScreen from "@screens/menu/calendar";
 import ListAdhesion from "@screens/menu/listAdhesion";
@@ -289,6 +291,26 @@ export function FamCupNavigator() {
         name="score"
         component={ScoreScreen}
         options={{ title: "Tableau des scores" }}
+      />
+      <FamCupStack.Screen
+        name="createScore"
+        component={CreateScoreScreen}
+        options={{
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          title: "Ajouter des points",
+        }}
+      />
+      <FamCupStack.Screen
+        name="updateScore"
+        component={UpdateScoreScreen}
+        options={{
+          contentStyle: {
+            backgroundColor: colors.secondary,
+          },
+          title: "Modifier les points",
+        }}
       />
     </FamCupStack.Navigator>
   );

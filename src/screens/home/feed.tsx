@@ -6,7 +6,7 @@ import {
   NativeScrollEvent,
   StyleSheet,
 } from "react-native";
-import { AnimatedFAB } from "react-native-paper";
+import { AnimatedFAB, Divider } from "react-native-paper";
 import { useUnit } from "effector-react";
 
 import { $postStore } from "@context/postStore";
@@ -20,14 +20,13 @@ export default function FeedScreen({ navigation }: FeedProps) {
   const { posts, lastVisible } = useUnit($postStore);
   const { getMorePost } = usePost();
   const { hasRight } = useRight();
+  const [isExtended, setIsExtended] = useState(true);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubPost = async () => await getMorePost();
     unsubPost();
   }, []);
-
-  const [isExtended, setIsExtended] = useState(true);
 
   const onScroll = ({
     nativeEvent,
@@ -48,7 +47,10 @@ export default function FeedScreen({ navigation }: FeedProps) {
         renderItem={({ item }) => (
           <PostItem post={item} navigation={navigation} />
         )}
-        ItemSeparatorComponent={() => <View style={{ marginVertical: 10 }} />}
+        ItemSeparatorComponent={() => (
+          <Divider style={{ marginVertical: 20 }} />
+        )}
+        ListFooterComponent={<View style={{ marginVertical: 40 }} />}
         // onEndReached={async () => {
         //   await getMorePost(lastVisible);
         // }}

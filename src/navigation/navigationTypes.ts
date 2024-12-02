@@ -81,6 +81,8 @@ export type UpdatePartnershipProps = OfficeTabScreenProps<"updatePartnership">;
 // === FamCup tab
 export type FamCupTabParamList = {
   score: undefined;
+  createScore: undefined;
+  updateScore: { idPoint: string };
   feed: undefined;
 };
 export type FamCupTabScreenProps<T extends keyof FamCupTabParamList> =
@@ -88,6 +90,10 @@ export type FamCupTabScreenProps<T extends keyof FamCupTabParamList> =
     NativeStackScreenProps<FamCupTabParamList, T>,
     TabBarScreenProps<keyof TabBarParamList>
   >;
+
+export type ScoreProps = FamCupTabScreenProps<"score">;
+export type CreateScoreProps = FamCupTabScreenProps<"createScore">;
+export type UpdateScoreProps = FamCupTabScreenProps<"updateScore">;
 
 // === Menu tab
 export type MenuTabParamList = {
