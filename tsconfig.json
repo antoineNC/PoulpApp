@@ -16,5 +16,6 @@
       "@types": ["types.ts"],
       "@config": ["../config.ts"]
     },
+    "typeRoots": ["./types"]
   }
 }
