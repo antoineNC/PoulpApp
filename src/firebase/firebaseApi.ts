@@ -22,8 +22,6 @@ import {
   where,
   orderBy,
   onSnapshot,
-  DocumentSnapshot,
-  QuerySnapshot,
   startAfter,
   QueryConstraint,
   Timestamp,
@@ -68,9 +66,10 @@ import {
   UserType,
 } from "@types";
 import { PostFieldNames } from "@types";
-import { storageUrl } from "data";
+// import { storageUrl } from "data";
 import { formattedToday } from "utils/dateUtils";
 import { actionPoint } from "@context/pointStore";
+import { config } from "@config";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -83,6 +82,7 @@ const partnerCollection = collection(db, "Partnership");
 const roleCollection = collection(db, "RoleBureau");
 const pointCollection = collection(db, "Point");
 
+const storageUrl = config.firebase.storageUrl;
 const storage = getStorage();
 const rootRef = ref(storage);
 const assetsRef = ref(storage, "Assets");
@@ -93,7 +93,7 @@ export const subscribeUserState = (observer: (user: User | null) => void) => {
   return onAuthStateChanged(auth, (user) => observer(user));
 };
 
-export const useUtils = () => {
+const useUtils = () => {
   const getImgURL = async (storageRef: StorageReference, id: string) => {
     try {
       const imgRef = ref(storageRef, `/${id}`);

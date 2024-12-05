@@ -1,4 +1,4 @@
-import { useAuth } from "@firebase";
+import { useAuth } from "@firebaseApi";
 import { Button } from "react-native-paper";
 
 export function ProfileScreen() {

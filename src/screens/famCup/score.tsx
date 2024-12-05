@@ -18,7 +18,7 @@ import { useRight } from "utils/rights";
 import inter from "@assets/fonts/inter-variable.ttf";
 import { colors } from "@theme";
 import { Container, Row, Title2, Text } from "@styledComponents";
-import { usePoint } from "@firebase";
+import { usePoint } from "@firebaseApi";
 
 export default function ScoreScreen({ navigation }: ScoreProps) {
   const listPoint = useUnit($pointStore);

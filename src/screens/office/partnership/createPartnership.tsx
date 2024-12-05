@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 
-import { usePartnership } from "@firebase";
+import { usePartnership } from "@firebaseApi";
 import { $officeStore } from "@context/officeStore";
 import { CreatePartnershipProps } from "@navigation/navigationTypes";
 import { FormFieldValues, PartnershipFieldNames } from "@types";

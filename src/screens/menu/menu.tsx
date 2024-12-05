@@ -1,4 +1,4 @@
-import { useAuth } from "@firebase";
+import { useAuth } from "@firebaseApi";
 import { MenuProps } from "@navigation/navigationTypes";
 import { ContainerScroll, Row, Text } from "@styledComponents";
 import { TouchableOpacity } from "react-native";

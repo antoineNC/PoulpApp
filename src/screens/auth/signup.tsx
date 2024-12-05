@@ -10,7 +10,7 @@ import CustomField from "components/form/formField";
 import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { colors } from "@theme";
-import { useAuth } from "@firebase";
+import { useAuth } from "@firebaseApi";
 import { FormFieldValues } from "@types";
 
 type FieldNames = {
