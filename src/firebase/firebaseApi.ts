@@ -30,6 +30,9 @@ import {
   deleteField,
   arrayUnion,
   arrayRemove,
+  limit,
+  QueryDocumentSnapshot,
+  DocumentData,
 } from "@firebase/firestore";
 import {
   StorageReference,
@@ -45,7 +48,6 @@ import uuid from "react-native-uuid";
 import app from "firebase/firebaseConfig";
 import { actionSession } from "@context/sessionStore";
 import { actionOffice } from "@context/officeStore";
-import { actionPost } from "@context/postStore";
 import { actionStudent } from "@context/studentStore";
 import {
   Club,
@@ -680,55 +682,87 @@ export const usePartnership = () => {
 };
 
 export const usePost = () => {
+  const POST_LIMIT = 10;
   const { getImgURL, uploadImage } = useUtils();
-  const postMapping = async (snapshot: QuerySnapshot) => {
-    const postList = snapshot.docs.map(async (doc) => {
-      const postData = doc.data() as fb_Post;
-      const imageUrl =
-        postData.imageId && (await getImgURL(imgPostRef, postData.imageId));
-      const post: Post = {
-        id: doc.id,
-        title: postData.title,
-        description: postData.description,
-        editorId: postData.editorId,
-        imageUrl,
-        createdAt: postData.createdAt,
-        tags: postData.tags,
-        date: postData.date && {
-          start: postData.date.start,
-          end: postData.date.end,
-        },
-      };
-      return post;
-    });
-    return Promise.all(postList);
+  const postMapping = async (
+    doc: QueryDocumentSnapshot<DocumentData, DocumentData>
+  ) => {
+    const postData = doc.data() as fb_Post;
+    const imageUrl =
+      postData.imageId && (await getImgURL(imgPostRef, postData.imageId));
+    const post: Post = {
+      id: doc.id,
+      title: postData.title,
+      description: postData.description,
+      editorId: postData.editorId,
+      imageUrl,
+      createdAt: postData.createdAt,
+      tags: postData.tags,
+      date: postData.date && {
+        start: postData.date.start,
+        end: postData.date.end,
+      },
+    };
+    return post;
   };
 
-  const getMorePost = async (lastVisible?: DocumentSnapshot) => {
+  const getPost = async (id: string) => {
+    try {
+      const postDoc = await getDoc(doc(postCollection, id));
+      if (!postDoc.exists()) {
+        throw "Cet élément n'existe pas";
+      }
+      const post = await postMapping(postDoc);
+      return post;
+    } catch (e) {
+      console.error(`[get post] ${e}\n`);
+    }
+  };
+
+  const getInitialPost = (
+    setPosts: (postList: Post[], lastVisibleId?: string) => void
+  ) => {
     try {
       const queryConstraints: QueryConstraint[] = [
         orderBy("createdAt", "desc"),
-        // limit(3),
+        limit(POST_LIMIT),
       ];
-      if (lastVisible) queryConstraints.push(startAfter(lastVisible));
       const q = query(postCollection, ...queryConstraints);
-
       return onSnapshot(q, async (snap) => {
-        const postList = await postMapping(snap);
-        const lastVisible = snap.docs[snap.docs.length - 1];
-        actionPost.setMorePost({
-          posts: postList,
-          lastVisible,
-          loading: false,
-        });
+        const postList: Post[] = [];
+        for (const doc of snap.docs) {
+          const post = await postMapping(doc);
+          postList.push(post);
+        }
+        setPosts(postList, snap.docs[snap.docs.length - 1]?.id);
       });
-      // const snapshot = await getDocs(q);
-      // const postList = await postMapping(snapshot);
-      // const newLastVisible = snapshot.docs[snapshot.docs.length - 1];
-      // return { postList, newLastVisible };
     } catch (e: any) {
-      console.error(`[getMorePost] ${e}\n`);
-      throw e;
+      console.error(`[get initial post] ${e}\n`);
+    }
+  };
+
+  const getMorePost = async (
+    setPosts: (postList: Post[], lastVisibleId?: string) => void,
+    lastVisibleId: string
+  ) => {
+    try {
+      const lastDoc = await getDoc(doc(postCollection, lastVisibleId));
+      const queryConstraints: QueryConstraint[] = [
+        orderBy("createdAt", "desc"),
+        startAfter(lastDoc),
+        limit(POST_LIMIT),
+      ];
+      const q = query(postCollection, ...queryConstraints);
+      const snapshot = await getDocs(q);
+      const postList = await Promise.all(
+        snapshot.docs.map(async (doc) => {
+          const post = await postMapping(doc);
+          return post;
+        })
+      );
+      setPosts(postList, postList[postList.length - 1]?.id);
+    } catch (e: any) {
+      console.error(`[get more post] ${e}\n`);
     }
   };
 
@@ -817,7 +851,14 @@ export const usePost = () => {
     }
   };
 
-  return { getMorePost, updatePost, deletePost, createPost };
+  return {
+    getPost,
+    getInitialPost,
+    getMorePost,
+    updatePost,
+    deletePost,
+    createPost,
+  };
 };
 
 export const usePoint = () => {
