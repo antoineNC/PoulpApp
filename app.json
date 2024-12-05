@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#52234E"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -22,14 +20,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.aneyracontr.PoulpApp"
+      "package": "com.ensc.poulpapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-secure-store"
-    ],
+    "plugins": ["expo-secure-store"],
     "newArchEnabled": true,
     "extra": {
       "eas": {
