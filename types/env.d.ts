@@ -1,12 +1,12 @@
 declare module "@env" {
-  export const API_KEY: string;
-  export const AUTH_DOMAIN: string;
-  export const PROJECT_ID: string;
-  export const STORAGE_BUCKET: string;
-  export const MESSAGING_SENDER_ID: string;
-  export const APP_ID: string;
-  export const MEASUREMENT_ID: string;
-  export const STORAGE_URL: string;
+  export const FB_API_KEY: string;
+  export const FB_AUTH_DOMAIN: string;
+  export const FB_PROJECT_ID: string;
+  export const FB_STORAGE_BUCKET: string;
+  export const FB_MESSAGING_SENDER_ID: string;
+  export const FB_APP_ID: string;
+  export const FB_MEASUREMENT_ID: string;
+  export const FB_STORAGE_URL: string;
   export const CODE_ENSC: string;
   export const ENSC_LOGO_URL: string;
 }

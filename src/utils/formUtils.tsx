@@ -8,7 +8,6 @@ import {
   ResolverOptions,
 } from "react-hook-form";
 import { FormFieldOptions, FormFieldType } from "@types";
-import { CODE_ENSC } from "data";
 import { DateTimeFormPicker } from "components/form/dateTimePicker";
 import { TextInputForm } from "components/form/textInput";
 import { ChipInputForm } from "components/form/chipInput";
