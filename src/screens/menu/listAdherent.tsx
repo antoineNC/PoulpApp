@@ -2,16 +2,19 @@ import { useState } from "react";
 import { Alert, FlatList } from "react-native";
 import { useUnit } from "effector-react";
 import { Checkbox, Searchbar } from "react-native-paper";
-import { useStudent } from "@firebase";
+import { useStudent } from "@firebaseApi";
 import { $studentStore } from "@context/studentStore";
 import { Container } from "@styledComponents";
 import { colors } from "@theme";
+import { $sessionStore } from "@context/sessionStore";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function ListAdherent() {
-  // TODO :  GET OFFICE ID
-  const officeId = "ZN39sNfvmfeMxUU0jxZkCUjVgT23";
   const { setStudentAdhesion } = useStudent();
+  const { user } = useUnit($sessionStore);
+  const officeId = user.id;
   const studentList = useUnit($studentStore);
+  const [loading, setLoading] = useState(false);
   const sortedStudentList = studentList.sort((studA, studB) =>
     studA.lastName.localeCompare(studB.lastName)
   );
@@ -26,12 +29,23 @@ export default function ListAdherent() {
   });
 
   const onSubmit = async (studentId: string, isAdherent: boolean) => {
-    await setStudentAdhesion(officeId, studentId, isAdherent);
-    // TODO : LOADING SCREEN
+    setLoading(true);
+    try {
+      await setStudentAdhesion(officeId, studentId, isAdherent);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Container>
+      {loading && (
+        <Spinner
+          visible={loading}
+          textContent={"Chargement..."}
+          textStyle={{ color: colors.white }}
+        />
+      )}
       <Searchbar
         placeholder="Chercher un nom"
         onChangeText={setQuery}

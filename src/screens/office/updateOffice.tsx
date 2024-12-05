@@ -5,7 +5,7 @@ import { useStoreMap } from "effector-react";
 import { AnimatedFAB, IconButton } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { useClub, useOffice, usePartnership } from "@firebase";
+import { useClub, useOffice, usePartnership } from "@firebaseApi";
 import { UpdateOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import { OfficeFieldNames } from "@types";

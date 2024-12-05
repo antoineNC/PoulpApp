@@ -4,36 +4,18 @@
     "strict": true,
     "baseUrl": "./src",
     "paths": {
-      "@assets/*": [
-        "../assets/*"
-      ],
-      "@firebase/auth": [
-        "../node_modules/@firebase/auth/dist/index.rn.d.ts"
-      ],
-      "@firebase": [
-        "firebase/firebaseApi.ts"
-      ],
-      "@screens/*": [
-        "screens/*"
-      ],
-      "@context/*": [
-        "store/*"
-      ],
-      "@navigation/*": [
-        "navigation/*"
-      ],
-      "@styledComponents": [
-        "styles/styledComponents.tsx"
-      ],
-      "@styles": [
-        "styles/styles.ts"
-      ],
-      "@theme": [
-        "styles/theme.ts"
-      ],
-      "@types": [
-        "types.ts",
-      ]
+      "@assets/*": ["../assets/*"],
+      "@firebase/auth": ["../node_modules/@firebase/auth/dist/index.rn.d.ts"],
+      "@firebaseApi": ["firebase/firebaseApi.ts"],
+      "@screens/*": ["screens/*"],
+      "@context/*": ["store/*"],
+      "@navigation/*": ["navigation/*"],
+      "@styledComponents": ["styles/styledComponents.tsx"],
+      "@styles": ["styles/styles.ts"],
+      "@theme": ["styles/theme.ts"],
+      "@types": ["types.ts"],
+      "@config": ["../config.ts"]
     },
+    "typeRoots": ["./types"]
   }
 }

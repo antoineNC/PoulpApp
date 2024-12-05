@@ -12,24 +12,32 @@ import ImageView from "react-native-image-viewing";
 import {
   Text,
   Image,
-  Body,
   Title2,
   Row,
   BodyTitle,
   Container,
 } from "@styledComponents";
-import { FeedProps } from "@navigation/navigationTypes";
 import { officeStyles } from "@styles";
 import { displayDateFromTimestamp } from "utils/dateUtils";
 import { useRight } from "utils/rights";
 import { DateType, Post } from "@types";
-import { usePost } from "@firebase";
 import { $officeStore } from "@context/officeStore";
 
-type PostItemProps = Partial<FeedProps> & { post: Post };
+type PostItemProps = {
+  post: Post;
+  onPressOffice: (officeId: string) => void;
+  onPressCalendar: () => void;
+  onPressUpdate: () => void;
+  onPressDelete: () => void;
+};
 
-export const PostItem = ({ post, navigation }: PostItemProps) => {
-  const { deletePost } = usePost();
+export const PostItem = ({
+  post,
+  onPressOffice,
+  onPressCalendar,
+  onPressUpdate,
+  onPressDelete,
+}: PostItemProps) => {
   const { hasRight } = useRight();
   const [date, setDate] = useState<DateType>({ start: "null", end: "null" });
   const [allDay, setAllDay] = useState<boolean>(false);
@@ -53,13 +61,19 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
 
   const onTextLayout = useCallback(
     (e: NativeSyntheticEvent<TextLayoutEventData>) => {
-      setLengthMore(e.nativeEvent.lines.length >= 4);
+      setLengthMore(e.nativeEvent.lines.length > 3);
     },
     []
   );
   const toggleNumberOfLines = () => {
     setTextShown((value) => !value);
   };
+
+  const onOffice = () => office && onPressOffice(office.id);
+  const onCalendar = () => onPressCalendar();
+  const onUpdate = () => onPressUpdate();
+  const onDelete = () => onPressDelete();
+
   return (
     <View style={{ rowGap: 15 }}>
       <View
@@ -69,16 +83,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
         }}
       >
         <Row>
-          <TouchableOpacity
-            onPress={() =>
-              navigation &&
-              office &&
-              navigation.navigate("officeContainer", {
-                screen: "viewOffice",
-                params: { officeId: office.id },
-              })
-            }
-          >
+          <TouchableOpacity onPress={onOffice}>
             <Image source={{ uri: office?.logoUrl }} $size={50} />
           </TouchableOpacity>
           <View style={{ flex: 1, paddingHorizontal: 10 }}>
@@ -95,13 +100,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           <Row>
             <BodyTitle>Date : </BodyTitle>
             <Container style={officeStyles.borderRounded}>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation?.navigate("calendar", {
-                    postDate: post.date?.start,
-                  })
-                }
-              >
+              <TouchableOpacity onPress={onCalendar}>
                 {allDay ? (
                   <Text>{date.start} (toute la journée)</Text>
                 ) : (
@@ -127,7 +126,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           >
             <Text
               onTextLayout={onTextLayout}
-              numberOfLines={textShown ? undefined : 4}
+              numberOfLines={textShown ? undefined : 3}
             >
               {post.description}
             </Text>
@@ -157,7 +156,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
           <Button
             mode="contained-tonal"
             icon="pencil"
-            onPress={() => navigation?.navigate("updatePost", { post })}
+            onPress={onUpdate}
             style={{ borderRadius: 10 }}
           >
             Modifier
@@ -174,7 +173,7 @@ export const PostItem = ({ post, navigation }: PostItemProps) => {
                 [
                   {
                     text: "Oui, supprimer",
-                    onPress: () => deletePost(post.id),
+                    onPress: onDelete,
                   },
                   { text: "Annuler" },
                 ]

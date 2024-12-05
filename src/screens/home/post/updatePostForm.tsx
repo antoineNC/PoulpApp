@@ -1,26 +1,42 @@
-import { useState } from "react";
 import { View } from "react-native";
-import { Timestamp } from "firebase/firestore";
+import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
-import { useUnit } from "effector-react";
-import { Button } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
-import { usePost } from "@firebaseApi";
-import { CreatePostProps, UpdatePostProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
+import { FormFieldValues, Post, PostFieldNames } from "@types";
 import CustomField from "components/form/formField";
+import { FloatingValidateBtn } from "components/validateButton";
 import { ContainerScroll } from "@styledComponents";
-import { FormFieldValues, PostFieldNames } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
-import { FloatingValidateBtn } from "components/validateButton";
 
-export default function CreatePostScreen({ navigation }: CreatePostProps) {
+export const UpdatePostForm = ({
+  post,
+  loading,
+  onSubmit,
+}: {
+  post: Post;
+  loading: boolean;
+  onSubmit: (data: PostFieldNames) => void;
+}) => {
   const { officeList } = useUnit($officeStore);
-  const [loading, setLoading] = useState(false);
-  const { createPost } = usePost();
-  const { control, handleSubmit, setFocus } = useForm<PostFieldNames>();
+  const editor = useStoreMap({
+    store: $officeStore,
+    keys: [post.id],
+    fn: (officeStore) =>
+      officeStore.officeList.find((office) => office.id === post.editorId),
+  });
+  const { control, handleSubmit, setFocus } = useForm<PostFieldNames>({
+    defaultValues: {
+      title: post.title,
+      description: post.description,
+      editor: { value: post.editorId, label: editor?.name },
+      tags: post.tags,
+      date: post.date,
+      imageFile: post.imageUrl,
+    },
+  });
   const officeChoices = officeList.map((office) => ({
     value: office.id,
     label: office.name,
@@ -61,22 +77,10 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
     },
     {
       name: "imageFile",
-      label: "Image",
+      label: "Image :",
       type: "image",
     },
   ];
-
-  const onSubmit = async (data: PostFieldNames) => {
-    try {
-      setLoading(true);
-      await createPost({ ...data });
-    } catch (e) {
-      console.error("[createpost]", e);
-    } finally {
-      setLoading(false);
-      navigation.goBack();
-    }
-  };
 
   return (
     <>
@@ -84,7 +88,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
         {loading && (
           <Spinner
             visible={loading}
-            textContent={"Création..."}
+            textContent={"Modification..."}
             textStyle={{ color: colors.white }}
           />
         )}
@@ -107,9 +111,9 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
       </ContainerScroll>
       <FloatingValidateBtn
         disabled={loading}
-        label="Publier le post"
+        label="Valider les modifications"
         onPress={handleSubmit(onSubmit)}
       />
     </>
   );
-}
+};
