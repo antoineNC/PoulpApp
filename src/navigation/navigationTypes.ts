@@ -34,9 +34,8 @@ export type TabBarScreenProps<T extends keyof TabBarParamList> =
 export type HomeTabParamList = {
   feed: undefined;
   calendar: { postDate?: Timestamp };
-  viewPost: { post: Post };
   createPost: undefined;
-  updatePost: { post: Post };
+  updatePost: { postId: string };
 };
 export type HomeTabScreenProps<T extends keyof HomeTabParamList> =
   CompositeScreenProps<
@@ -45,7 +44,6 @@ export type HomeTabScreenProps<T extends keyof HomeTabParamList> =
   >;
 export type FeedProps = HomeTabScreenProps<"feed">;
 export type CalendarProps = HomeTabScreenProps<"calendar">;
-export type ViewPostProps = HomeTabScreenProps<"viewPost">;
 export type CreatePostProps = HomeTabScreenProps<"createPost">;
 export type UpdatePostProps = HomeTabScreenProps<"updatePost">;
 
