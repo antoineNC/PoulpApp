@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useUnit } from "effector-react";
 import { Button } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
-import { usePost } from "@firebase";
+import { usePost } from "@firebaseApi";
 import { CreatePostProps, UpdatePostProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import CustomField from "components/form/formField";
