@@ -13,9 +13,7 @@
       "@styledComponents": ["styles/styledComponents.tsx"],
       "@styles": ["styles/styles.ts"],
       "@theme": ["styles/theme.ts"],
-      "@types": ["types.ts"],
-      "@config": ["../config.ts"]
-    },
-    "typeRoots": ["./types"]
+      "@types": ["types.ts"]
+    }
   }
 }

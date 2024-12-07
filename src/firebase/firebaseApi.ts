@@ -1,3 +1,4 @@
+import Constants from "expo-constants";
 import {
   User,
   initializeAuth,
@@ -61,15 +62,13 @@ import {
   Point,
   PointsFieldNames,
   Post,
+  PostFieldNames,
   RoleOffice,
   Student,
   UserType,
 } from "@types";
-import { PostFieldNames } from "@types";
-// import { storageUrl } from "data";
 import { formattedToday } from "utils/dateUtils";
 import { actionPoint } from "@context/pointStore";
-import { config } from "@config";
 
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
@@ -82,7 +81,7 @@ const partnerCollection = collection(db, "Partnership");
 const roleCollection = collection(db, "RoleBureau");
 const pointCollection = collection(db, "Point");
 
-const storageUrl = config.firebase.storageUrl;
+const storageUrl = Constants.expoConfig?.extra?.firebase.storageUrl;
 const storage = getStorage();
 const rootRef = ref(storage);
 const assetsRef = ref(storage, "Assets");

@@ -35,3 +35,5 @@ credentials.json
 
 # typescript
 *.tsbuildinfo
+
+google-services.json

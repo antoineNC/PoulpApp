@@ -1,13 +1,14 @@
-import { config } from "@config";
+import Constants from "expo-constants";
 import { initializeApp } from "firebase/app";
+
 const firebaseConfig = {
-  apiKey: config.firebase.apiKey,
-  authDomain: config.firebase.authDomain,
-  projectId: config.firebase.projectId,
-  storageBucket: config.firebase.storageBucket,
-  messagingSenderId: config.firebase.messagingSenderId,
-  appId: config.firebase.appId,
-  measurementId: config.firebase.measurementId,
+  apiKey: Constants.expoConfig?.extra?.firebase.apiKey,
+  authDomain: Constants.expoConfig?.extra?.firebase.authDomain,
+  projectId: Constants.expoConfig?.extra?.firebase.projectId,
+  storageBucket: Constants.expoConfig?.extra?.firebase.storageBucket,
+  messagingSenderId: Constants.expoConfig?.extra?.firebase.messagingSenderId,
+  appId: Constants.expoConfig?.extra?.firebase.appId,
+  measurementId: Constants.expoConfig?.extra?.firebase.measurementId,
 };
 
 const app = initializeApp(firebaseConfig);
