@@ -15,7 +15,9 @@
       "@styledComponents": ["styles/styledComponents.tsx"],
       "@styles": ["styles/styles.ts"],
       "@theme": ["styles/theme.ts"],
-      "@types": ["types.ts"]
+      "@types": ["types.ts"],
+      "@fb-config": ["firebase/config.ts"],
+      "@fb/service/*": ["firebase/service/*"]
     }
   }
 }
