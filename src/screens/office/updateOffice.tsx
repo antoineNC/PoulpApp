@@ -2,10 +2,10 @@ import { useState } from "react";
 import { FlatList, View, Alert } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useStoreMap } from "effector-react";
-import { AnimatedFAB, IconButton } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { useClub, useOffice, usePartnership } from "@firebaseApi";
+import { useClub, useOffice, usePartnership } from "firebase/api";
 import { UpdateOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import { OfficeFieldNames } from "@types";

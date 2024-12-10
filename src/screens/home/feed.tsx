@@ -10,7 +10,7 @@ import {
 import { AnimatedFAB, Divider } from "react-native-paper";
 import { PostItem } from "@screens/home/post/postItem";
 import { Container } from "@styledComponents";
-import { usePost } from "@firebaseApi";
+import { usePost } from "firebase/api";
 import { FeedProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
 import { Post } from "@types";

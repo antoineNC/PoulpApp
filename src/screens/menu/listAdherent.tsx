@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Alert, FlatList } from "react-native";
 import { useUnit } from "effector-react";
 import { Checkbox, Searchbar } from "react-native-paper";
-import { useStudent } from "@firebaseApi";
+import { useStudent } from "firebase/api";
 import { $studentStore } from "@context/studentStore";
 import { Container } from "@styledComponents";
 import { colors } from "@theme";

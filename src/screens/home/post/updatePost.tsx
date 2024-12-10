@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { usePost } from "@firebaseApi";
+import { usePost } from "firebase/api";
 import Spinner from "react-native-loading-spinner-overlay";
 import { UpdatePostProps } from "@navigation/navigationTypes";
 import { Post, PostFieldNames } from "@types";

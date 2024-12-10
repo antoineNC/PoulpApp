@@ -12,7 +12,7 @@ import { formatDay } from "utils/dateUtils";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PointInputController } from "components/pointInput";
 import { PointsFieldNames } from "@types";
-import { usePoint } from "@firebaseApi";
+import { usePoint } from "firebase/api";
 
 export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
   const { createPoint } = usePoint();

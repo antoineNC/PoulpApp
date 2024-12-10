@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
 
-import { useClub } from "@firebaseApi";
+import { useClub } from "firebase/api";
 import { $officeStore } from "@context/officeStore";
 import { ClubFieldNames, FormFieldValues } from "@types";
 import { CreateClubProps } from "@navigation/navigationTypes";

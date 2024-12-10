@@ -32,7 +32,7 @@ import {
   limit,
   QueryDocumentSnapshot,
   DocumentData,
-} from "@firebase/firestore";
+} from "firebase/firestore";
 import {
   StorageReference,
   getDownloadURL,
@@ -44,7 +44,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
 
-import app from "firebase/firebaseConfig";
+// import app from "firebase/config";
 import { actionSession } from "@context/sessionStore";
 import { actionOffice } from "@context/officeStore";
 import { actionStudent } from "@context/studentStore";
@@ -69,7 +69,8 @@ import {
 } from "@types";
 import { formattedToday } from "utils/dateUtils";
 import { actionPoint } from "@context/pointStore";
-
+import { getApp } from "firebase/app";
+const app = getApp();
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
@@ -253,9 +254,8 @@ export const useAuth = () => {
     await getAllPartnership();
     await getAllRole();
     await getAllPoint();
-    if (role !== "STUDENT") {
-      await getAllStudent();
-    } else {
+    await getAllStudent();
+    if (role === "STUDENT") {
       const student = await getStudent(id);
       if (student) {
         actionSession.setStudent(student);

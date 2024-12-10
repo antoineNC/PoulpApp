@@ -3,7 +3,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import RootContainer from "navigation/rootContainer";
-import { subscribeUserState, useAuth } from "@firebaseApi";
+import { subscribeUserState, useAuth } from "firebase/api";
 
 SplashScreen.preventAutoHideAsync();
 
