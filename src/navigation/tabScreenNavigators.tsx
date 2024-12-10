@@ -33,6 +33,7 @@ import ListClubScreen from "@screens/menu/listClub";
 import ViewClubMenuScreen from "@screens/menu/viewClub";
 import ListPartnershipScreen from "@screens/menu/listPartnership";
 import ViewPartnershipMenuScreen from "@screens/menu/viewPartnership";
+import NotificationScreen from "@screens/menu/notification";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
 import { $officeStore } from "@context/officeStore";
@@ -404,6 +405,11 @@ export function MenuNavigator() {
             );
           },
         })}
+      />
+      <MenuStack.Screen
+        name="notification"
+        component={NotificationScreen}
+        options={{ title: "Notifications" }}
       />
     </MenuStack.Navigator>
   );

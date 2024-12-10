@@ -103,6 +103,7 @@ export type MenuTabParamList = {
   viewClub: { clubId: string };
   listPartnership: undefined;
   viewPartnership: { partnershipId: string };
+  notification: undefined;
 };
 export type MenuTabScreenProps<T extends keyof MenuTabParamList> =
   CompositeScreenProps<
