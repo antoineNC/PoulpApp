@@ -1,21 +1,21 @@
-import { Role, SessionType, Student, UserType } from "@types";
+import { Role, SessionType, Student } from "@types";
 import { createEvent, createStore } from "effector";
 
 export const actionSession = {
-  login: createEvent<{ user: UserType; role: Role }>("LOGIN"),
+  login: createEvent<{ userId: string; role: Role }>("LOGIN"),
   setStudent: createEvent<Student>("SET STUDENT USER"),
   logout: createEvent("LOGOUT"),
 };
 
 const defaultSession: SessionType = {
-  user: { id: "", mail: "" },
+  userId: "",
   role: "STUDENT",
   connected: false,
 };
 
 export const $sessionStore = createStore<SessionType>(defaultSession)
-  .on(actionSession.login, (_, { user, role }) => ({
-    user,
+  .on(actionSession.login, (_, { userId, role }) => ({
+    userId,
     role,
     connected: true,
   }))

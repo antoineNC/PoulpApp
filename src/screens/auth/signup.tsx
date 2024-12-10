@@ -10,8 +10,9 @@ import CustomField from "components/form/formField";
 import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { colors } from "@theme";
-import { useAuth } from "firebase/api";
 import { FormFieldValues } from "@types";
+import { registerUser } from "@fb/service/auth.service";
+import { actionSession } from "@context/sessionStore";
 
 type FieldNames = {
   firstName: string;
@@ -26,7 +27,6 @@ export default function SignupScreen({
   navigation,
 }: NativeStackScreenProps<AuthParamList>) {
   const [loading, setLoading] = useState(false);
-  const { signup } = useAuth();
   const { control, handleSubmit, watch, setFocus } = useForm<FieldNames>();
   const pwd = watch("password");
 
@@ -77,13 +77,12 @@ export default function SignupScreen({
   const onSubmit = async (data: FieldNames) => {
     setLoading(true);
     try {
-      await signup({
-        ...data,
-      });
-      setLoading(false);
+      const sessionCredential = await registerUser({ ...data });
+      actionSession.login(sessionCredential);
     } catch (e: any) {
-      setLoading(false);
       throw Error("signup Error :", e);
+    } finally {
+      setLoading(false);
     }
   };
 

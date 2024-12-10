@@ -28,7 +28,7 @@ export type Admin = UserType & {
 };
 
 export type SessionType = {
-  user: UserType;
+  userId: string;
   role: Role;
   connected: boolean;
   student?: Student;
