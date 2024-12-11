@@ -8,7 +8,7 @@ import {
 import { ContainerScroll, Text } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
-import { FormFieldValues, PartnershipFieldNames } from "@types";
+import { FormFieldValues } from "@types";
 import CustomField from "components/form/formField";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
@@ -18,6 +18,7 @@ import {
   useForm,
 } from "react-hook-form";
 import { FloatingValidateBtn } from "components/validateButton";
+import { PartnershipFormFields } from "types/partnership.type";
 
 const PartnershipForm = ({
   create,
@@ -28,9 +29,9 @@ const PartnershipForm = ({
 }: {
   create: boolean;
   loading: boolean;
-  fieldItems: FormFieldValues<PartnershipFieldNames>;
-  defaultValues: DefaultValues<PartnershipFieldNames>;
-  onSubmit: SubmitHandler<PartnershipFieldNames>;
+  fieldItems: FormFieldValues<PartnershipFormFields>;
+  defaultValues: DefaultValues<PartnershipFormFields>;
+  onSubmit: SubmitHandler<PartnershipFormFields>;
 }) => {
   const loaderTxt = create ? "Création..." : "Modification...";
   const {
@@ -40,7 +41,7 @@ const PartnershipForm = ({
     register,
     formState: { errors },
     setValue,
-  } = useForm<PartnershipFieldNames>({
+  } = useForm<PartnershipFormFields>({
     defaultValues: defaultValues,
   });
   const { fields, append, remove } = useFieldArray({
@@ -62,7 +63,7 @@ const PartnershipForm = ({
         )}
         <View style={authStyles.formList}>
           {fieldItems.map((field, index) => (
-            <CustomField<PartnershipFieldNames>
+            <CustomField<PartnershipFormFields>
               {...field}
               key={index}
               control={control}

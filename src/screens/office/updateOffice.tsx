@@ -5,7 +5,6 @@ import { useStoreMap } from "effector-react";
 import { IconButton } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { useClub, useOffice, usePartnership } from "firebase/api";
 import { UpdateOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import { OfficeFieldNames } from "@types";
@@ -19,6 +18,7 @@ import ListMemberForm from "../../components/listMemberForm";
 import { useRight } from "utils/rights";
 import { FloatingValidateBtn } from "components/validateButton";
 import { deleteClub } from "@fb/service/club.service";
+import { deletePartnership } from "@fb/service/partnership.service";
 
 export default function UpdateOfficeScreen({
   navigation,

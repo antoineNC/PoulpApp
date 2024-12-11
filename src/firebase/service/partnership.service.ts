@@ -18,8 +18,14 @@ import {
   imgPostRef,
   uploadImage,
 } from "@fb/service/storage.service";
-import { Partnership, PartnershipFieldNames } from "@types";
 import { storageUrl } from "@fb-config";
+import { Partnership } from "@types";
+import {
+  CreatePartnershipFields,
+  FirestorePartnership,
+  PartnershipFormFields,
+  UpdatePartnershipFields,
+} from "types/partnership.type";
 
 const app = getApp();
 const db = getFirestore(app);
@@ -30,13 +36,13 @@ function subscribeAllPartnership(
 ) {
   try {
     return onSnapshot(partnerCollection, async (snapshot) => {
-      const partnerList = snapshot.docs.map(async (doc) => {
-        const partnerData = doc.data();
+      const partnerList = snapshot.docs.map(async (partnerDoc) => {
+        const partnerData = partnerDoc.data() as FirestorePartnership;
         const logoUrl =
           partnerData.logoId &&
           (await getImgURL(imgClubPartnerRef, partnerData.logoId));
         const partnership: Partnership = {
-          id: doc.id,
+          id: partnerDoc.id,
           name: partnerData.name,
           officeId: partnerData.officeId,
           logoUrl,
@@ -50,30 +56,30 @@ function subscribeAllPartnership(
       const partnerListResolved = await Promise.all(partnerList);
       setState(partnerListResolved);
     });
-  } catch (e: any) {
+  } catch (e) {
     throw new Error(`[subscribeAllPartnership] ${e}`);
   }
 }
 
-async function createPartnership(props: PartnershipFieldNames) {
-  const partnerFields = {
+async function createPartnership(props: PartnershipFormFields) {
+  const partnerFields: CreatePartnershipFields = {
     name: props.name,
     officeId: props.office.value,
-    description: props.description || "",
-    address: props.address || "",
-    addressMap: props.addressMap || "",
-    logoId: props.logoFile || "",
-    benefits: props.benefits?.map(({ value }) => value) || [],
+    description: props.description,
+    address: props.address,
+    addressMap: props.addressMap,
+    logoId: props.logoFile,
+    benefits: props.benefits?.map(({ value }) => value),
   };
   try {
     if (props.logoFile) {
       const today = Timestamp.now().seconds;
-      const name = await uploadImage(
+      const logoId = await uploadImage(
         props.logoFile,
         `${today}_partner_`,
         imgClubPartnerRef
       );
-      partnerFields["logoId"] = name;
+      partnerFields["logoId"] = logoId;
     }
     await addDoc(partnerCollection, partnerFields);
   } catch (e) {
@@ -81,42 +87,39 @@ async function createPartnership(props: PartnershipFieldNames) {
   }
 }
 
-async function updatePartnership(props: PartnershipFieldNames, id: string) {
+async function updatePartnership(props: PartnershipFormFields, id: string) {
   try {
     const partnerRef = doc(partnerCollection, id);
-    const snapshot = await getDoc(partnerRef);
-    if (!snapshot.exists()) {
+    const partnerDoc = await getDoc(partnerRef);
+    if (!partnerDoc.exists()) {
       throw "Cet élément n'existe pas";
     }
-    const partnerData = snapshot.data();
-    const updatedFields = {
+    const partnerData = partnerDoc.data() as FirestorePartnership;
+    const updatedFields: UpdatePartnershipFields = {
       name: props.name,
       officeId: props.office.value,
-      description: props.description || "",
-      address: props.address || "",
-      addressMap: props.addressMap || "",
-      logoId: props.logoFile || "",
-      benefits: props.benefits?.map(({ value }) => value) || [],
+      description: props.description,
+      address: props.address,
+      addressMap: props.addressMap,
+      logoId: props.logoFile,
+      benefits: props.benefits?.map(({ value }) => value),
     };
     if (props.logoFile) {
       if (!props.logoFile.startsWith(storageUrl)) {
         const today = Timestamp.now().seconds;
-        const name = await uploadImage(
+        const logoId = await uploadImage(
           props.logoFile,
           `${today}_partner_`,
           imgClubPartnerRef
         );
-        updatedFields["logoId"] = name;
+        updatedFields["logoId"] = logoId;
         if (partnerData.logoId) {
           deleteObject(ref(assetsRef, partnerData.logoId));
         }
-      } else {
-        delete updatedFields.logoId;
       }
     } else {
-      updatedFields["logoId"] = "";
-      if (partnerData?.logoId) {
-        deleteObject(ref(imgPostRef, partnerData?.logoId));
+      if (partnerData.logoId) {
+        deleteObject(ref(imgPostRef, partnerData.logoId));
       }
     }
     await updateDoc(partnerRef, updatedFields);
@@ -128,10 +131,10 @@ async function updatePartnership(props: PartnershipFieldNames, id: string) {
 async function deletePartnership(id: string) {
   try {
     const partnerRef = doc(partnerCollection, id);
-    const snapshot = await getDoc(partnerRef);
-    if (snapshot.exists()) {
-      const partnerData = snapshot.data();
-      if (partnerData?.logoId) {
+    const partnerDoc = await getDoc(partnerRef);
+    if (partnerDoc.exists()) {
+      const partnerData = partnerDoc.data() as FirestorePartnership;
+      if (partnerData.logoId) {
         deleteObject(ref(imgClubPartnerRef, partnerData?.logoId));
       }
       await deleteDoc(partnerRef);
