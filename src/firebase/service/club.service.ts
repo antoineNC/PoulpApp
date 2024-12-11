@@ -17,9 +17,15 @@ import {
   imgPostRef,
   uploadImage,
 } from "@fb/service/storage.service";
-import { Club, ClubFieldNames } from "@types";
 import { storageUrl } from "@fb-config";
 import { formattedToday } from "utils/dateUtils";
+import {
+  Club,
+  ClubFormFields,
+  CreateClubFields,
+  FirestoreClub,
+  UpdateClubFields,
+} from "types/club.type";
 
 const app = getApp();
 const db = getFirestore(app);
@@ -29,7 +35,7 @@ function subscribeAllClub(setState: (clubList: Club[]) => void) {
   try {
     return onSnapshot(clubCollection, async (snapshot) => {
       const clubList = snapshot.docs.map(async (clubDoc) => {
-        const clubData = clubDoc.data();
+        const clubData = clubDoc.data() as FirestoreClub;
         const logoUrl =
           clubData.logoId &&
           (await getImgURL(imgClubPartnerRef, clubData.logoId));
@@ -46,28 +52,28 @@ function subscribeAllClub(setState: (clubList: Club[]) => void) {
       const clubListResolved = await Promise.all(clubList);
       setState(clubListResolved);
     });
-  } catch (e: any) {
+  } catch (e) {
     throw new Error(`[subscribeAllClub] ${e}`);
   }
 }
 
-async function createClub(props: ClubFieldNames) {
-  const clubFields = {
+async function createClub(props: ClubFormFields) {
+  const clubFields: CreateClubFields = {
     name: props.name,
     officeId: props.office.value,
-    contact: props.contact || "",
-    description: props.description || "",
-    logoId: props.logoFile || "",
+    contact: props.contact,
+    description: props.description,
+    logoId: props.logoFile,
   };
   try {
     if (props.logoFile) {
       const today = formattedToday();
-      const name = await uploadImage(
+      const logoId = await uploadImage(
         props.logoFile,
         `${today}_club_`,
         imgClubPartnerRef
       );
-      clubFields["logoId"] = name;
+      clubFields["logoId"] = logoId;
     }
     await addDoc(clubCollection, clubFields);
   } catch (e) {
@@ -75,57 +81,53 @@ async function createClub(props: ClubFieldNames) {
   }
 }
 
-async function updateClub(props: ClubFieldNames, id: string) {
+async function updateClub(props: ClubFormFields, id: string) {
   try {
     const clubRef = doc(clubCollection, id);
     const clubDoc = await getDoc(clubRef);
     if (!clubDoc.exists()) {
       throw "Cet élément n'existe pas";
     }
-    const updatedFields = {
+    const clubData = clubDoc.data() as FirestoreClub;
+    const updatedFields: UpdateClubFields = {
       name: props.name,
       officeId: props.office.value,
-      contact: props.contact || "",
-      description: props.description || "",
-      logoId: props.logoFile || "",
+      contact: props.contact,
+      description: props.description,
+      logoId: props.logoFile,
     };
-
-    const clubData = clubDoc.data();
     if (props.logoFile) {
       if (!props.logoFile.startsWith(storageUrl)) {
         const today = formattedToday();
-        const name = await uploadImage(
+        const logoId = await uploadImage(
           props.logoFile,
           `${today}_club_`,
           imgClubPartnerRef
         );
-        updatedFields["logoId"] = name;
+        updatedFields["logoId"] = logoId;
         if (clubData.logoId) {
           deleteObject(ref(assetsRef, clubData.logoId));
         }
-      } else {
-        delete updatedFields.logoId;
       }
     } else {
-      updatedFields["logoId"] = "";
-      if (clubData?.logoId) {
-        deleteObject(ref(imgPostRef, clubData?.logoId));
+      if (clubData.logoId) {
+        deleteObject(ref(imgPostRef, clubData.logoId));
       }
     }
     await updateDoc(clubRef, updatedFields);
   } catch (e) {
-    console.error("[updateClub]", e);
+    throw new Error("[updateClub]: " + e);
   }
 }
 
 async function deleteClub(id: string) {
   try {
     const clubRef = doc(clubCollection, id);
-    const snapshot = await getDoc(clubRef);
-    if (snapshot.exists()) {
-      const clubData = snapshot.data();
-      if (clubData?.logoId) {
-        deleteObject(ref(imgClubPartnerRef, clubData?.logoId));
+    const clubDoc = await getDoc(clubRef);
+    if (clubDoc.exists()) {
+      const clubData = clubDoc.data() as FirestoreClub;
+      if (clubData.logoId) {
+        deleteObject(ref(imgClubPartnerRef, clubData.logoId));
       }
       await deleteDoc(clubRef);
     }

@@ -2,19 +2,19 @@ import React, { useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
 
-import { useClub } from "firebase/api";
 import { $officeStore } from "@context/officeStore";
-import { ClubFieldNames, FormFieldValues } from "@types";
+import { FormFieldValues } from "@types";
 import { CreateClubProps } from "@navigation/navigationTypes";
 import ClubForm from "./clubForm";
 import { useRight } from "utils/rights";
+import { ClubFormFields } from "types/club.type";
+import { createClub } from "@fb/service/club.service";
 
 export default function CreateClubScreen({
   navigation,
   route,
 }: CreateClubProps) {
   const { officeId } = route.params;
-  const { createClub } = useClub();
   const { officeList } = useUnit($officeStore);
   const { isAdmin } = useRight();
   const [loading, setLoading] = useState(false);
@@ -29,13 +29,13 @@ export default function CreateClubScreen({
     value: office.id,
     label: office.name,
   }));
-  const { control, handleSubmit, setFocus } = useForm<ClubFieldNames>({
+  const { control, handleSubmit, setFocus } = useForm<ClubFormFields>({
     defaultValues: {
       office: { label: office?.name, value: office?.id },
     },
   });
 
-  const values: FormFieldValues<ClubFieldNames> = [
+  const values: FormFieldValues<ClubFormFields> = [
     {
       name: "name",
       label: "Nom",
@@ -70,12 +70,12 @@ export default function CreateClubScreen({
     });
   }
 
-  const onSubmit = async (data: ClubFieldNames) => {
+  const onSubmit = async (data: ClubFormFields) => {
     try {
       setLoading(true);
-      await createClub({ ...data });
+      await createClub(data);
     } catch (e) {
-      console.error("[updatepost]", e);
+      throw new Error("[submit create club]: " + e);
     } finally {
       setLoading(false);
       navigation.goBack();

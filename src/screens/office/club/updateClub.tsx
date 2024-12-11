@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
-import { useClub } from "firebase/api";
 import { $officeStore } from "@context/officeStore";
-import { ClubFieldNames, FormFieldValues } from "@types";
 import { UpdateClubProps } from "@navigation/navigationTypes";
 import ClubForm from "./clubForm";
 import { useRight } from "utils/rights";
+import { ClubFormFields } from "types/club.type";
+import { FormFieldValues } from "@types";
+import { updateClub } from "@fb/service/club.service";
 
 export default function UpdateClubScreen({
   navigation,
   route,
 }: UpdateClubProps) {
   const { clubId } = route.params;
-  const { updateClub } = useClub();
   const { isAdmin } = useRight();
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,7 @@ export default function UpdateClubScreen({
     value: office.id,
     label: office.name,
   }));
-  const { control, handleSubmit, setFocus } = useForm<ClubFieldNames>({
+  const { control, handleSubmit, setFocus } = useForm<ClubFormFields>({
     defaultValues: {
       name: club.name,
       description: club.description,
@@ -46,7 +46,7 @@ export default function UpdateClubScreen({
     },
   });
 
-  const values: FormFieldValues<ClubFieldNames> = [
+  const values: FormFieldValues<ClubFormFields> = [
     {
       name: "name",
       label: "Nom",
@@ -81,12 +81,12 @@ export default function UpdateClubScreen({
     });
   }
 
-  const onSubmit = async (data: ClubFieldNames) => {
+  const onSubmit = async (data: ClubFormFields) => {
     try {
       setLoading(true);
-      await updateClub({ ...data }, clubId);
+      await updateClub(data, clubId);
     } catch (e) {
-      console.error("[updatepost]", e);
+      throw new Error("[submit update club]: " + e);
     } finally {
       setLoading(false);
       navigation.goBack();

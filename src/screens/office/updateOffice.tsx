@@ -18,6 +18,7 @@ import { SmallCardItem } from "components/smallCardItem";
 import ListMemberForm from "../../components/listMemberForm";
 import { useRight } from "utils/rights";
 import { FloatingValidateBtn } from "components/validateButton";
+import { deleteClub } from "@fb/service/club.service";
 
 export default function UpdateOfficeScreen({
   navigation,

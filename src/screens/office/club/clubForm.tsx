@@ -1,12 +1,13 @@
 import { ContainerScroll } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
-import { ClubFieldNames, FormFieldValues } from "@types";
+import { FormFieldValues } from "@types";
 import CustomField from "components/form/formField";
 import { FloatingValidateBtn } from "components/validateButton";
 import { Control, UseFormSetFocus } from "react-hook-form";
 import { View } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
+import { ClubFormFields } from "types/club.type";
 
 const ClubForm = ({
   create,
@@ -18,10 +19,10 @@ const ClubForm = ({
 }: {
   create: boolean;
   loading: boolean;
-  control: Control<ClubFieldNames>;
-  values: FormFieldValues<ClubFieldNames>;
+  control: Control<ClubFormFields>;
+  values: FormFieldValues<ClubFormFields>;
   onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
-  setFocus: UseFormSetFocus<ClubFieldNames>;
+  setFocus: UseFormSetFocus<ClubFormFields>;
 }) => {
   const loaderTxt = create ? "Création..." : "Modification...";
   return (
@@ -36,7 +37,7 @@ const ClubForm = ({
         )}
         <View style={authStyles.formList}>
           {values.map((field, index) => (
-            <CustomField<ClubFieldNames>
+            <CustomField<ClubFormFields>
               {...field}
               key={index}
               control={control}
