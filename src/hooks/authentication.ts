@@ -26,6 +26,6 @@ export function useAuthState(initialState: boolean) {
     return () => {
       subscribeUserState(handleAuth);
     };
-  }, []);
+  }, [handleAuth]);
   return done;
 }

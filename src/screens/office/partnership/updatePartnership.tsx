@@ -25,15 +25,12 @@ export default function UpdatePartnershipScreen({
         (partner) => partner.id === partnershipId
       ),
   });
-  if (!partnership) {
-    return <></>;
-  }
   const office = useStoreMap({
     store: $officeStore,
     keys: [partnershipId],
     fn: (officeStore) =>
       officeStore.officeList.find(
-        (office) => office.id === partnership.officeId
+        (office) => office.id === partnership?.officeId
       ),
   });
   const officeChoices = officeList.map((office) => ({
@@ -41,6 +38,9 @@ export default function UpdatePartnershipScreen({
     label: office.name,
   }));
 
+  if (!partnership) {
+    return <></>;
+  }
   const defaultValues = {
     ...partnership,
     office: { label: office?.name, value: office?.id },

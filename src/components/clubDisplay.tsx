@@ -27,15 +27,16 @@ export default function ClubDisplay({
     keys: [id],
     fn: (officeStore) => officeStore.clubList.find((club) => club.id === id),
   });
-  if (!club) {
-    return <></>;
-  }
   const office = useStoreMap({
     store: $officeStore,
     keys: [id],
     fn: (officeStore) =>
-      officeStore.officeList.find((office) => office.id === club.officeId),
+      officeStore.officeList.find((office) => office.id === club?.officeId),
   });
+
+  if (!club) {
+    return <></>;
+  }
 
   const handlePress = async (url: string) => {
     // Checking if the link is supported for links with custom URL scheme.

@@ -20,7 +20,7 @@ export default function ListClubScreen({ navigation }: ListClubProps) {
     },
   });
   const [query, setQuery] = useState("");
-  const [filterOffice, setFilterOffice] = useState<Array<string>>([]);
+  const [filterOffice, setFilterOffice] = useState<string[]>([]);
   const filteredClubs = clubList.filter((club) => {
     const clubName = club.name.toUpperCase();
     const clubDesc = club.description?.toUpperCase();

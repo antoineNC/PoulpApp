@@ -23,14 +23,11 @@ export default function UpdateClubScreen({
     fn: (officeStore) =>
       officeStore.clubList.find((club) => club.id === clubId),
   });
-  if (!club) {
-    return <></>;
-  }
   const office = useStoreMap({
     store: $officeStore,
     keys: [clubId],
     fn: (officeStore) =>
-      officeStore.officeList.find((office) => office.id === club.officeId),
+      officeStore.officeList.find((office) => office.id === club?.officeId),
   });
   const officeChoices = officeList.map((office) => ({
     value: office.id,
@@ -38,13 +35,16 @@ export default function UpdateClubScreen({
   }));
   const { control, handleSubmit, setFocus } = useForm<ClubFormFields>({
     defaultValues: {
-      name: club.name,
-      description: club.description,
+      name: club?.name,
+      description: club?.description,
       office: { label: office?.name, value: office?.id },
-      logoFile: club.logoUrl,
-      contact: club.contact,
+      logoFile: club?.logoUrl,
+      contact: club?.contact,
     },
   });
+  if (!club) {
+    return <></>;
+  }
 
   const values: FormFieldValues<ClubFormFields> = [
     {

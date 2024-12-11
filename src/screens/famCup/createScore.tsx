@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { CreateScoreProps } from "@navigation/navigationTypes";
-import { Container, Row, Text } from "@styledComponents";
+import { Container } from "@styledComponents";
 import { HelperText, TextInput } from "react-native-paper";
 import { Timestamp } from "firebase/firestore";
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import { colors } from "@theme";
 import { officeStyles } from "@styles";
-import { formatDay } from "utils/dateUtils";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PointInputController } from "components/pointInput";
 import { PointsFieldNames } from "@types";
 import { usePoint } from "firebase/api";
+import { DateComponent } from "components/dateScoreInput";
 
 export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
   const { createPoint } = usePoint();
@@ -89,53 +88,9 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
         control={control}
         name="date"
         rules={{ required: true }}
-        render={({ field: { value, onChange }, fieldState: { error } }) => {
-          const date = value?.toDate();
-          const [show, setShow] = useState(false);
-          return (
-            <View
-              style={{
-                justifyContent: "center",
-                borderWidth: 0.5,
-                borderRadius: 5,
-                padding: 5,
-                marginTop: 10,
-                borderColor: error ? "red" : colors.black,
-              }}
-            >
-              <Row>
-                <Text $dark style={{ flex: 1 }}>
-                  Date :
-                </Text>
-                <Row $justify="space-evenly" style={{ flex: 5 }}>
-                  <TouchableOpacity onPress={() => setShow(true)}>
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        padding: 5,
-                        height: 50,
-                      }}
-                    >
-                      <Text $dark>{formatDay(date)}</Text>
-                    </View>
-                  </TouchableOpacity>
-                </Row>
-                {show && (
-                  <DateTimePicker
-                    value={date}
-                    mode={"date"}
-                    is24Hour={true}
-                    onChange={(e, newDate) => {
-                      setShow(false);
-                      onChange(Timestamp.fromDate(newDate || date));
-                    }}
-                  />
-                )}
-              </Row>
-              {error && <HelperText type="error">{error.message}</HelperText>}
-            </View>
-          );
-        }}
+        render={({ field: { value, onChange }, fieldState: { error } }) => (
+          <DateComponent value={value} onChange={onChange} error={error} />
+        )}
       />
       <View
         style={{

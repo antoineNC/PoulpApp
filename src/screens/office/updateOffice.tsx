@@ -32,20 +32,15 @@ export default function UpdateOfficeScreen({
     fn: (officeStore) =>
       officeStore.officeList.find((office) => office.id === officeId),
   });
-
-  if (!office) {
-    return <></>;
-  }
-
   const [clubs, partnerships] = useStoreMap({
     store: $officeStore,
     keys: [officeId],
     fn: (officeStore) => {
       const clubs = officeStore.clubList.filter(
-        (club) => club.officeId === office.id
+        (club) => club.officeId === office?.id
       );
       const partnerships = officeStore.partnershipList.filter(
-        (partnership) => partnership.officeId === office.id
+        (partnership) => partnership.officeId === office?.id
       );
       return [clubs, partnerships];
     },
@@ -59,8 +54,12 @@ export default function UpdateOfficeScreen({
     formState: { errors },
     register,
   } = useForm<OfficeFormFields>({
-    defaultValues: { ...office, logoFile: office.logoUrl },
+    defaultValues: { ...office, logoFile: office?.logoUrl },
   });
+
+  if (!office) {
+    return <></>;
+  }
 
   const onSubmit = async (data: OfficeFormFields) => {
     try {

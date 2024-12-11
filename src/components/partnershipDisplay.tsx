@@ -13,7 +13,6 @@ import ImageView from "react-native-image-viewing";
 import { useStoreMap } from "effector-react";
 import { $officeStore } from "@context/officeStore";
 import { useState } from "react";
-import { ViewPartnershipProps } from "@navigation/navigationTypes";
 
 export default function PartnershipDisplay({
   id,
@@ -29,17 +28,18 @@ export default function PartnershipDisplay({
     fn: (officeStore) =>
       officeStore.partnershipList.find((partner) => partner.id === id),
   });
-  if (!partnership) {
-    return <></>;
-  }
   const office = useStoreMap({
     store: $officeStore,
     keys: [id],
     fn: (officeStore) =>
       officeStore.officeList.find(
-        (office) => office.id === partnership.officeId
+        (office) => office.id === partnership?.officeId
       ),
   });
+
+  if (!partnership) {
+    return <></>;
+  }
 
   const handlePress = async (url: string) => {
     // Checking if the link is supported for links with custom URL scheme.

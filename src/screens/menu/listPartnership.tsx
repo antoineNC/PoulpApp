@@ -22,7 +22,7 @@ export default function ListPartnershipScreen({
     },
   });
   const [query, setQuery] = useState("");
-  const [filterOffice, setFilterOffice] = useState<Array<string>>([]);
+  const [filterOffice, setFilterOffice] = useState<string[]>([]);
   const filteredPartner = partnershipList.filter((partner) => {
     const partnerName = partner.name.toUpperCase();
     const partnerDesc = partner.description?.toUpperCase();

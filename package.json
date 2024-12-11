@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "ts:check": "tsc"
+    "ts:check": "tsc",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@backpackapp-io/react-native-toast": "^0.11.0",
@@ -58,7 +59,9 @@
     "@types/react": "~18.2.79",
     "@types/react-native-vector-icons": "^6.4.18",
     "@types/uuid": "^10.0.0",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "eslint": "^8.57.0",
+    "eslint-config-expo": "~7.1.2"
   },
   "private": true
 }
