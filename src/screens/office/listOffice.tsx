@@ -1,4 +1,4 @@
-import { Alert, FlatList, TouchableOpacity } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native";
 import { Button, Card } from "react-native-paper";
 import { useUnit } from "effector-react";
 
