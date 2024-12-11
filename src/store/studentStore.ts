@@ -1,5 +1,5 @@
-import { Student } from "@types";
 import { createEvent, createStore } from "effector";
+import { Student } from "types/student.type";
 
 const actionStudent = {
   setAllStudent: createEvent<Student[]>("SET_ALL_STUDENT"),
