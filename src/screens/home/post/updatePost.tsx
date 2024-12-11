@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { usePost } from "firebase/api";
 import Spinner from "react-native-loading-spinner-overlay";
 import { UpdatePostProps } from "@navigation/navigationTypes";
-import { Post, PostFieldNames } from "@types";
 import { UpdatePostForm } from "./updatePostForm";
 import { colors } from "@theme";
+import { Post, PostFormFields } from "types/post.type";
+import { getPost, updatePost } from "@fb/service/post.service";
 
 export default function UpdatePostScreen({
   navigation,
@@ -13,7 +13,6 @@ export default function UpdatePostScreen({
   const { postId } = route.params;
   const [post, setPost] = useState<Post>();
   const [loading, setLoading] = useState(false);
-  const { updatePost, getPost } = usePost();
   useEffect(() => {
     const func = async () => {
       const result = await getPost(postId);
@@ -32,12 +31,12 @@ export default function UpdatePostScreen({
     );
   }
 
-  const onSubmit = async (data: PostFieldNames) => {
+  const onSubmit = async (data: PostFormFields) => {
     try {
       setLoading(true);
-      await updatePost({ ...data }, post.id);
+      await updatePost(data, post.id);
     } catch (e) {
-      console.error("[updatepost]", e);
+      throw new Error("[submit updatepost]: " + e);
     } finally {
       setLoading(false);
       navigation.goBack();

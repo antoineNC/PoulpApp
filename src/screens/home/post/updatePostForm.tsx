@@ -3,13 +3,14 @@ import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
 import Spinner from "react-native-loading-spinner-overlay";
 import { $officeStore } from "@context/officeStore";
-import { FormFieldValues, Post, PostFieldNames } from "@types";
+import { FormFieldValues } from "@types";
 import CustomField from "components/form/formField";
 import { FloatingValidateBtn } from "components/validateButton";
 import { ContainerScroll } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
+import { Post, PostFormFields } from "types/post.type";
 
 export const UpdatePostForm = ({
   post,
@@ -18,7 +19,7 @@ export const UpdatePostForm = ({
 }: {
   post: Post;
   loading: boolean;
-  onSubmit: (data: PostFieldNames) => void;
+  onSubmit: (data: PostFormFields) => void;
 }) => {
   const { officeList } = useUnit($officeStore);
   const editor = useStoreMap({
@@ -27,7 +28,7 @@ export const UpdatePostForm = ({
     fn: (officeStore) =>
       officeStore.officeList.find((office) => office.id === post.editorId),
   });
-  const { control, handleSubmit, setFocus } = useForm<PostFieldNames>({
+  const { control, handleSubmit, setFocus } = useForm<PostFormFields>({
     defaultValues: {
       title: post.title,
       description: post.description,
@@ -44,7 +45,7 @@ export const UpdatePostForm = ({
   const tagsChoices = postTags
     .sort()
     .map((tag) => ({ value: tag, label: tag }));
-  const values: FormFieldValues<PostFieldNames> = [
+  const values: FormFieldValues<PostFormFields> = [
     {
       name: "editor",
       label: "Bureau",
@@ -94,7 +95,7 @@ export const UpdatePostForm = ({
         )}
         <View style={authStyles.formList}>
           {values.map((field, index) => (
-            <CustomField<PostFieldNames>
+            <CustomField<PostFormFields>
               {...field}
               key={index}
               control={control}

@@ -18,18 +18,11 @@ import {
   Container,
 } from "@styledComponents";
 import { officeStyles } from "@styles";
-import { displayDateFromTimestamp } from "utils/dateUtils";
+import { displayDateFromDate } from "utils/dateUtils";
 import { useRight } from "utils/rights";
-import { DateType, Post } from "@types";
+import { DateType } from "@types";
 import { $officeStore } from "@context/officeStore";
-
-type PostItemProps = {
-  post: Post;
-  onPressOffice: (officeId: string) => void;
-  onPressCalendar: () => void;
-  onPressUpdate: () => void;
-  onPressDelete: () => void;
-};
+import { PostItemProps } from "types/post.type";
 
 export const PostItem = ({
   post,
@@ -53,7 +46,7 @@ export const PostItem = ({
 
   useEffect(() => {
     if (post.date) {
-      const result = displayDateFromTimestamp(post.date);
+      const result = displayDateFromDate(post.date);
       setAllDay(result.allday);
       setDate(result.date);
     }

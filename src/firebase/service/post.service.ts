@@ -24,9 +24,15 @@ import {
   imgPostRef,
   uploadImage,
 } from "@fb/service/storage.service";
-import { Post, PostFieldNames } from "@types";
 import { storageUrl } from "@fb-config";
 import { deleteObject, ref } from "firebase/storage";
+import {
+  Post,
+  FirestorePost,
+  PostFormFields,
+  UpdatePostFields,
+  CreatePostFields,
+} from "types/post.type";
 
 const POST_LIMIT = 10;
 
@@ -37,7 +43,7 @@ const postCollection = collection(db, "Post");
 const postMapping = async (
   doc: QueryDocumentSnapshot<DocumentData, DocumentData>
 ) => {
-  const postData = doc.data();
+  const postData = doc.data() as FirestorePost;
   const imageUrl =
     postData.imageId && (await getImgURL(imgPostRef, postData.imageId));
   const post: Post = {
@@ -46,11 +52,10 @@ const postMapping = async (
     description: postData.description,
     editorId: postData.editorId,
     imageUrl,
-    createdAt: postData.createdAt,
     tags: postData.tags,
     date: postData.date && {
-      start: postData.date.start,
-      end: postData.date.end,
+      start: postData.date.start.toDate(),
+      end: postData.date.end.toDate(),
     },
   };
   return post;
@@ -62,8 +67,7 @@ async function getPost(id: string) {
     if (!postDoc.exists()) {
       throw "Cet élément n'existe pas";
     }
-    const post = await postMapping(postDoc);
-    return post;
+    return postMapping(postDoc);
   } catch (e) {
     throw new Error(`[get post] ${e}`);
   }
@@ -78,15 +82,13 @@ function getInitialPost(
       limit(POST_LIMIT),
     ];
     const q = query(postCollection, ...queryConstraints);
-    return onSnapshot(q, async (snap) => {
-      const postList: Post[] = [];
-      for (const doc of snap.docs) {
-        const post = await postMapping(doc);
-        postList.push(post);
-      }
-      setPosts(postList, snap.docs[snap.docs.length - 1]?.id);
+    return onSnapshot(q, async (snapshot) => {
+      const postList: Post[] = await Promise.all(
+        snapshot.docs.map((postDoc) => postMapping(postDoc))
+      );
+      setPosts(postList, snapshot.docs[snapshot.docs.length - 1]?.id);
     });
-  } catch (e: any) {
+  } catch (e) {
     throw new Error(`[get initial post] ${e}`);
   }
 }
@@ -101,81 +103,82 @@ async function getMorePost(lastVisibleId: string) {
     ];
     const q = query(postCollection, ...queryConstraints);
     const snapshot = await getDocs(q);
-    const postList = await Promise.all(
-      snapshot.docs.map(async (doc) => {
-        const post = await postMapping(doc);
-        return post;
-      })
+    const postList: Post[] = await Promise.all(
+      snapshot.docs.map((doc) => postMapping(doc))
     );
-
     return { postList, lastVisibleId: postList[postList.length - 1]?.id };
   } catch (e) {
     throw new Error(`[get more post] ${e}`);
   }
 }
 
-async function createPost(props: PostFieldNames) {
-  const postFields = {
+async function createPost(props: PostFormFields) {
+  const createFields: CreatePostFields = {
     title: props.title,
     editorId: props.editor.value,
     createdAt: Timestamp.now(),
-    ...(props.date && { date: props.date }),
-    description: props.description || "",
-    imageId: props.imageFile || "",
-    tags: props.tags || [],
+    description: props.description,
+    tags: props.tags,
   };
   try {
     if (props.imageFile) {
-      const name = await uploadImage(
+      const imageId = await uploadImage(
         props.imageFile,
-        `${postFields.createdAt.seconds}_`,
+        `${createFields.createdAt.seconds}_`,
         imgPostRef
       );
-      postFields["imageId"] = name;
+      createFields["imageId"] = imageId;
     }
-    await addDoc(postCollection, postFields);
+    if (props.date) {
+      const start = Timestamp.fromDate(props.date.start);
+      const end = Timestamp.fromDate(props.date.end);
+      createFields["date"] = { start, end };
+    }
+    await addDoc(postCollection, createFields);
   } catch (e) {
     throw new Error("[createPost]: " + e);
   }
 }
 
-async function updatePost(props: PostFieldNames, id: string) {
+async function updatePost(props: PostFormFields, id: string) {
   try {
     const postRef = doc(postCollection, id);
     const snapshot = await getDoc(postRef);
     if (!snapshot.exists()) {
       throw "Cet élément n'existe pas";
     }
-    const postData = snapshot.data();
-    const updatedFields = {
+    const postData = snapshot.data() as FirestorePost;
+    const updatedFields: UpdatePostFields = {
       title: props.title,
       editorId: props.editor.value,
-      createdAt: postData.createdAt,
-      date: props.date,
-      description: props.description || "",
-      imageId: props.imageFile || "",
-      tags: props.tags || [],
+      description: props.description,
+      tags: props.tags,
+      imageId: props.imageFile,
     };
+
     if (props.imageFile) {
       if (!props.imageFile.startsWith(storageUrl)) {
         const today = Timestamp.now().seconds;
-        const name = await uploadImage(
+        const imageId = await uploadImage(
           props.imageFile,
           `${today}_`,
           imgPostRef
         );
-        updatedFields["imageId"] = name;
-        if (postData?.imageId) {
-          deleteObject(ref(imgPostRef, postData?.imageId));
+        updatedFields["imageId"] = imageId;
+        if (postData.imageId) {
+          deleteObject(ref(imgPostRef, postData.imageId));
         }
-      } else {
-        delete updatedFields.imageId;
       }
     } else {
-      updatedFields["imageId"] = "";
-      if (postData?.imageId) {
-        deleteObject(ref(imgPostRef, postData?.imageId));
+      if (postData.imageId) {
+        deleteObject(ref(imgPostRef, postData.imageId));
       }
+    }
+
+    if (props.date) {
+      const start = Timestamp.fromDate(props.date.start);
+      const end = Timestamp.fromDate(props.date.end);
+      updatedFields["date"] = { start, end };
     }
     await updateDoc(postRef, {
       ...updatedFields,
@@ -189,10 +192,10 @@ async function updatePost(props: PostFieldNames, id: string) {
 async function deletePost(idPost: string) {
   try {
     const postRef = doc(postCollection, idPost);
-    const snapshot = await getDoc(postRef);
-    if (snapshot.exists()) {
-      const postData = snapshot.data();
-      if (postData?.imageId) {
+    const postDoc = await getDoc(postRef);
+    if (postDoc.exists()) {
+      const postData = postDoc.data();
+      if (postData.imageId) {
         deleteObject(ref(imgPostRef, postData?.imageId));
       }
       await deleteDoc(postRef);

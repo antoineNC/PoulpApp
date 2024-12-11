@@ -5,8 +5,6 @@ import {
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { MaterialBottomTabScreenProps } from "react-native-paper";
-import { Post } from "@types";
-import { Timestamp } from "firebase/firestore";
 
 export type ScreenProps<
   T extends ParamListBase,
@@ -33,7 +31,7 @@ export type TabBarScreenProps<T extends keyof TabBarParamList> =
 // === Home tab
 export type HomeTabParamList = {
   feed: undefined;
-  calendar: { postDate?: Timestamp };
+  calendar: { postDate?: Date };
   createPost: undefined;
   updatePost: { postId: string };
 };

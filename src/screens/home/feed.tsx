@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   FlatList,
   View,
@@ -10,36 +10,20 @@ import {
 import { AnimatedFAB, Divider } from "react-native-paper";
 import { PostItem } from "@screens/home/post/postItem";
 import { Container } from "@styledComponents";
-import { usePost } from "firebase/api";
 import { FeedProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
-import { Post } from "@types";
-import { Timestamp } from "firebase/firestore";
 import Spinner from "react-native-loading-spinner-overlay";
 import { colors } from "@theme";
+import { Post } from "types/post.type";
+import { deletePost, getMorePost } from "@fb/service/post.service";
 
 export default function FeedScreen({ navigation }: FeedProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [lastPostId, setLastPostId] = useState<string>();
-  const { getInitialPost, getMorePost, deletePost } = usePost();
   const { hasRight } = useRight();
   const [isExtended, setIsExtended] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const fetchInitialPosts = useCallback(() => {
-    return getInitialPost((firstPosts, lastId) => {
-      setPosts(firstPosts);
-      setLastPostId(lastId);
-    });
-  }, []);
-
-  useEffect(() => {
-    fetchInitialPosts();
-    return () => {
-      fetchInitialPosts();
-    };
-  }, []);
 
   const onScroll = ({
     nativeEvent,
@@ -51,28 +35,30 @@ export default function FeedScreen({ navigation }: FeedProps) {
   };
 
   const onEndReachedHandle = async () => {
-    lastPostId &&
-      (await getMorePost((morePosts, lastId) => {
-        setPosts((prev) => [...prev, ...morePosts]);
-        setLastPostId(lastId);
-      }, lastPostId));
+    if (lastPostId) {
+      const { postList: morePosts, lastVisibleId } = await getMorePost(
+        lastPostId
+      );
+      setPosts((prev) => [...prev, ...morePosts]);
+      setLastPostId(lastVisibleId);
+    }
   };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     try {
-      fetchInitialPosts();
+      // TODO : refresh posts
     } finally {
       setRefreshing(false);
     }
-  }, [fetchInitialPosts]);
+  }, []);
 
   const onPressOffice = (officeId: string) =>
     navigation.navigate("officeContainer", {
       screen: "viewOffice",
       params: { officeId },
     });
-  const onPressCalendar = (date?: Timestamp) =>
+  const onPressCalendar = (date?: Date) =>
     navigation.navigate("calendar", { postDate: date });
   const onPressUpdate = (id: string) =>
     navigation.navigate("updatePost", { postId: id });

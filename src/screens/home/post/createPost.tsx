@@ -3,22 +3,22 @@ import { View } from "react-native";
 import { useForm } from "react-hook-form";
 import { useUnit } from "effector-react";
 import Spinner from "react-native-loading-spinner-overlay";
-import { usePost } from "firebase/api";
 import { CreatePostProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import CustomField from "components/form/formField";
 import { ContainerScroll } from "@styledComponents";
-import { FormFieldValues, PostFieldNames } from "@types";
+import { FormFieldValues } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
 import { FloatingValidateBtn } from "components/validateButton";
+import { PostFormFields } from "types/post.type";
+import { createPost } from "@fb/service/post.service";
 
 export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
-  const { createPost } = usePost();
-  const { control, handleSubmit, setFocus } = useForm<PostFieldNames>();
+  const { control, handleSubmit, setFocus } = useForm<PostFormFields>();
   const officeChoices = officeList.map((office) => ({
     value: office.id,
     label: office.name,
@@ -26,7 +26,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const tagsChoices = postTags
     .sort()
     .map((tag) => ({ value: tag, label: tag }));
-  const values: FormFieldValues<PostFieldNames> = [
+  const values: FormFieldValues<PostFormFields> = [
     {
       name: "editor",
       label: "Bureau",
@@ -64,12 +64,12 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
     },
   ];
 
-  const onSubmit = async (data: PostFieldNames) => {
+  const onSubmit = async (data: PostFormFields) => {
     try {
       setLoading(true);
-      await createPost({ ...data });
+      await createPost(data);
     } catch (e) {
-      console.error("[createpost]", e);
+      throw new Error("[submit createpost]: " + e);
     } finally {
       setLoading(false);
       navigation.goBack();
@@ -88,7 +88,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
         )}
         <View style={authStyles.formList}>
           {values.map((field, index) => (
-            <CustomField<PostFieldNames>
+            <CustomField<PostFormFields>
               {...field}
               key={index}
               control={control}

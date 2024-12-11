@@ -1,5 +1,5 @@
 import { createEvent, createStore } from "effector";
-import { Post } from "@types";
+import { Post } from "types/post.type";
 
 type PostStoreType = {
   posts: Post[];
