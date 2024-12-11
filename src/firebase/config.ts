@@ -1,17 +1,14 @@
 import Constants from "expo-constants";
-import { initializeServerApp, initializeApp } from "firebase/app";
-import { onMessage, getMessaging, getToken } from "firebase/messaging";
 import admin from "firebase-admin";
+import { initializeApp } from "firebase/app";
 import { getReactNativePersistence, initializeAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// import { onMessage, getMessaging, getToken } from "firebase/messaging";
 // const messaging = getMessaging();
 // const unsubscribe = onMessage(messaging, (message) => {
 //   message.data;
 // });
-// const token = await getToken(getMessaging());
-
-// admin.messaging().subscribeToTopic(token, "BDE");
-// admin.messaging().send({ topic: "la" });
 
 // expo for handling notif
 
@@ -31,3 +28,5 @@ admin.initializeApp(firebaseConfig);
 initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
+
+export const { storageUrl } = Constants.expoConfig?.extra?.firebase;
