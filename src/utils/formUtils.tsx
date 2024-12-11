@@ -40,7 +40,7 @@ type Params<T extends FieldValues> = {
   rules?: Omit<ResolverOptions<T>, keyof FieldValues>;
 };
 
-const regEx_mail = /^[\w\-\.]+@ensc\.fr$/gm; // au lieu peut-etre faire un tooltip pour expliquer
+const regEx_mail = /^[\w\-\.]+@ensc\.fr$/gm; // TODO remplacer par un tooltip pour expliquer
 const regEx_name = /^[a-z '-]+$/i;
 const errorTxt = {
   required: "Ce champs est obligatoire",
