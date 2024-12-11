@@ -8,10 +8,23 @@ import {
   OfficeNavigator,
 } from "@navigation/tabScreenNavigators";
 import { TabBarParamList } from "@navigation/navigationTypes";
+import { useSubPost } from "hooks/post";
+import { useSubOffice, useSubRoleOffice } from "hooks/office";
+import { useSubClub } from "hooks/club";
+import { useSubPartnership } from "hooks/partnership";
+import { useSubPoint } from "hooks/point";
+import { useSubStudent } from "hooks/student";
 
 const TabBar = createMaterialBottomTabNavigator<TabBarParamList>();
 
 export default function TabBarContainer() {
+  useSubPost();
+  useSubOffice();
+  useSubRoleOffice();
+  useSubClub();
+  useSubPartnership();
+  useSubPoint();
+  useSubStudent();
   return (
     <TabBar.Navigator>
       <TabBar.Screen

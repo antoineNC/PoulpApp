@@ -3,12 +3,14 @@ import * as SplashScreen from "expo-splash-screen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import RootContainer from "navigation/rootContainer";
-import { useAuthState } from "hooks/useAuthState";
+import { useAuthState } from "hooks/authentication";
+import { useReceiveNotification } from "hooks/notification";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const authIsDone = useAuthState(false);
+  useReceiveNotification();
 
   const onLayoutRootView = useCallback(async () => {
     if (authIsDone) {
