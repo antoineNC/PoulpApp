@@ -1,4 +1,4 @@
-import { Role } from "@types";
+import { Role } from "types/session.type";
 
 export type Office = {
   id: string;

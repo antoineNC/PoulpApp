@@ -1,5 +1,5 @@
 import { createEvent, createStore } from "effector";
-import { Point } from "@types";
+import { Point } from "types/point.type";
 
 const actionPoint = {
   setPoint: createEvent<Point[]>("GET_SCORE"),
@@ -10,7 +10,7 @@ const actionPoint = {
 const defaultPoint: Point[] = [];
 
 const $pointStore = createStore(defaultPoint)
-  .on(actionPoint.setPoint, (state, payload) => payload)
+  .on(actionPoint.setPoint, (_, payload) => payload)
   .reset(actionPoint.logout);
 
 export { $pointStore, actionPoint };

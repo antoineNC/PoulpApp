@@ -3,12 +3,12 @@ import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
 
 import { $officeStore } from "@context/officeStore";
-import { FormFieldValues } from "@types";
 import { CreateClubProps } from "@navigation/navigationTypes";
 import ClubForm from "./clubForm";
 import { useRight } from "utils/rights";
 import { ClubFormFields } from "types/club.type";
 import { createClub } from "@fb/service/club.service";
+import { FormFieldValues } from "types/form.type";
 
 export default function CreateClubScreen({
   navigation,

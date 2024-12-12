@@ -10,9 +10,9 @@ import CustomField from "components/form/formField";
 import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { colors } from "@theme";
-import { FormFieldValues } from "@types";
 import { registerUser } from "@fb/service/auth.service";
 import { actionSession } from "@context/sessionStore";
+import { FormFieldValues } from "types/form.type";
 
 type FieldNames = {
   firstName: string;

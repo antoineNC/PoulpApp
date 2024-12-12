@@ -3,7 +3,6 @@ import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
 import Spinner from "react-native-loading-spinner-overlay";
 import { $officeStore } from "@context/officeStore";
-import { FormFieldValues } from "@types";
 import CustomField from "components/form/formField";
 import { FloatingValidateBtn } from "components/validateButton";
 import { ContainerScroll } from "@styledComponents";
@@ -11,6 +10,7 @@ import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
 import { Post, PostFormFields } from "types/post.type";
+import { FormFieldValues } from "types/form.type";
 
 export const UpdatePostForm = ({
   post,

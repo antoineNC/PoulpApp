@@ -1,13 +1,13 @@
 import { ContainerScroll } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
-import { FormFieldValues } from "@types";
 import CustomField from "components/form/formField";
 import { FloatingValidateBtn } from "components/validateButton";
 import { Control, UseFormSetFocus } from "react-hook-form";
 import { View } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import { ClubFormFields } from "types/club.type";
+import { FormFieldValues } from "types/form.type";
 
 const ClubForm = ({
   create,

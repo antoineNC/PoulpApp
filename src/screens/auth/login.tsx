@@ -10,9 +10,9 @@ import CustomField from "components/form/formField";
 import { ContainerScroll as Container } from "@styledComponents";
 import { colors } from "@theme";
 import { authStyles } from "@styles";
-import { FormFieldValues } from "@types";
 import { loginUser } from "firebase/service/auth.service";
 import { actionSession } from "@context/sessionStore";
+import { FormFieldValues } from "types/form.type";
 
 type FieldNames = {
   email: string;

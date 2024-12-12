@@ -1,6 +1,6 @@
-import { Role } from "@types";
 import { getApp } from "firebase/app";
 import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
+import { Role } from "types/session.type";
 
 const app = getApp();
 const db = getFirestore(app);

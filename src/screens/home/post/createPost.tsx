@@ -7,13 +7,13 @@ import { CreatePostProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import CustomField from "components/form/formField";
 import { ContainerScroll } from "@styledComponents";
-import { FormFieldValues } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import { postTags } from "data";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PostFormFields } from "types/post.type";
 import { createPost } from "@fb/service/post.service";
+import { FormFieldValues } from "types/form.type";
 
 export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const { officeList } = useUnit($officeStore);

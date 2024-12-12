@@ -19,10 +19,10 @@ import {
   uploadImage,
 } from "@fb/service/storage.service";
 import { storageUrl } from "@fb-config";
-import { Partnership } from "@types";
 import {
   CreatePartnershipFields,
   FirestorePartnership,
+  Partnership,
   PartnershipFormFields,
   UpdatePartnershipFields,
 } from "types/partnership.type";

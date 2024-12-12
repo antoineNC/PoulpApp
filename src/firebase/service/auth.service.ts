@@ -51,12 +51,14 @@ async function registerUser({
       email,
       password
     );
-    await createStudent({
-      id: userCredential.user.uid,
-      firstName,
-      lastName,
-      mail: email,
-    });
+    await createStudent(
+      {
+        firstName,
+        lastName,
+        mail: email,
+      },
+      userCredential.user.uid
+    );
     return getCurrentUser(userCredential.user.uid);
   } catch (e: any) {
     throw new Error(`[signup] ${e}`);

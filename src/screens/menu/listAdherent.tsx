@@ -2,17 +2,16 @@ import { useState } from "react";
 import { Alert, FlatList } from "react-native";
 import { useUnit } from "effector-react";
 import { Checkbox, Searchbar } from "react-native-paper";
-import { useStudent } from "firebase/api";
 import { $studentStore } from "@context/studentStore";
 import { Container } from "@styledComponents";
 import { colors } from "@theme";
 import { $sessionStore } from "@context/sessionStore";
 import Spinner from "react-native-loading-spinner-overlay";
+import { updateStudentAdhesion } from "@fb/service/student.service";
 
 export default function ListAdherent() {
-  const { setStudentAdhesion } = useStudent();
-  const { user } = useUnit($sessionStore);
-  const officeId = user.id;
+  const { userId } = useUnit($sessionStore);
+  const officeId = userId;
   const studentList = useUnit($studentStore);
   const [loading, setLoading] = useState(false);
   const sortedStudentList = studentList.sort((studA, studB) =>
@@ -31,7 +30,7 @@ export default function ListAdherent() {
   const onSubmit = async (studentId: string, isAdherent: boolean) => {
     setLoading(true);
     try {
-      await setStudentAdhesion(officeId, studentId, isAdherent);
+      await updateStudentAdhesion(officeId, studentId, isAdherent);
     } finally {
       setLoading(false);
     }

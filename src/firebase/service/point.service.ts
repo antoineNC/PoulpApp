@@ -11,7 +11,7 @@ import {
   query,
   updateDoc,
 } from "firebase/firestore";
-import { Point, PointsFieldNames } from "@types";
+import { Point, PointsFieldNames } from "types/point.type";
 
 const app = getApp();
 const db = getFirestore(app);

@@ -3,7 +3,6 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Checkbox, HelperText, Switch } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Container, Row, Text } from "@styledComponents";
-import { DatePickerValues } from "@types";
 import {
   displayDateFromTimestamp,
   formatDay,
@@ -13,6 +12,7 @@ import { colors } from "@theme";
 import { Timestamp } from "firebase/firestore";
 import { FieldValues } from "react-hook-form";
 import { FieldInputProps } from "utils/formUtils";
+import { DatePickerValues } from "types/date.type";
 
 export function DateTimeFormPicker<T extends FieldValues>({
   field: { value, onChange },
@@ -138,7 +138,7 @@ export function DateTimeFormPicker<T extends FieldValues>({
             {picker?.showStart && (
               <DateTimePicker
                 value={startDate}
-                onChange={(e, date) => handleOnChange("start", date)}
+                onChange={(_, date) => handleOnChange("start", date)}
                 mode={picker.mode}
                 is24Hour
               />
@@ -176,7 +176,7 @@ export function DateTimeFormPicker<T extends FieldValues>({
                 {picker?.showEnd && (
                   <DateTimePicker
                     value={endDate}
-                    onChange={(e, date) => handleOnChange("end", date)}
+                    onChange={(_, date) => handleOnChange("end", date)}
                     mode={picker.mode}
                     is24Hour
                   />

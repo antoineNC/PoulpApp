@@ -20,9 +20,9 @@ import {
 import { officeStyles } from "@styles";
 import { displayDateFromDate } from "utils/dateUtils";
 import { useRight } from "utils/rights";
-import { DateType } from "@types";
 import { $officeStore } from "@context/officeStore";
 import { PostItemProps } from "types/post.type";
+import { DateType } from "types/date.type";
 
 export const PostItem = ({
   post,

@@ -1,5 +1,6 @@
-import { Role, SessionType, Student } from "@types";
 import { createEvent, createStore } from "effector";
+import { Role, SessionType } from "types/session.type";
+import { Student } from "types/student.type";
 
 export const actionSession = {
   login: createEvent<{ userId: string; role: Role }>("LOGIN"),

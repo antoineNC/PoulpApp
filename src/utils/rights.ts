@@ -1,6 +1,6 @@
 import { $sessionStore } from "@context/sessionStore";
-import { Role } from "@types";
 import { useUnit } from "effector-react";
+import { Role } from "types/session.type";
 
 const MODULES = ["POST", "POINT", "OFFICE", "CLUB"] as const;
 const RIGHTS = ["CREATE", "UPDATE", "DELETE", "DISPLAY"] as const;
@@ -56,7 +56,7 @@ const rights: { [key in Role]: { [key in Module]: Right[] } } = {
 };
 
 export const useRight = () => {
-  const { user, role } = useUnit($sessionStore);
+  const { userId, role } = useUnit($sessionStore);
   const isAdmin = role === "ADMIN";
   const isOffice = ["BDE", "I2C", "BDA", "BDS"].includes(role);
   const isStudent = role === "STUDENT";
@@ -66,7 +66,7 @@ export const useRight = () => {
         ["POST", "OFFICE"].includes(module) &&
         ["UPDATE", "DELETE"].includes(right)
       ) {
-        if (officeId === user.id || isAdmin) {
+        if (officeId === userId || isAdmin) {
           return true;
         } else return false;
       }

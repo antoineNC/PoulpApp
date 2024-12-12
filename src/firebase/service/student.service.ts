@@ -1,4 +1,3 @@
-import { Student } from "@types";
 import { getApp } from "firebase/app";
 import {
   arrayRemove,
@@ -13,6 +12,11 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+import {
+  CreateStudentArgs,
+  FirestoreStudent,
+  Student,
+} from "types/student.type";
 
 const app = getApp();
 const db = getFirestore(app);
@@ -23,7 +27,7 @@ function subscribeAllStudent(setState: (studentList: Student[]) => void) {
     const q = query(userCollection, where("role", "==", "STUDENT"));
     return onSnapshot(q, async (snapshot) => {
       const allStudent = snapshot.docs.map((studentDoc) => {
-        const studentData = studentDoc.data();
+        const studentData = studentDoc.data() as FirestoreStudent;
         const student: Student = {
           id: studentDoc.id,
           mail: studentData.mail,
@@ -35,7 +39,7 @@ function subscribeAllStudent(setState: (studentList: Student[]) => void) {
       });
       setState(allStudent);
     });
-  } catch (e: any) {
+  } catch (e) {
     throw new Error(`[subscribeAllStudent] ${e}`);
   }
 }
@@ -63,22 +67,10 @@ async function getStudent(id: string) {
   }
 }
 
-async function createStudent({
-  id,
-  firstName,
-  lastName,
-  mail,
-}: {
-  id: string;
-  firstName: string;
-  lastName: string;
-  mail: string;
-}) {
+async function createStudent(props: CreateStudentArgs, userId: string) {
   try {
-    await setDoc(doc(userCollection, id), {
-      firstName,
-      lastName,
-      mail,
+    await setDoc(doc(userCollection, userId), {
+      ...props,
       role: "STUDENT",
       adhesion: [],
     });
@@ -90,7 +82,7 @@ async function createStudent({
 async function updateStudentAdhesion(
   officeId: string,
   studentId: string,
-  isNowAdherent: boolean
+  isAdherent: boolean
 ) {
   try {
     const studentRef = doc(userCollection, studentId);
@@ -98,21 +90,15 @@ async function updateStudentAdhesion(
     if (!studentDoc.exists()) {
       throw Error(`L'étudiant.e ${studentId} n'existe pas.`);
     }
-    const hasChanged =
-      (studentDoc.data().adhesion?.includes(officeId) && !isNowAdherent) ||
-      (!studentDoc.data().adhesion?.includes(officeId) && isNowAdherent);
-
-    if (hasChanged) {
-      if (isNowAdherent) {
-        await updateDoc(studentRef, { adhesion: arrayUnion(officeId) });
-      } else {
-        await updateDoc(studentRef, {
-          adhesion: arrayRemove(officeId),
-        });
-      }
+    if (isAdherent) {
+      await updateDoc(studentRef, { adhesion: arrayUnion(officeId) });
+    } else {
+      await updateDoc(studentRef, {
+        adhesion: arrayRemove(officeId),
+      });
     }
   } catch (e) {
-    console.error("[set student adhesion]", e);
+    throw new Error("[set student adhesion]: " + e);
   }
 }
 

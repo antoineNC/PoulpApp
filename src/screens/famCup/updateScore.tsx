@@ -8,11 +8,11 @@ import { colors } from "@theme";
 import { officeStyles } from "@styles";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PointInputController } from "components/pointInput";
-import { PointsFieldNames } from "@types";
 import { usePoint } from "firebase/api";
 import { useStoreMap } from "effector-react";
 import { $pointStore } from "@context/pointStore";
 import { DateComponent } from "components/dateScoreInput";
+import { PointsFieldNames } from "types/point.type";
 
 export default function UpdateScoreScreen({
   navigation,

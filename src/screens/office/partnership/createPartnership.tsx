@@ -3,11 +3,11 @@ import { useStoreMap, useUnit } from "effector-react";
 
 import { $officeStore } from "@context/officeStore";
 import { CreatePartnershipProps } from "@navigation/navigationTypes";
-import { FormFieldValues } from "@types";
 import PartnershipForm from "./partnershipForm";
 import { useRight } from "utils/rights";
 import { PartnershipFormFields } from "types/partnership.type";
 import { createPartnership } from "@fb/service/partnership.service";
+import { FormFieldValues } from "types/form.type";
 
 export default function CreatePartnershipScreen({
   navigation,

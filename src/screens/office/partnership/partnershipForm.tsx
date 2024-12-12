@@ -8,7 +8,6 @@ import {
 import { ContainerScroll, Text } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
-import { FormFieldValues } from "@types";
 import CustomField from "components/form/formField";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
@@ -19,6 +18,7 @@ import {
 } from "react-hook-form";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PartnershipFormFields } from "types/partnership.type";
+import { FormFieldValues } from "types/form.type";
 
 const PartnershipForm = ({
   create,

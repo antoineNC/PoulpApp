@@ -6,8 +6,8 @@ import { UpdateClubProps } from "@navigation/navigationTypes";
 import ClubForm from "./clubForm";
 import { useRight } from "utils/rights";
 import { ClubFormFields } from "types/club.type";
-import { FormFieldValues } from "@types";
 import { updateClub } from "@fb/service/club.service";
+import { FormFieldValues } from "types/form.type";
 
 export default function UpdateClubScreen({
   navigation,

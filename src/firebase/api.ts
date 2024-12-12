@@ -7,20 +7,14 @@ import {
   updateDoc,
   deleteDoc,
   query,
-  where,
   orderBy,
   onSnapshot,
-  arrayUnion,
-  arrayRemove,
 } from "firebase/firestore";
-
-import { actionStudent } from "@context/studentStore";
-import { Point, PointsFieldNames, Student } from "@types";
 import { actionPoint } from "@context/pointStore";
 import { getApp } from "firebase/app";
+import { Point, PointsFieldNames } from "types/point.type";
 const app = getApp();
 const db = getFirestore(app);
-const userCollection = collection(db, "Users");
 const pointCollection = collection(db, "Point");
 
 // export const subscribeUserState = (observer: (user: User | null) => void) => {
@@ -716,83 +710,83 @@ const pointCollection = collection(db, "Point");
 //   };
 // };
 
-export const useStudent = () => {
-  const getAllStudent = async () => {
-    try {
-      const q = query(userCollection, where("role", "==", "STUDENT"));
-      onSnapshot(q, async (snapshot) => {
-        const allStudent = snapshot.docs.map((doc) => {
-          const studentData = doc.data();
-          const student: Student = {
-            id: doc.id,
-            mail: studentData.mail,
-            firstName: studentData.firstName,
-            lastName: studentData.lastName,
-            adhesion: studentData.adhesion,
-          };
-          return student;
-        });
-        actionStudent.setAllStudent(allStudent);
-      });
-    } catch (e: any) {
-      throw Error(`[getAllStudent] ${e}\n`);
-    }
-  };
+// export const useStudent = () => {
+//   const getAllStudent = async () => {
+//     try {
+//       const q = query(userCollection, where("role", "==", "STUDENT"));
+//       onSnapshot(q, async (snapshot) => {
+//         const allStudent = snapshot.docs.map((doc) => {
+//           const studentData = doc.data();
+//           const student: Student = {
+//             id: doc.id,
+//             mail: studentData.mail,
+//             firstName: studentData.firstName,
+//             lastName: studentData.lastName,
+//             adhesion: studentData.adhesion,
+//           };
+//           return student;
+//         });
+//         actionStudent.setAllStudent(allStudent);
+//       });
+//     } catch (e: any) {
+//       throw Error(`[getAllStudent] ${e}\n`);
+//     }
+//   };
 
-  const getStudent = async (id: string) => {
-    try {
-      const snapshot = await getDoc(doc(userCollection, id));
-      if (!snapshot.exists()) {
-        throw Error(`L'étudiant.e ${id} n'existe pas.`);
-      }
-      const studentData = snapshot.data();
-      if (studentData.role !== "STUDENT") {
-        throw Error(`L'étudiant.e ${id} n'existe pas.`);
-      }
-      const student: Student = {
-        id: snapshot.id,
-        firstName: studentData.firstName,
-        lastName: studentData.lastName,
-        mail: studentData.mail,
-        adhesion: studentData.adhesion,
-      };
-      return student;
-    } catch (e) {
-      console.error("[get student]", e);
-    }
-  };
+//   const getStudent = async (id: string) => {
+//     try {
+//       const snapshot = await getDoc(doc(userCollection, id));
+//       if (!snapshot.exists()) {
+//         throw Error(`L'étudiant.e ${id} n'existe pas.`);
+//       }
+//       const studentData = snapshot.data();
+//       if (studentData.role !== "STUDENT") {
+//         throw Error(`L'étudiant.e ${id} n'existe pas.`);
+//       }
+//       const student: Student = {
+//         id: snapshot.id,
+//         firstName: studentData.firstName,
+//         lastName: studentData.lastName,
+//         mail: studentData.mail,
+//         adhesion: studentData.adhesion,
+//       };
+//       return student;
+//     } catch (e) {
+//       console.error("[get student]", e);
+//     }
+//   };
 
-  const setStudentAdhesion = async (
-    officeId: string,
-    studentId: string,
-    isAdherent: boolean
-  ) => {
-    try {
-      const studentRef = doc(userCollection, studentId);
-      const studentDoc = await getDoc(studentRef);
-      if (!studentDoc.exists()) {
-        throw Error(`L'étudiant.e ${studentId} n'existe pas.`);
-      }
-      const hasChanged =
-        (studentDoc.data().adhesion?.includes(officeId) && !isAdherent) ||
-        (!studentDoc.data().adhesion?.includes(officeId) && isAdherent);
+//   const setStudentAdhesion = async (
+//     officeId: string,
+//     studentId: string,
+//     isAdherent: boolean
+//   ) => {
+//     try {
+//       const studentRef = doc(userCollection, studentId);
+//       const studentDoc = await getDoc(studentRef);
+//       if (!studentDoc.exists()) {
+//         throw Error(`L'étudiant.e ${studentId} n'existe pas.`);
+//       }
+//       const hasChanged =
+//         (studentDoc.data().adhesion?.includes(officeId) && !isAdherent) ||
+//         (!studentDoc.data().adhesion?.includes(officeId) && isAdherent);
 
-      if (hasChanged) {
-        if (isAdherent) {
-          await updateDoc(studentRef, { adhesion: arrayUnion(officeId) });
-        } else {
-          await updateDoc(studentRef, {
-            adhesion: arrayRemove(officeId),
-          });
-        }
-      }
-    } catch (e) {
-      console.error("[set student adhesion]", e);
-    }
-  };
+//       if (hasChanged) {
+//         if (isAdherent) {
+//           await updateDoc(studentRef, { adhesion: arrayUnion(officeId) });
+//         } else {
+//           await updateDoc(studentRef, {
+//             adhesion: arrayRemove(officeId),
+//           });
+//         }
+//       }
+//     } catch (e) {
+//       console.error("[set student adhesion]", e);
+//     }
+//   };
 
-  return { getAllStudent, getStudent, setStudentAdhesion };
-};
+//   return { getAllStudent, getStudent, setStudentAdhesion };
+// };
 
 export const usePoint = () => {
   const getAllPoint = async () => {

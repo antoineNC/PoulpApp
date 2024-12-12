@@ -7,12 +7,12 @@ import {
   Path,
   ResolverOptions,
 } from "react-hook-form";
-import { FormFieldOptions, FormFieldType } from "@types";
 import { DateTimeFormPicker } from "components/form/dateTimePicker";
 import { TextInputForm } from "components/form/textInput";
 import { ChipInputForm } from "components/form/chipInput";
 import { SelectInputForm } from "components/form/selectInput";
 import { ImagePickerForm } from "components/form/imagePicker";
+import { FormFieldOptions, FormFieldType } from "types/form.type";
 
 export type ControlFieldProps<T extends FieldValues> = {
   control: Control<T>;
