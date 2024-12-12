@@ -3,25 +3,21 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Checkbox, HelperText, Switch } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Container, Row, Text } from "@styledComponents";
-import {
-  displayDateFromTimestamp,
-  formatDay,
-  formatHour,
-} from "utils/dateUtils";
+import { displayDateFromDate, formatDay, formatHour } from "utils/dateUtils";
 import { colors } from "@theme";
-import { Timestamp } from "firebase/firestore";
 import { FieldValues } from "react-hook-form";
 import { FieldInputProps } from "utils/formUtils";
 import { DatePickerValues } from "types/date.type";
+import React from "react";
 
 export function DateTimeFormPicker<T extends FieldValues>({
   field: { value, onChange },
   fieldState: { error },
   options,
 }: FieldInputProps<T>) {
-  const startEqualsEnd = value ? displayDateFromTimestamp(value).allday : false;
-  const startDate = value?.start.toDate() || new Date();
-  const endDate = value?.end.toDate() || new Date();
+  const startEqualsEnd = value ? displayDateFromDate(value).allday : false;
+  const startDate: Date = value?.start || new Date();
+  const endDate: Date = value?.end || new Date();
   const [picker, setPicker] = useState<DatePickerValues>({
     mode: "date",
     showStart: false,
@@ -31,8 +27,8 @@ export function DateTimeFormPicker<T extends FieldValues>({
   const [isDate, setIsDate] = useState(value ? true : false);
   const handleOnChange = (period: "start" | "end", date?: Date) => {
     onChange({
-      start: Timestamp.fromDate(period === "start" && date ? date : startDate),
-      end: Timestamp.fromDate(period === "end" && date ? date : endDate),
+      start: period === "start" && date ? date : startDate,
+      end: period === "end" && date ? date : endDate,
     });
     setPicker((prev) => ({ ...prev, showEnd: false, showStart: false }));
   };
@@ -40,8 +36,8 @@ export function DateTimeFormPicker<T extends FieldValues>({
     onChange(
       value
         ? {
-            start: Timestamp.fromDate(startDate),
-            end: Timestamp.fromDate(endDate),
+            start: startDate,
+            end: endDate,
           }
         : undefined
     );
@@ -50,8 +46,8 @@ export function DateTimeFormPicker<T extends FieldValues>({
   const handleAllday = () => {
     // la condition est inversée puisqu'on prend la valeur avant update
     onChange({
-      start: Timestamp.fromDate(startDate),
-      end: Timestamp.fromDate(allDay ? endDate : startDate),
+      start: startDate,
+      end: allDay ? endDate : startDate,
     });
     setAllDay(!allDay);
   };

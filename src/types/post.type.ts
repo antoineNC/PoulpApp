@@ -8,8 +8,8 @@ export type Post = {
   imageUrl?: string;
   tags?: string[];
   date?: {
-    start: Date;
-    end: Date;
+    start?: Date;
+    end?: Date;
   };
 };
 
@@ -21,8 +21,8 @@ export type FirestorePost = {
   imageId?: string;
   tags?: string[];
   date?: {
-    start: Timestamp;
-    end: Timestamp;
+    start?: Timestamp;
+    end?: Timestamp;
   };
 };
 

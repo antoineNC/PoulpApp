@@ -117,8 +117,7 @@ async function createPost(props: PostFormFields) {
     title: props.title,
     editorId: props.editor.value,
     createdAt: Timestamp.now(),
-    description: props.description,
-    tags: props.tags,
+    date: {},
   };
   try {
     if (props.imageFile) {

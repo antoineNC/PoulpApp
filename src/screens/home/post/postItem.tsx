@@ -45,8 +45,11 @@ export const PostItem = ({
   });
 
   useEffect(() => {
-    if (post.date) {
-      const result = displayDateFromDate(post.date);
+    if (post.date?.start && post.date.end) {
+      const result = displayDateFromDate({
+        start: post.date.start,
+        end: post.date.end,
+      });
       setAllDay(result.allday);
       setDate(result.date);
     }
@@ -89,7 +92,7 @@ export const PostItem = ({
             </Row>
           </View>
         </Row>
-        {post.date && (
+        {post.date?.start && (
           <Row>
             <BodyTitle>Date : </BodyTitle>
             <Container style={officeStyles.borderRounded}>
