@@ -54,8 +54,8 @@ const postMapping = async (
     imageUrl,
     tags: postData.tags,
     date: postData.date && {
-      start: postData.date.start.toDate(),
-      end: postData.date.end.toDate(),
+      start: postData.date.start?.toDate(),
+      end: postData.date.end?.toDate(),
     },
   };
   return post;
