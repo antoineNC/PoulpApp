@@ -14,16 +14,20 @@ import { FeedProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
 import Spinner from "react-native-loading-spinner-overlay";
 import { colors } from "@theme";
-import { Post } from "types/post.type";
 import { deletePost, getMorePost } from "@fb/service/post.service";
+import { useUnit } from "effector-react";
+import { $postStore, actionPost } from "@context/postStore";
+import { useSubPost } from "hooks/post";
 
 export default function FeedScreen({ navigation }: FeedProps) {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [lastPostId, setLastPostId] = useState<string>();
+  const { posts, lastVisibleId } = useUnit($postStore);
   const { hasRight } = useRight();
   const [isExtended, setIsExtended] = useState(true);
+  const [reload, setReload] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useSubPost(reload);
 
   const onScroll = ({
     nativeEvent,
@@ -35,22 +39,21 @@ export default function FeedScreen({ navigation }: FeedProps) {
   };
 
   const onEndReachedHandle = async () => {
-    if (lastPostId) {
-      const { postList: morePosts, lastVisibleId } = await getMorePost(
-        lastPostId
+    if (lastVisibleId) {
+      const { postList, lastVisibleId: newLastVisibleId } = await getMorePost(
+        lastVisibleId
       );
-      setPosts((prev) => [...prev, ...morePosts]);
-      setLastPostId(lastVisibleId);
+      actionPost.setMorePost({
+        posts: postList,
+        lastVisibleId: newLastVisibleId,
+      });
     }
   };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    try {
-      // TODO : refresh posts
-    } finally {
-      setRefreshing(false);
-    }
+    setReload((value) => !value);
+    setTimeout(() => setRefreshing(false), 1000);
   }, []);
 
   const onPressOffice = (officeId: string) =>
