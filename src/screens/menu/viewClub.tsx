@@ -9,7 +9,12 @@ export default function ViewClubMenuScreen({
   return (
     <ClubDisplay
       id={clubId}
-      onPress={(officeId) => navigation.navigate("viewOffice", { officeId })}
+      onPress={(officeId) =>
+        navigation.navigate("officeContainer", {
+          screen: "viewOffice",
+          params: { officeId },
+        })
+      }
     />
   );
 }

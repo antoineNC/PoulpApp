@@ -5,11 +5,11 @@ import { useEffect } from "react";
 export function useSubPartnership() {
   useEffect(() => {
     subscribeAllPartnership((partnerList) =>
-      actionOffice.setAllClub(partnerList)
+      actionOffice.setAllPartnership(partnerList)
     );
     return () => {
       subscribeAllPartnership((partnerList) =>
-        actionOffice.setAllClub(partnerList)
+        actionOffice.setAllPartnership(partnerList)
       );
     };
   }, []);

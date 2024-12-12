@@ -112,9 +112,9 @@ export type MenuTabScreenProps<T extends keyof MenuTabParamList> =
 export type MenuProps = MenuTabScreenProps<"menu">;
 export type CalendarMenuProps = MenuTabScreenProps<"calendar">;
 export type ListClubProps = MenuTabScreenProps<"listClub">;
-export type ViewClubMenuProps = OfficeTabScreenProps<"viewClub">;
+export type ViewClubMenuProps = MenuTabScreenProps<"viewClub">;
 export type ListPartnershipProps = MenuTabScreenProps<"listPartnership">;
-export type ViewPartnershipMenuProps = OfficeTabScreenProps<"viewPartnership">;
+export type ViewPartnershipMenuProps = MenuTabScreenProps<"viewPartnership">;
 
 declare global {
   namespace ReactNavigation {
