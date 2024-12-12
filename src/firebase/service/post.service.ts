@@ -167,6 +167,8 @@ async function updatePost(props: PostFormFields, id: string) {
         if (postData.imageId) {
           deleteObject(ref(imgPostRef, postData.imageId));
         }
+      } else {
+        delete updatedFields.imageId;
       }
     } else {
       if (postData.imageId) {

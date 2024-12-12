@@ -108,6 +108,8 @@ async function updateClub(props: ClubFormFields, id: string) {
         if (clubData.logoId) {
           deleteObject(ref(assetsRef, clubData.logoId));
         }
+      } else {
+        delete updatedFields.logoId;
       }
     } else {
       if (clubData.logoId) {

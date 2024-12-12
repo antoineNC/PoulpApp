@@ -116,6 +116,8 @@ async function updatePartnership(props: PartnershipFormFields, id: string) {
         if (partnerData.logoId) {
           deleteObject(ref(assetsRef, partnerData.logoId));
         }
+      } else {
+        delete updatedFields.logoId;
       }
     } else {
       if (partnerData.logoId) {

@@ -87,6 +87,8 @@ async function updateOffice(props: OfficeFormFields, id: string) {
         if (officeData.logoId) {
           deleteObject(ref(assetsRef, officeData.logoId));
         }
+      } else {
+        delete updatedFields.logoId;
       }
     } else {
       if (officeData.logoId) {
