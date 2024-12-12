@@ -9,14 +9,13 @@ import { colors } from "@theme";
 import { officeStyles } from "@styles";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PointInputController } from "components/pointInput";
-import { usePoint } from "firebase/api";
 import { DateComponent } from "components/dateScoreInput";
-import { PointsFieldNames } from "types/point.type";
+import { PointsFormFields } from "types/point.type";
+import { createPoint } from "@fb/service/point.service";
 
 export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
-  const { createPoint } = usePoint();
   const [loading, setLoading] = useState(false);
-  const { control, handleSubmit } = useForm<PointsFieldNames>({
+  const { control, handleSubmit } = useForm<PointsFormFields>({
     defaultValues: {
       date: Timestamp.now(),
       title: "",
@@ -28,7 +27,7 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
     },
   });
 
-  const pointsFieldValues: { name: keyof PointsFieldNames; label: string }[] = [
+  const pointsFieldValues: { name: keyof PointsFormFields; label: string }[] = [
     { name: "blue", label: "Bleu" },
     { name: "yellow", label: "Jaune" },
     { name: "orange", label: "Orange" },
@@ -36,10 +35,11 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
     { name: "green", label: "Vert" },
   ];
 
-  const onSubmit = async (data: PointsFieldNames) => {
+  const onSubmit = async (data: PointsFormFields) => {
     try {
-      const formattedData: PointsFieldNames = {
-        ...data,
+      const formattedData: PointsFormFields = {
+        title: data.title,
+        date: data.date,
         blue: Number(data.blue),
         yellow: Number(data.yellow),
         orange: Number(data.orange),
@@ -47,9 +47,9 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
         green: Number(data.green),
       };
       setLoading(true);
-      await createPoint({ ...formattedData });
+      await createPoint(formattedData);
     } catch (e) {
-      console.error("[create score]", e);
+      throw new Error("[create score]: " + e);
     } finally {
       setLoading(false);
       navigation.goBack();

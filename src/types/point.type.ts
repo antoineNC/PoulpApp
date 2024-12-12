@@ -11,7 +11,7 @@ export type Point = {
   green: number;
 };
 
-export type PointsFieldNames = {
+export type PointsFormFields = {
   title: string;
   date: Timestamp;
   blue: number;

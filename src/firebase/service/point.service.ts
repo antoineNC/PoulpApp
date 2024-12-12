@@ -11,7 +11,7 @@ import {
   query,
   updateDoc,
 } from "firebase/firestore";
-import { Point, PointsFieldNames } from "types/point.type";
+import { Point, PointsFormFields } from "types/point.type";
 
 const app = getApp();
 const db = getFirestore(app);
@@ -43,11 +43,11 @@ function subscribeAllPoint(setState: (officeList: Point[]) => void) {
       setState(allPointResolved);
     });
   } catch (e: any) {
-    throw new Error(`[get points] ${e}\n`);
+    throw new Error(`[get points] ${e}`);
   }
 }
 
-async function createPoint(props: PointsFieldNames) {
+async function createPoint(props: PointsFormFields) {
   const pointFields = {
     title: props.title,
     date: props.date,
@@ -64,11 +64,11 @@ async function createPoint(props: PointsFieldNames) {
   }
 }
 
-async function updatePoint(props: PointsFieldNames, id: string) {
+async function updatePoint(props: PointsFormFields, id: string) {
   try {
     const pointRef = doc(pointCollection, id);
-    const snapshot = await getDoc(pointRef);
-    if (!snapshot.exists()) {
+    const pointDoc = await getDoc(pointRef);
+    if (!pointDoc.exists()) {
       throw "Cet élément n'existe pas";
     }
     const updatedFields = {
@@ -89,8 +89,8 @@ async function updatePoint(props: PointsFieldNames, id: string) {
 async function deletePoint(idPoint: string) {
   try {
     const pointRef = doc(pointCollection, idPoint);
-    const snapshot = await getDoc(pointRef);
-    if (snapshot.exists()) {
+    const pointDoc = await getDoc(pointRef);
+    if (pointDoc.exists()) {
       await deleteDoc(pointRef);
     }
   } catch (e) {
