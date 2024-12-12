@@ -13,6 +13,7 @@ import {
 } from "@styledComponents";
 import { officeStyles } from "@styles";
 import { colors } from "@theme";
+import React from "react";
 
 export default function ViewOfficeScreen({
   navigation,

@@ -13,6 +13,7 @@ import { ChipInputForm } from "components/form/chipInput";
 import { SelectInputForm } from "components/form/selectInput";
 import { ImagePickerForm } from "components/form/imagePicker";
 import { FormFieldOptions, FormFieldType } from "types/form.type";
+import React from "react";
 
 export type ControlFieldProps<T extends FieldValues> = {
   control: Control<T>;

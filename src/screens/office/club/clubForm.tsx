@@ -3,6 +3,7 @@ import { authStyles, officeStyles } from "@styles";
 import { colors } from "@theme";
 import CustomField from "components/form/formField";
 import { FloatingValidateBtn } from "components/validateButton";
+import React from "react";
 import { Control, UseFormSetFocus } from "react-hook-form";
 import { View } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";

@@ -12,6 +12,7 @@ import { PointInputController } from "components/pointInput";
 import { DateComponent } from "components/dateScoreInput";
 import { PointsFormFields } from "types/point.type";
 import { createPoint } from "@fb/service/point.service";
+import React from "react";
 
 export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
   const [loading, setLoading] = useState(false);

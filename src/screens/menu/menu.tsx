@@ -1,6 +1,7 @@
 import { signoutUser } from "@fb/service/auth.service";
 import { MenuProps } from "@navigation/navigationTypes";
 import { ContainerScroll, Row, Text } from "@styledComponents";
+import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Divider, Icon } from "react-native-paper";
 import { useRight } from "utils/rights";

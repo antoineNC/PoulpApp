@@ -5,9 +5,10 @@ import { Dropdown } from "react-native-element-dropdown";
 import { FieldInputProps } from "utils/formUtils";
 import { Text } from "@styledComponents";
 import { colors } from "@theme";
+import React from "react";
 
 export function SelectInputForm<T extends FieldValues>({
-  field: { onBlur, onChange, ref, value },
+  field: { onBlur, onChange, value },
   fieldState: { error },
   label,
   options,

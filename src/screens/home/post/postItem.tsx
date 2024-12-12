@@ -23,6 +23,7 @@ import { useRight } from "utils/rights";
 import { $officeStore } from "@context/officeStore";
 import { PostItemProps } from "types/post.type";
 import { DateType } from "types/date.type";
+import React from "react";
 
 export const PostItem = ({
   post,

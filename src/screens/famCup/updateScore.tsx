@@ -13,6 +13,7 @@ import { $pointStore } from "@context/pointStore";
 import { DateComponent } from "components/dateScoreInput";
 import { PointsFormFields } from "types/point.type";
 import { updatePoint } from "@fb/service/point.service";
+import React from "react";
 
 export default function UpdateScoreScreen({
   navigation,

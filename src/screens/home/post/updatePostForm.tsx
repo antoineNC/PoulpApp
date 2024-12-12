@@ -11,6 +11,7 @@ import { colors } from "@theme";
 import { postTags } from "data";
 import { Post, PostFormFields } from "types/post.type";
 import { FormFieldValues } from "types/form.type";
+import React from "react";
 
 export const UpdatePostForm = ({
   post,

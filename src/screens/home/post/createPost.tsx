@@ -14,6 +14,7 @@ import { FloatingValidateBtn } from "components/validateButton";
 import { PostFormFields } from "types/post.type";
 import { createPost } from "@fb/service/post.service";
 import { FormFieldValues } from "types/form.type";
+import React from "react";
 
 export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const { officeList } = useUnit($officeStore);
