@@ -65,11 +65,11 @@ async function createPartnership(props: PartnershipFormFields) {
   const partnerFields: CreatePartnershipFields = {
     name: props.name,
     officeId: props.office.value,
-    description: props.description,
-    address: props.address,
-    addressMap: props.addressMap,
-    logoId: props.logoFile,
-    benefits: props.benefits?.map(({ value }) => value),
+    description: props.description || "",
+    address: props.address || "",
+    addressMap: props.addressMap || "",
+    logoId: props.logoFile || "",
+    benefits: props.benefits?.map(({ value }) => value) || [],
   };
   try {
     if (props.logoFile) {

@@ -117,6 +117,9 @@ async function createPost(props: PostFormFields) {
     title: props.title,
     editorId: props.editor.value,
     createdAt: Timestamp.now(),
+    description: props.description || "",
+    tags: props.tags || [],
+    imageId: "",
     date: {},
   };
   try {
@@ -135,7 +138,7 @@ async function createPost(props: PostFormFields) {
     }
     await addDoc(postCollection, createFields);
   } catch (e) {
-    throw new Error("[createPost]: " + e);
+    throw new Error("[create post]: " + e);
   }
 }
 

@@ -61,9 +61,9 @@ async function createClub(props: ClubFormFields) {
   const clubFields: CreateClubFields = {
     name: props.name,
     officeId: props.office.value,
-    contact: props.contact,
-    description: props.description,
-    logoId: props.logoFile,
+    contact: props.contact || "",
+    description: props.description || "",
+    logoId: props.logoFile || "",
   };
   try {
     if (props.logoFile) {
