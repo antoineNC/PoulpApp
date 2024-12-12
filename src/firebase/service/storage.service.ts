@@ -1,3 +1,4 @@
+import { app } from "@fb-config";
 import {
   getDownloadURL,
   getStorage,
@@ -7,7 +8,7 @@ import {
 } from "firebase/storage";
 import uuid from "react-native-uuid";
 
-const storage = getStorage();
+const storage = getStorage(app);
 
 export const assetsRef = ref(storage, "Assets");
 export const imgPostRef = ref(storage, "ImgPosts");

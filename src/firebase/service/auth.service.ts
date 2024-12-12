@@ -1,15 +1,13 @@
+import { auth } from "@fb-config";
 import {
   User,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
   createUserWithEmailAndPassword,
-  getAuth,
 } from "firebase/auth";
 import { getCurrentUser } from "./user.service";
 import { createStudent } from "./student.service";
-
-const auth = getAuth();
 
 function subscribeUserState(observer: (user: User | null) => void) {
   return onAuthStateChanged(auth, (user) => observer(user));
