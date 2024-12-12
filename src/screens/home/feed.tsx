@@ -69,6 +69,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
     setLoading(true);
     try {
       await deletePost(id);
+      setReload((value) => !value);
     } finally {
       setLoading(false);
     }
