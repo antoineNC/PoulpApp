@@ -1,6 +1,3 @@
-// import "ts-node/register";
-// import { ExpoConfig, ConfigContext } from "expo/config";
-// import { GOOGLE_SERVICES_FILE } from "@env";
 import "dotenv/config";
 
 export default {
