@@ -3,13 +3,13 @@ import { registerForPushNotificationsAsync } from "utils/registerForPushNotifica
 import * as Notifications from "expo-notifications";
 import { Button, View, Text } from "react-native";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: true,
-  }),
-});
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: false,
+//     shouldSetBadge: true,
+//   }),
+// });
 
 async function sendPushNotification(expoPushToken: string) {
   const message = {

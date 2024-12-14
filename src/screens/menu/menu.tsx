@@ -57,10 +57,7 @@ export default function MenuScreen({ navigation }: MenuProps) {
         onPress={() => navigation.navigate("listPartnership")}
       />
       <Divider />
-      <Item
-        text="Notifications"
-        onPress={() => navigation.navigate("notification")}
-      />
+      <Item text="Notifications" />
       <Divider />
       <Item text="Détails" />
       <Divider />
