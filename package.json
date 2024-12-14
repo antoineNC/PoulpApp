@@ -20,7 +20,7 @@
     "@shopify/react-native-skia": "^1.2.3",
     "@types/lodash": "^4.17.13",
     "dotenv": "^16.4.7",
-    "eas-cli": "^13.4.2",
+    "eas-cli": "^14.2.0",
     "effector": "^23.2.0",
     "effector-react": "^23.2.0",
     "expo": "^51.0.39",
