@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 
-import { usePartnership } from "@firebaseApi";
 import { $officeStore } from "@context/officeStore";
 import { UpdatePartnershipProps } from "@navigation/navigationTypes";
-import { FormFieldValues, PartnershipFieldNames } from "@types";
 import PartnershipForm from "./partnershipForm";
 import { useRight } from "utils/rights";
+import { PartnershipFormFields } from "types/partnership.type";
+import { updatePartnership } from "@fb/service/partnership.service";
+import { FormFieldValues } from "types/form.type";
 
 export default function UpdatePartnershipScreen({
   navigation,
   route,
 }: UpdatePartnershipProps) {
   const { partnershipId } = route.params;
-  const { updatePartnership } = usePartnership();
   const { isAdmin } = useRight();
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
@@ -25,15 +25,12 @@ export default function UpdatePartnershipScreen({
         (partner) => partner.id === partnershipId
       ),
   });
-  if (!partnership) {
-    return <></>;
-  }
   const office = useStoreMap({
     store: $officeStore,
     keys: [partnershipId],
     fn: (officeStore) =>
       officeStore.officeList.find(
-        (office) => office.id === partnership.officeId
+        (office) => office.id === partnership?.officeId
       ),
   });
   const officeChoices = officeList.map((office) => ({
@@ -41,6 +38,9 @@ export default function UpdatePartnershipScreen({
     label: office.name,
   }));
 
+  if (!partnership) {
+    return <></>;
+  }
   const defaultValues = {
     ...partnership,
     office: { label: office?.name, value: office?.id },
@@ -50,7 +50,7 @@ export default function UpdatePartnershipScreen({
     })),
   };
 
-  const fields: FormFieldValues<PartnershipFieldNames> = [
+  const fields: FormFieldValues<PartnershipFormFields> = [
     {
       name: "name",
       label: "Nom",
@@ -90,12 +90,12 @@ export default function UpdatePartnershipScreen({
     });
   }
 
-  const onSubmit = async (data: PartnershipFieldNames) => {
+  const onSubmit = async (data: PartnershipFormFields) => {
     try {
       setLoading(true);
-      await updatePartnership({ ...data }, partnershipId);
+      await updatePartnership(data, partnershipId);
     } catch (e) {
-      console.error("[updatepost]", e);
+      throw new Error("[submit update partner]: " + e);
     } finally {
       setLoading(false);
       navigation.goBack();

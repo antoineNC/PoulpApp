@@ -1,23 +1,22 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { CreateScoreProps } from "@navigation/navigationTypes";
-import { Container, Row, Text } from "@styledComponents";
+import { Container } from "@styledComponents";
 import { HelperText, TextInput } from "react-native-paper";
 import { Timestamp } from "firebase/firestore";
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import { colors } from "@theme";
 import { officeStyles } from "@styles";
-import { formatDay } from "utils/dateUtils";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PointInputController } from "components/pointInput";
-import { PointsFieldNames } from "@types";
-import { usePoint } from "@firebaseApi";
+import { DateComponent } from "components/dateScoreInput";
+import { PointsFormFields } from "types/point.type";
+import { createPoint } from "@fb/service/point.service";
+import React from "react";
 
 export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
-  const { createPoint } = usePoint();
   const [loading, setLoading] = useState(false);
-  const { control, handleSubmit } = useForm<PointsFieldNames>({
+  const { control, handleSubmit } = useForm<PointsFormFields>({
     defaultValues: {
       date: Timestamp.now(),
       title: "",
@@ -29,7 +28,7 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
     },
   });
 
-  const pointsFieldValues: { name: keyof PointsFieldNames; label: string }[] = [
+  const pointsFieldValues: { name: keyof PointsFormFields; label: string }[] = [
     { name: "blue", label: "Bleu" },
     { name: "yellow", label: "Jaune" },
     { name: "orange", label: "Orange" },
@@ -37,10 +36,11 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
     { name: "green", label: "Vert" },
   ];
 
-  const onSubmit = async (data: PointsFieldNames) => {
+  const onSubmit = async (data: PointsFormFields) => {
     try {
-      const formattedData: PointsFieldNames = {
-        ...data,
+      const formattedData: PointsFormFields = {
+        title: data.title,
+        date: data.date,
         blue: Number(data.blue),
         yellow: Number(data.yellow),
         orange: Number(data.orange),
@@ -48,9 +48,9 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
         green: Number(data.green),
       };
       setLoading(true);
-      await createPoint({ ...formattedData });
+      await createPoint(formattedData);
     } catch (e) {
-      console.error("[create score]", e);
+      throw new Error("[create score]: " + e);
     } finally {
       setLoading(false);
       navigation.goBack();
@@ -89,53 +89,9 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
         control={control}
         name="date"
         rules={{ required: true }}
-        render={({ field: { value, onChange }, fieldState: { error } }) => {
-          const date = value?.toDate();
-          const [show, setShow] = useState(false);
-          return (
-            <View
-              style={{
-                justifyContent: "center",
-                borderWidth: 0.5,
-                borderRadius: 5,
-                padding: 5,
-                marginTop: 10,
-                borderColor: error ? "red" : colors.black,
-              }}
-            >
-              <Row>
-                <Text $dark style={{ flex: 1 }}>
-                  Date :
-                </Text>
-                <Row $justify="space-evenly" style={{ flex: 5 }}>
-                  <TouchableOpacity onPress={() => setShow(true)}>
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        padding: 5,
-                        height: 50,
-                      }}
-                    >
-                      <Text $dark>{formatDay(date)}</Text>
-                    </View>
-                  </TouchableOpacity>
-                </Row>
-                {show && (
-                  <DateTimePicker
-                    value={date}
-                    mode={"date"}
-                    is24Hour={true}
-                    onChange={(e, newDate) => {
-                      setShow(false);
-                      onChange(Timestamp.fromDate(newDate || date));
-                    }}
-                  />
-                )}
-              </Row>
-              {error && <HelperText type="error">{error.message}</HelperText>}
-            </View>
-          );
-        }}
+        render={({ field: { value, onChange }, fieldState: { error } }) => (
+          <DateComponent value={value} onChange={onChange} error={error} />
+        )}
       />
       <View
         style={{

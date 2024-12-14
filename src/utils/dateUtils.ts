@@ -73,6 +73,19 @@ export const displayDateFromTimestamp = (date: {
   }
 };
 
+export const displayDateFromDate = (date: { end: Date; start: Date }) => {
+  const startDate = date.start.toUTCString();
+  const endDate = date.end.toUTCString();
+  if (startDate === endDate) {
+    const day = formatDay(startDate);
+    return { allday: true, date: { start: day, end: day } };
+  } else {
+    const start = formatAllDate(startDate);
+    const end = formatAllDate(endDate);
+    return { allday: false, date: { start, end } };
+  }
+};
+
 export const formattedToday = () => {
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, "0");

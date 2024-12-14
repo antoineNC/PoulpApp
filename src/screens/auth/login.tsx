@@ -6,12 +6,14 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Spinner from "react-native-loading-spinner-overlay";
 
 import { AuthParamList } from "@navigation/navigationTypes";
-import { useAuth } from "@firebaseApi";
 import CustomField from "components/form/formField";
 import { ContainerScroll as Container } from "@styledComponents";
 import { colors } from "@theme";
 import { authStyles } from "@styles";
-import { FormFieldValues } from "@types";
+import { loginUser } from "firebase/service/auth.service";
+import { actionSession } from "@context/sessionStore";
+import { FormFieldValues } from "types/form.type";
+import React from "react";
 
 type FieldNames = {
   email: string;
@@ -22,7 +24,6 @@ export default function LoginScreen({
   navigation,
 }: NativeStackScreenProps<AuthParamList>) {
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const { control, handleSubmit, setFocus } = useForm<FieldNames>();
 
   const values: FormFieldValues<FieldNames> = [
@@ -45,11 +46,12 @@ export default function LoginScreen({
   const onSubmit = async (data: FieldNames) => {
     setLoading(true);
     try {
-      await login(data);
-      setLoading(false);
+      const sessionCredential = await loginUser(data);
+      actionSession.login(sessionCredential);
     } catch (e: any) {
+      throw new Error("[onsubmit login] :", e);
+    } finally {
       setLoading(false);
-      throw Error("Login Error :", e);
     }
   };
 

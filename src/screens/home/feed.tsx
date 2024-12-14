@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   FlatList,
   View,
@@ -10,36 +10,24 @@ import {
 import { AnimatedFAB, Divider } from "react-native-paper";
 import { PostItem } from "@screens/home/post/postItem";
 import { Container } from "@styledComponents";
-import { usePost } from "@firebaseApi";
 import { FeedProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
-import { Post } from "@types";
-import { Timestamp } from "firebase/firestore";
 import Spinner from "react-native-loading-spinner-overlay";
 import { colors } from "@theme";
+import { deletePost, getMorePost } from "@fb/service/post.service";
+import { useUnit } from "effector-react";
+import { $postStore, actionPost } from "@context/postStore";
+import { useGetPost } from "hooks/post";
 
 export default function FeedScreen({ navigation }: FeedProps) {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [lastPostId, setLastPostId] = useState<string>();
-  const { getInitialPost, getMorePost, deletePost } = usePost();
+  const { posts, lastVisibleId } = useUnit($postStore);
   const { hasRight } = useRight();
   const [isExtended, setIsExtended] = useState(true);
+  const [reload, setReload] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const fetchInitialPosts = useCallback(() => {
-    return getInitialPost((firstPosts, lastId) => {
-      setPosts(firstPosts);
-      setLastPostId(lastId);
-    });
-  }, []);
-
-  useEffect(() => {
-    fetchInitialPosts();
-    return () => {
-      fetchInitialPosts();
-    };
-  }, []);
+  useGetPost(reload);
 
   const onScroll = ({
     nativeEvent,
@@ -51,28 +39,29 @@ export default function FeedScreen({ navigation }: FeedProps) {
   };
 
   const onEndReachedHandle = async () => {
-    lastPostId &&
-      (await getMorePost((morePosts, lastId) => {
-        setPosts((prev) => [...prev, ...morePosts]);
-        setLastPostId(lastId);
-      }, lastPostId));
+    if (lastVisibleId) {
+      const { postList, lastVisibleId: newLastVisibleId } = await getMorePost(
+        lastVisibleId
+      );
+      actionPost.setMorePost({
+        posts: postList,
+        lastVisibleId: newLastVisibleId,
+      });
+    }
   };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    try {
-      fetchInitialPosts();
-    } finally {
-      setRefreshing(false);
-    }
-  }, [fetchInitialPosts]);
+    setReload((value) => !value);
+    setTimeout(() => setRefreshing(false), 1000);
+  }, []);
 
   const onPressOffice = (officeId: string) =>
     navigation.navigate("officeContainer", {
       screen: "viewOffice",
       params: { officeId },
     });
-  const onPressCalendar = (date?: Timestamp) =>
+  const onPressCalendar = (date?: Date) =>
     navigation.navigate("calendar", { postDate: date });
   const onPressUpdate = (id: string) =>
     navigation.navigate("updatePost", { postId: id });
@@ -80,6 +69,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
     setLoading(true);
     try {
       await deletePost(id);
+      setReload((value) => !value);
     } finally {
       setLoading(false);
     }

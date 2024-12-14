@@ -5,8 +5,6 @@ import {
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { MaterialBottomTabScreenProps } from "react-native-paper";
-import { Post } from "@types";
-import { Timestamp } from "firebase/firestore";
 
 export type ScreenProps<
   T extends ParamListBase,
@@ -33,7 +31,7 @@ export type TabBarScreenProps<T extends keyof TabBarParamList> =
 // === Home tab
 export type HomeTabParamList = {
   feed: undefined;
-  calendar: { postDate?: Timestamp };
+  calendar: { postDate?: Date };
   createPost: undefined;
   updatePost: { postId: string };
 };
@@ -103,6 +101,7 @@ export type MenuTabParamList = {
   viewClub: { clubId: string };
   listPartnership: undefined;
   viewPartnership: { partnershipId: string };
+  notification: undefined;
 };
 export type MenuTabScreenProps<T extends keyof MenuTabParamList> =
   CompositeScreenProps<
@@ -113,9 +112,9 @@ export type MenuTabScreenProps<T extends keyof MenuTabParamList> =
 export type MenuProps = MenuTabScreenProps<"menu">;
 export type CalendarMenuProps = MenuTabScreenProps<"calendar">;
 export type ListClubProps = MenuTabScreenProps<"listClub">;
-export type ViewClubMenuProps = OfficeTabScreenProps<"viewClub">;
+export type ViewClubMenuProps = MenuTabScreenProps<"viewClub">;
 export type ListPartnershipProps = MenuTabScreenProps<"listPartnership">;
-export type ViewPartnershipMenuProps = OfficeTabScreenProps<"viewPartnership">;
+export type ViewPartnershipMenuProps = MenuTabScreenProps<"viewPartnership">;
 
 declare global {
   namespace ReactNavigation {

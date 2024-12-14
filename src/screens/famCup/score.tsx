@@ -18,12 +18,11 @@ import { useRight } from "utils/rights";
 import inter from "@assets/fonts/inter-variable.ttf";
 import { colors } from "@theme";
 import { Container, Row, Title2, Text } from "@styledComponents";
-import { usePoint } from "@firebaseApi";
+import { deletePoint } from "@fb/service/point.service";
 
 export default function ScoreScreen({ navigation }: ScoreProps) {
   const listPoint = useUnit($pointStore);
   const { hasRight } = useRight();
-  const { deletePoint } = usePoint();
   const font = useFont(inter, 12);
   const [isExtended, setIsExtended] = useState(true);
   const [score, setScore] = useState<{ family: string; score: number }[]>([

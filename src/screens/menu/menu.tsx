@@ -1,6 +1,7 @@
-import { useAuth } from "@firebaseApi";
+import { signoutUser } from "@fb/service/auth.service";
 import { MenuProps } from "@navigation/navigationTypes";
 import { ContainerScroll, Row, Text } from "@styledComponents";
+import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Divider, Icon } from "react-native-paper";
 import { useRight } from "utils/rights";
@@ -22,7 +23,6 @@ const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
 );
 
 export default function MenuScreen({ navigation }: MenuProps) {
-  const { signout } = useAuth();
   const { isStudent, isOffice } = useRight();
   return (
     <ContainerScroll>
@@ -61,7 +61,7 @@ export default function MenuScreen({ navigation }: MenuProps) {
       <Divider />
       <Item text="Détails" />
       <Divider />
-      <Item text="Se déconnecter" onPress={signout} />
+      <Item text="Se déconnecter" onPress={signoutUser} />
       <Divider />
     </ContainerScroll>
   );

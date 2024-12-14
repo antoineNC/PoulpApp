@@ -1,5 +1,7 @@
-import { Club, Office, Partnership, RoleOffice } from "@types";
 import { createEvent, createStore } from "effector";
+import { Club } from "types/club.type";
+import { Office, RoleOffice } from "types/office.type";
+import { Partnership } from "types/partnership.type";
 
 const actionOffice = {
   setAllOffice: createEvent<Office[]>("SET_ALL_OFFICE"),

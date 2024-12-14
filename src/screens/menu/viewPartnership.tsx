@@ -9,7 +9,12 @@ export default function ViewPartnershipMenuScreen({
   return (
     <PartnershipDisplay
       id={partnershipId}
-      onPress={(officeId) => navigation.navigate("viewOffice", { officeId })}
+      onPress={(officeId) =>
+        navigation.navigate("officeContainer", {
+          screen: "viewOffice",
+          params: { officeId },
+        })
+      }
     />
   );
 }

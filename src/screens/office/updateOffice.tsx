@@ -2,13 +2,11 @@ import { useState } from "react";
 import { FlatList, View, Alert } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useStoreMap } from "effector-react";
-import { AnimatedFAB, IconButton } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { useClub, useOffice, usePartnership } from "@firebaseApi";
 import { UpdateOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
-import { OfficeFieldNames } from "@types";
 import { authStyles, officeStyles } from "@styles";
 import { ContainerScroll, Text } from "@styledComponents";
 import { colors } from "@theme";
@@ -16,8 +14,12 @@ import { TextInputForm } from "components/form/textInput";
 import { ImagePickerForm } from "components/form/imagePicker";
 import { SmallCardItem } from "components/smallCardItem";
 import ListMemberForm from "../../components/listMemberForm";
-import { useRight } from "utils/rights";
 import { FloatingValidateBtn } from "components/validateButton";
+import { OfficeFormFields } from "types/office.type";
+import { updateOffice } from "@fb/service/office.service";
+import { deleteClub } from "@fb/service/club.service";
+import { deletePartnership } from "@fb/service/partnership.service";
+import React from "react";
 
 export default function UpdateOfficeScreen({
   navigation,
@@ -25,30 +27,21 @@ export default function UpdateOfficeScreen({
 }: UpdateOfficeProps) {
   const { officeId } = route.params;
   const [loading, setLoading] = useState(false);
-  const { updateOffice } = useOffice();
-  const { deleteClub } = useClub();
-  const { deletePartnership } = usePartnership();
-  const { hasRight } = useRight();
   const office = useStoreMap({
     store: $officeStore,
     keys: [officeId],
     fn: (officeStore) =>
       officeStore.officeList.find((office) => office.id === officeId),
   });
-
-  if (!office) {
-    return <></>;
-  }
-
   const [clubs, partnerships] = useStoreMap({
     store: $officeStore,
     keys: [officeId],
     fn: (officeStore) => {
       const clubs = officeStore.clubList.filter(
-        (club) => club.officeId === office.id
+        (club) => club.officeId === office?.id
       );
       const partnerships = officeStore.partnershipList.filter(
-        (partnership) => partnership.officeId === office.id
+        (partnership) => partnership.officeId === office?.id
       );
       return [clubs, partnerships];
     },
@@ -61,16 +54,20 @@ export default function UpdateOfficeScreen({
     setValue,
     formState: { errors },
     register,
-  } = useForm<OfficeFieldNames>({
-    defaultValues: { ...office, logoFile: office.logoUrl },
+  } = useForm<OfficeFormFields>({
+    defaultValues: { ...office, logoFile: office?.logoUrl },
   });
 
-  const onSubmit = async (data: OfficeFieldNames) => {
+  if (!office) {
+    return <></>;
+  }
+
+  const onSubmit = async (data: OfficeFormFields) => {
     try {
       setLoading(true);
-      await updateOffice({ ...data }, office.id);
+      await updateOffice(data, office.id);
     } catch (e) {
-      console.log("[updateoffice]", e);
+      throw new Error("[submit updateoffice]: " + e);
     } finally {
       setLoading(false);
       navigation.goBack();

@@ -33,6 +33,7 @@ import ListClubScreen from "@screens/menu/listClub";
 import ViewClubMenuScreen from "@screens/menu/viewClub";
 import ListPartnershipScreen from "@screens/menu/listPartnership";
 import ViewPartnershipMenuScreen from "@screens/menu/viewPartnership";
+import NotificationScreen from "@screens/menu/notification";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
 import { $officeStore } from "@context/officeStore";
@@ -53,6 +54,55 @@ const screenOptions = {
   },
 };
 
+const TitleComponent = ({
+  name,
+  logoUrl,
+}: {
+  name: string;
+  logoUrl?: string;
+}) => (
+  <Row>
+    {logoUrl && (
+      <Image style={{ borderRadius: 5 }} $size={45} source={{ uri: logoUrl }} />
+    )}
+    <Title2>{name}</Title2>
+  </Row>
+);
+
+const OfficeHeaderTitle = ({ officeId }: { officeId: string }) => {
+  const office = useStoreMap({
+    store: $officeStore,
+    keys: [officeId],
+    fn: (officeStore) =>
+      officeStore.officeList.find((office) => office.id === officeId),
+  });
+  return (
+    office && <TitleComponent name={office.name} logoUrl={office.logoUrl} />
+  );
+};
+
+const ClubHeaderTitle = ({ clubId }: { clubId: string }) => {
+  const club = useStoreMap({
+    store: $officeStore,
+    keys: [clubId],
+    fn: (officeStore) =>
+      officeStore.clubList.find((club) => club.id === clubId),
+  });
+  return club && <TitleComponent name={club.name} logoUrl={club.logoUrl} />;
+};
+
+const PartnerHeaderTitle = ({ partnerId }: { partnerId: string }) => {
+  const partner = useStoreMap({
+    store: $officeStore,
+    keys: [partnerId],
+    fn: (officeStore) =>
+      officeStore.partnershipList.find((partner) => partner.id === partnerId),
+  });
+  return (
+    partner && <TitleComponent name={partner.name} logoUrl={partner.logoUrl} />
+  );
+};
+
 export function HomeNavigator({
   navigation,
 }: TabBarScreenProps<"homeContainer">) {
@@ -61,7 +111,7 @@ export function HomeNavigator({
       <HomeStack.Screen
         name="feed"
         component={FeedScreen}
-        options={({}) => ({
+        options={() => ({
           title: "Fil d'actualité",
           headerRight: () => (
             <IconButton
@@ -131,22 +181,9 @@ export function OfficeNavigator() {
         name="viewOffice"
         component={ViewOfficeScreen}
         options={({ route }) => ({
-          headerTitle: () => {
-            const office = useStoreMap({
-              store: $officeStore,
-              keys: [route.params.officeId],
-              fn: (officeStore) =>
-                officeStore.officeList.find(
-                  (office) => office.id === route.params.officeId
-                ),
-            });
-            return (
-              <Row>
-                <Image $size={45} source={{ uri: office?.logoUrl }} />
-                <Title2>{office?.name}</Title2>
-              </Row>
-            );
-          },
+          headerTitle: () => (
+            <OfficeHeaderTitle officeId={route.params.officeId} />
+          ),
         })}
       />
       <OfficeStack.Screen
@@ -168,28 +205,7 @@ export function OfficeNavigator() {
         name="viewClub"
         component={ViewClubScreen}
         options={({ route }) => ({
-          headerTitle: () => {
-            const club = useStoreMap({
-              store: $officeStore,
-              keys: [route.params.clubId],
-              fn: (officeStore) =>
-                officeStore.clubList.find(
-                  (club) => club.id === route.params.clubId
-                ),
-            });
-            return (
-              <Row>
-                {club?.logoUrl && (
-                  <Image
-                    style={{ borderRadius: 5 }}
-                    $size={45}
-                    source={{ uri: club.logoUrl }}
-                  />
-                )}
-                <Title2>{club?.name}</Title2>
-              </Row>
-            );
-          },
+          headerTitle: () => <ClubHeaderTitle clubId={route.params.clubId} />,
         })}
       />
       <OfficeStack.Screen
@@ -226,28 +242,9 @@ export function OfficeNavigator() {
         name="viewPartnership"
         component={ViewPartnershipScreen}
         options={({ route }) => ({
-          headerTitle: () => {
-            const partner = useStoreMap({
-              store: $officeStore,
-              keys: [route.params.partnershipId],
-              fn: (officeStore) =>
-                officeStore.partnershipList.find(
-                  (partner) => partner.id === route.params.partnershipId
-                ),
-            });
-            return (
-              <Row>
-                {partner?.logoUrl && (
-                  <Image
-                    style={{ borderRadius: 5 }}
-                    $size={45}
-                    source={{ uri: partner.logoUrl }}
-                  />
-                )}
-                <Title2>{partner?.name}</Title2>
-              </Row>
-            );
-          },
+          headerTitle: () => (
+            <PartnerHeaderTitle partnerId={route.params.partnershipId} />
+          ),
         })}
       />
       <OfficeStack.Screen
@@ -348,28 +345,7 @@ export function MenuNavigator() {
         name="viewClub"
         component={ViewClubMenuScreen}
         options={({ route }) => ({
-          headerTitle: () => {
-            const club = useStoreMap({
-              store: $officeStore,
-              keys: [route.params.clubId],
-              fn: (officeStore) =>
-                officeStore.clubList.find(
-                  (club) => club.id === route.params.clubId
-                ),
-            });
-            return (
-              <Row>
-                {club?.logoUrl && (
-                  <Image
-                    style={{ borderRadius: 5 }}
-                    $size={45}
-                    source={{ uri: club.logoUrl }}
-                  />
-                )}
-                <Title2>{club?.name}</Title2>
-              </Row>
-            );
-          },
+          headerTitle: () => <ClubHeaderTitle clubId={route.params.clubId} />,
         })}
       />
       <MenuStack.Screen
@@ -381,29 +357,15 @@ export function MenuNavigator() {
         name="viewPartnership"
         component={ViewPartnershipMenuScreen}
         options={({ route }) => ({
-          headerTitle: () => {
-            const partner = useStoreMap({
-              store: $officeStore,
-              keys: [route.params.partnershipId],
-              fn: (officeStore) =>
-                officeStore.partnershipList.find(
-                  (partner) => partner.id === route.params.partnershipId
-                ),
-            });
-            return (
-              <Row>
-                {partner?.logoUrl && (
-                  <Image
-                    style={{ borderRadius: 5 }}
-                    $size={45}
-                    source={{ uri: partner.logoUrl }}
-                  />
-                )}
-                <Title2>{partner?.name}</Title2>
-              </Row>
-            );
-          },
+          headerTitle: () => (
+            <PartnerHeaderTitle partnerId={route.params.partnershipId} />
+          ),
         })}
+      />
+      <MenuStack.Screen
+        name="notification"
+        component={NotificationScreen}
+        options={{ title: "Notifications" }}
       />
     </MenuStack.Navigator>
   );

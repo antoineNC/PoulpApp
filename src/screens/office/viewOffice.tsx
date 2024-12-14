@@ -13,6 +13,7 @@ import {
 } from "@styledComponents";
 import { officeStyles } from "@styles";
 import { colors } from "@theme";
+import React from "react";
 
 export default function ViewOfficeScreen({
   navigation,
@@ -25,30 +26,24 @@ export default function ViewOfficeScreen({
     fn: (officeStore) =>
       officeStore.officeList.find((office) => office.id === officeId),
   });
-
-  if (!office) {
-    return <></>;
-  }
-
   const [clubs, partnerships, roles] = useStoreMap({
     store: $officeStore,
     keys: [officeId],
     fn: (officeStore) => {
       const clubs = officeStore.clubList.filter(
-        (club) => club.officeId === office.id
+        (club) => club.officeId === office?.id
       );
       const partnerships = officeStore.partnershipList.filter(
-        (partnership) => partnership.officeId === office.id
+        (partnership) => partnership.officeId === office?.id
       );
       return [clubs, partnerships, officeStore.roleList];
     },
   });
-
   const members = useStoreMap({
     store: $studentStore,
     keys: [officeId],
     fn: (students) =>
-      office.members?.map(({ idRole, idStudent }) => {
+      office?.members?.map(({ idRole, idStudent }) => {
         const studentMember = students.find(
           (student) => student.id === idStudent
         );
@@ -62,6 +57,10 @@ export default function ViewOfficeScreen({
       }),
     defaultValue: [],
   });
+
+  if (!office) {
+    return <></>;
+  }
 
   const handlePress = async (url: string) => {
     // Checking if the link is supported for links with custom URL scheme.

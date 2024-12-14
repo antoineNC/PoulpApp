@@ -12,9 +12,10 @@ import { Dropdown } from "react-native-element-dropdown";
 
 import { $officeStore } from "@context/officeStore";
 import { $studentStore } from "@context/studentStore";
-import { OfficeFieldNames, RoleOffice, Student } from "@types";
 import { Container, Text } from "@styledComponents";
 import { styles as selectStyles } from "components/form/selectInput";
+import { OfficeFormFields, RoleOffice } from "types/office.type";
+import { Student } from "types/student.type";
 
 export default function ListMemberForm({
   control,
@@ -22,10 +23,10 @@ export default function ListMemberForm({
   register,
   errors,
 }: {
-  control: Control<OfficeFieldNames>;
-  setValue: UseFormSetValue<OfficeFieldNames>;
-  register: UseFormRegister<OfficeFieldNames>;
-  errors: FieldErrors<OfficeFieldNames>;
+  control: Control<OfficeFormFields>;
+  setValue: UseFormSetValue<OfficeFormFields>;
+  register: UseFormRegister<OfficeFormFields>;
+  errors: FieldErrors<OfficeFormFields>;
 }) {
   const studentList = useUnit($studentStore);
   const { roleList } = useUnit($officeStore);

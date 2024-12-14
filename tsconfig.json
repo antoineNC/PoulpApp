@@ -2,6 +2,8 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "baseUrl": "./src",
     "paths": {
       "@assets/*": ["../assets/*"],
@@ -13,9 +15,8 @@
       "@styledComponents": ["styles/styledComponents.tsx"],
       "@styles": ["styles/styles.ts"],
       "@theme": ["styles/theme.ts"],
-      "@types": ["types.ts"],
-      "@config": ["../config.ts"]
-    },
-    "typeRoots": ["./types"]
+      "@fb-config": ["firebase/config.ts"],
+      "@fb/service/*": ["firebase/service/*"]
+    }
   }
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Controller, FieldValues, Path } from "react-hook-form";
+import { Controller, FieldValues } from "react-hook-form";
 import {
   ControlFieldProps,
   FormFieldProps,
