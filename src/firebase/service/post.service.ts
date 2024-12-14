@@ -10,7 +10,6 @@ import {
   getDocs,
   getFirestore,
   limit,
-  onSnapshot,
   orderBy,
   query,
   QueryConstraint,
@@ -73,21 +72,18 @@ async function getPost(id: string) {
   }
 }
 
-function subscribeInitialPost(
-  setPosts: (postList: Post[], lastVisibleId?: string) => void
-) {
+async function getInitialPost() {
   try {
     const queryConstraints: QueryConstraint[] = [
       orderBy("createdAt", "desc"),
       limit(POST_LIMIT),
     ];
     const q = query(postCollection, ...queryConstraints);
-    return onSnapshot(q, async (snapshot) => {
-      const postList: Post[] = await Promise.all(
-        snapshot.docs.map((postDoc) => postMapping(postDoc))
-      );
-      setPosts(postList, snapshot.docs[snapshot.docs.length - 1]?.id);
-    });
+    const snapshot = await getDocs(q);
+    const postList: Post[] = await Promise.all(
+      snapshot.docs.map((doc) => postMapping(doc))
+    );
+    return { postList, lastVisibleId: postList[postList.length - 1]?.id };
   } catch (e) {
     throw new Error(`[get initial post] ${e}`);
   }
@@ -211,7 +207,7 @@ async function deletePost(idPost: string) {
 
 export {
   getPost,
-  subscribeInitialPost,
+  getInitialPost,
   getMorePost,
   createPost,
   updatePost,

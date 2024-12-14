@@ -1,12 +1,13 @@
 import { actionPost } from "@context/postStore";
-import { subscribeInitialPost } from "@fb/service/post.service";
+import { getInitialPost } from "@fb/service/post.service";
 import { useEffect } from "react";
 
-export function useSubPost(refresh: boolean) {
+export function useGetPost(refresh: boolean) {
   useEffect(() => {
-    const unsub = subscribeInitialPost((posts, lastVisibleId) =>
-      actionPost.setPostList({ posts, lastVisibleId })
-    );
-    return () => unsub();
+    const getPosts = async () => {
+      const { postList, lastVisibleId } = await getInitialPost();
+      actionPost.setPostList({ posts: postList, lastVisibleId });
+    };
+    getPosts();
   }, [refresh]);
 }

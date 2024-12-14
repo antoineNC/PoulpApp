@@ -17,7 +17,7 @@ import { colors } from "@theme";
 import { deletePost, getMorePost } from "@fb/service/post.service";
 import { useUnit } from "effector-react";
 import { $postStore, actionPost } from "@context/postStore";
-import { useSubPost } from "hooks/post";
+import { useGetPost } from "hooks/post";
 
 export default function FeedScreen({ navigation }: FeedProps) {
   const { posts, lastVisibleId } = useUnit($postStore);
@@ -27,7 +27,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useSubPost(reload);
+  useGetPost(reload);
 
   const onScroll = ({
     nativeEvent,
