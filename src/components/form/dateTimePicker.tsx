@@ -15,7 +15,9 @@ export function DateTimeFormPicker<T extends FieldValues>({
   fieldState: { error },
   options,
 }: FieldInputProps<T>) {
-  const startEqualsEnd = value ? displayDateFromDate(value).allday : false;
+  const startEqualsEnd = value?.start
+    ? displayDateFromDate(value).allday
+    : false;
   const startDate: Date = value?.start || new Date();
   const endDate: Date = value?.end || new Date();
   const [picker, setPicker] = useState<DatePickerValues>({
@@ -24,7 +26,7 @@ export function DateTimeFormPicker<T extends FieldValues>({
     showEnd: false,
   });
   const [allDay, setAllDay] = useState(options?.allDay || startEqualsEnd);
-  const [isDate, setIsDate] = useState(value ? true : false);
+  const [isDate, setIsDate] = useState(value?.start ? true : false);
   const handleOnChange = (period: "start" | "end", date?: Date) => {
     onChange({
       start: period === "start" && date ? date : startDate,
