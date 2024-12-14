@@ -43,12 +43,12 @@ export async function subscribeToTopic(topic: string) {
 
 export function subscribeNotificationReceived() {
   return Notifications.addNotificationReceivedListener((notification) => {
-    console.log("Notification: ", JSON.stringify(notification));
+    // console.log("Notification: ", JSON.stringify(notification));
   });
 }
 export function subscribeNotificationInteracted() {
   return Notifications.addNotificationResponseReceivedListener((response) => {
-    console.log("Response: ", JSON.stringify(response));
+    // console.log("Response: ", JSON.stringify(response));
   });
 }
 

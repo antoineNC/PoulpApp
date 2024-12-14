@@ -54,7 +54,7 @@ export default function UpdateScoreScreen({
       setLoading(true);
       await updatePoint(formattedData, idPoint);
     } catch (e) {
-      console.error("[create score]", e);
+      throw new Error("[create score]: " + e);
     } finally {
       setLoading(false);
       navigation.goBack();

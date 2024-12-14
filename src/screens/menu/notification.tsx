@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef, useState } from "react";
 import { registerForPushNotificationsAsync } from "utils/registerForPushNotificationsAsync";
 import * as Notifications from "expo-notifications";
@@ -46,15 +47,15 @@ export default function NotificationScreen() {
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
-        console.log("Notif received while app is running");
+        // console.log("Notif received while app is running");
         setNotification(notification);
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("User interact");
-        console.log(JSON.stringify({ response }));
-        console.log(response.notification.request.content.data);
+        // console.log("User interact");
+        // console.log(JSON.stringify({ response }));
+        // console.log(response.notification.request.content.data);
       });
 
     return () => {
