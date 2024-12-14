@@ -73,7 +73,7 @@ async function getPost(id: string) {
   }
 }
 
-function getInitialPost(
+function subscribeInitialPost(
   setPosts: (postList: Post[], lastVisibleId?: string) => void
 ) {
   try {
@@ -211,7 +211,7 @@ async function deletePost(idPost: string) {
 
 export {
   getPost,
-  getInitialPost,
+  subscribeInitialPost,
   getMorePost,
   createPost,
   updatePost,

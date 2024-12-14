@@ -4,9 +4,9 @@ import { useEffect } from "react";
 
 export function useSubClub() {
   useEffect(() => {
-    subscribeAllClub((clubList) => actionOffice.setAllClub(clubList));
-    return () => {
-      subscribeAllClub((clubList) => actionOffice.setAllClub(clubList));
-    };
+    const unsub = subscribeAllClub((clubList) =>
+      actionOffice.setAllClub(clubList)
+    );
+    return () => unsub();
   }, []);
 }

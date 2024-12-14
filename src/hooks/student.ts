@@ -4,13 +4,9 @@ import { useEffect } from "react";
 
 export function useSubStudent() {
   useEffect(() => {
-    subscribeAllStudent((studentList) =>
+    const unsub = subscribeAllStudent((studentList) =>
       actionStudent.setAllStudent(studentList)
     );
-    return () => {
-      subscribeAllStudent((studentList) =>
-        actionStudent.setAllStudent(studentList)
-      );
-    };
+    return () => unsub();
   }, []);
 }

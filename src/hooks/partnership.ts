@@ -4,13 +4,9 @@ import { useEffect } from "react";
 
 export function useSubPartnership() {
   useEffect(() => {
-    subscribeAllPartnership((partnerList) =>
+    const unsub = subscribeAllPartnership((partnerList) =>
       actionOffice.setAllPartnership(partnerList)
     );
-    return () => {
-      subscribeAllPartnership((partnerList) =>
-        actionOffice.setAllPartnership(partnerList)
-      );
-    };
+    return () => unsub();
   }, []);
 }

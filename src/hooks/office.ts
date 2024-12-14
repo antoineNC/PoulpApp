@@ -7,18 +7,18 @@ import {
 
 export function useSubOffice() {
   useEffect(() => {
-    subscribeAllOffice((officeList) => actionOffice.setAllOffice(officeList));
-    return () => {
-      subscribeAllOffice((officeList) => actionOffice.setAllOffice(officeList));
-    };
+    const unsub = subscribeAllOffice((officeList) =>
+      actionOffice.setAllOffice(officeList)
+    );
+    return () => unsub();
   }, []);
 }
 
 export function useSubRoleOffice() {
   useEffect(() => {
-    subscribeAllRole((officeList) => actionOffice.setAllRole(officeList));
-    return () => {
-      subscribeAllRole((officeList) => actionOffice.setAllRole(officeList));
-    };
+    const unsub = subscribeAllRole((officeList) =>
+      actionOffice.setAllRole(officeList)
+    );
+    return () => unsub();
   }, []);
 }

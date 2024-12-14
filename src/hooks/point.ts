@@ -4,9 +4,9 @@ import { useEffect } from "react";
 
 export function useSubPoint() {
   useEffect(() => {
-    subscribeAllPoint((pointList) => actionPoint.setPoint(pointList));
-    return () => {
-      subscribeAllPoint((pointList) => actionPoint.setPoint(pointList));
-    };
+    const unsub = subscribeAllPoint((pointList) =>
+      actionPoint.setPoint(pointList)
+    );
+    return () => unsub();
   }, []);
 }

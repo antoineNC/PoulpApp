@@ -22,10 +22,8 @@ export function useAuthState(initialState: boolean) {
   }, []);
 
   useEffect(() => {
-    subscribeUserState(handleAuth);
-    return () => {
-      subscribeUserState(handleAuth);
-    };
+    const unsub = subscribeUserState(handleAuth);
+    return () => unsub();
   }, [handleAuth]);
   return done;
 }
