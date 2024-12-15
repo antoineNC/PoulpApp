@@ -14,7 +14,11 @@ import { FeedProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
 import Spinner from "react-native-loading-spinner-overlay";
 import { colors } from "@theme";
-import { deletePost, getMorePost } from "@fb/service/post.service";
+import {
+  deletePost,
+  getInitialPost,
+  getMorePost,
+} from "@fb/service/post.service";
 import { useUnit } from "effector-react";
 import { $postStore, actionPost } from "@context/postStore";
 import { useGetPost } from "hooks/post";
@@ -23,11 +27,10 @@ export default function FeedScreen({ navigation }: FeedProps) {
   const { posts, lastVisibleId } = useUnit($postStore);
   const { hasRight } = useRight();
   const [isExtended, setIsExtended] = useState(true);
-  const [reload, setReload] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useGetPost(reload);
+  useGetPost();
 
   const onScroll = ({
     nativeEvent,
@@ -50,10 +53,11 @@ export default function FeedScreen({ navigation }: FeedProps) {
     }
   };
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    setReload((value) => !value);
-    setTimeout(() => setRefreshing(false), 1000);
+    const { postList, lastVisibleId } = await getInitialPost();
+    actionPost.setPostList({ posts: postList, lastVisibleId });
+    setRefreshing(false);
   }, []);
 
   const onPressOffice = (officeId: string) =>
@@ -69,7 +73,8 @@ export default function FeedScreen({ navigation }: FeedProps) {
     setLoading(true);
     try {
       await deletePost(id);
-      setReload((value) => !value);
+      const { postList, lastVisibleId } = await getInitialPost();
+      actionPost.setPostList({ posts: postList, lastVisibleId });
     } finally {
       setLoading(false);
     }
