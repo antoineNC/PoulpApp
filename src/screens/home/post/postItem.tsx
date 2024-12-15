@@ -52,7 +52,7 @@ export const PostItem = ({
         end: post.date.end,
       });
       setDate({ start: startDate, end: endDate });
-      if (!post.date.end) setAllDay(true);
+      setAllDay(!post.date.end);
     }
   }, [post]);
 
