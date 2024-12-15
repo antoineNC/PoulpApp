@@ -3,7 +3,6 @@ import {
   addDoc,
   collection,
   deleteDoc,
-  deleteField,
   doc,
   DocumentData,
   getDoc,
@@ -17,6 +16,7 @@ import {
   startAfter,
   Timestamp,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import {
   getImgURL,
@@ -32,6 +32,14 @@ import {
   UpdatePostFields,
   CreatePostFields,
 } from "types/post.type";
+import { AgendaItemType, CalendarSection } from "types/calendar.type";
+import { MarkedDates } from "react-native-calendars/src/types";
+import {
+  formatDate,
+  formatHour,
+  getCurrentScholarYear,
+  getDuration,
+} from "utils/dateUtils";
 
 const POST_LIMIT = 10;
 
@@ -52,7 +60,7 @@ const postMapping = async (
     editorId: postData.editorId,
     imageUrl,
     tags: postData.tags,
-    date: postData.date && {
+    date: {
       start: postData.date.start?.toDate(),
       end: postData.date.end?.toDate(),
     },
@@ -127,10 +135,13 @@ async function createPost(props: PostFormFields) {
       );
       createFields["imageId"] = imageId;
     }
-    if (props.date) {
+    if (props.date.start) {
       const start = Timestamp.fromDate(props.date.start);
-      const end = Timestamp.fromDate(props.date.end);
-      createFields["date"] = { start, end };
+      createFields["date"]["start"] = start;
+      if (props.date.end) {
+        const end = Timestamp.fromDate(props.date.end);
+        createFields["date"]["end"] = end;
+      }
     }
     await addDoc(postCollection, createFields);
   } catch (e) {
@@ -152,6 +163,7 @@ async function updatePost(props: PostFormFields, id: string) {
       description: props.description,
       tags: props.tags,
       imageId: props.imageFile,
+      date: {},
     };
 
     if (props.imageFile) {
@@ -175,15 +187,15 @@ async function updatePost(props: PostFormFields, id: string) {
       }
     }
 
-    if (props.date) {
+    if (props.date.start) {
       const start = Timestamp.fromDate(props.date.start);
-      const end = Timestamp.fromDate(props.date.end);
-      updatedFields["date"] = { start, end };
+      updatedFields["date"]["start"] = start;
+      if (props.date.end) {
+        const end = Timestamp.fromDate(props.date.end);
+        updatedFields["date"]["end"] = end;
+      }
     }
-    await updateDoc(postRef, {
-      ...updatedFields,
-      ...(!updatedFields.date && { date: deleteField() }),
-    });
+    await updateDoc(postRef, updatedFields);
   } catch (e) {
     throw new Error("[updatepost]: " + e);
   }
@@ -205,6 +217,55 @@ async function deletePost(idPost: string) {
   }
 }
 
+async function getCalendarItems() {
+  try {
+    const { startDate, endDate } = getCurrentScholarYear();
+    const q = query(
+      postCollection,
+      where("date.start", ">=", startDate),
+      where("date.start", "<=", endDate),
+      orderBy("date.start", "asc")
+    );
+    const snapshot = await getDocs(q);
+    const agendaItemsGroupped: { [date: string]: AgendaItemType[] } =
+      snapshot.docs.reduce<{
+        [date: string]: AgendaItemType[];
+      }>((groupedItems, postDoc) => {
+        const postData = postDoc.data() as FirestorePost;
+        if (postData.date?.start) {
+          const endDate = postData?.date?.end?.toDate();
+          const startDate = postData.date.start.toDate();
+          const date = formatDate(startDate);
+          const hour = endDate ? formatHour(startDate) : "Journée entière";
+          const duration = getDuration(startDate, endDate);
+          if (!groupedItems[date]) {
+            groupedItems[date] = [];
+          }
+          groupedItems[date].push({
+            title: postData.title,
+            description: postData.description,
+            startHour: hour,
+            duration,
+          });
+        }
+        return groupedItems;
+      }, {});
+
+    const sections: CalendarSection[] = [];
+    const markedDates: MarkedDates = {};
+    Object.keys(agendaItemsGroupped).forEach((key) => {
+      if (agendaItemsGroupped[key]) {
+        sections.push({ title: key, data: agendaItemsGroupped[key] });
+        markedDates[key] = { marked: true };
+      }
+    });
+
+    return { sections, markedDates };
+  } catch (e) {
+    throw new Error(`[get calendar items] ${e}`);
+  }
+}
+
 export {
   getPost,
   getInitialPost,
@@ -212,4 +273,5 @@ export {
   createPost,
   updatePost,
   deletePost,
+  getCalendarItems,
 };

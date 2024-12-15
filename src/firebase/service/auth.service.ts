@@ -10,6 +10,7 @@ import { getCurrentUser } from "./user.service";
 import { createStudent } from "./student.service";
 import { actionPost } from "@context/postStore";
 import { actionStudent } from "@context/studentStore";
+import { actionCalendar } from "@context/calendar.store";
 
 function subscribeUserState(observer: (user: User | null) => void) {
   return onAuthStateChanged(auth, (user) => observer(user));
@@ -68,6 +69,7 @@ async function registerUser({
 async function signoutUser() {
   actionPost.logout();
   actionStudent.logout();
+  actionCalendar.logout();
   await signOut(auth);
 }
 

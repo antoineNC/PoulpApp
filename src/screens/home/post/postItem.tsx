@@ -18,7 +18,7 @@ import {
   Container,
 } from "@styledComponents";
 import { officeStyles } from "@styles";
-import { displayDateFromDate } from "utils/dateUtils";
+import { displayDate } from "utils/dateUtils";
 import { useRight } from "utils/rights";
 import { $officeStore } from "@context/officeStore";
 import { PostItemProps } from "types/post.type";
@@ -33,8 +33,8 @@ export const PostItem = ({
   onPressDelete,
 }: PostItemProps) => {
   const { hasRight } = useRight();
-  const [date, setDate] = useState<DateType>({ start: "null", end: "null" });
-  const [allDay, setAllDay] = useState<boolean>(false);
+  const [date, setDate] = useState<DateType>({});
+  const [allDay, setAllDay] = useState(false);
   const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
   const [showImage, setShowImage] = useState(false);
@@ -46,13 +46,13 @@ export const PostItem = ({
   });
 
   useEffect(() => {
-    if (post.date?.start && post.date.end) {
-      const result = displayDateFromDate({
+    if (post.date?.start) {
+      const { startDate, endDate } = displayDate({
         start: post.date.start,
         end: post.date.end,
       });
-      setAllDay(result.allday);
-      setDate(result.date);
+      setDate({ start: startDate, end: endDate });
+      if (!post.date.end) setAllDay(true);
     }
   }, [post]);
 
@@ -93,7 +93,7 @@ export const PostItem = ({
             </Row>
           </View>
         </Row>
-        {post.date?.start && (
+        {date.start && (
           <Row>
             <BodyTitle>Date : </BodyTitle>
             <Container style={officeStyles.borderRounded}>

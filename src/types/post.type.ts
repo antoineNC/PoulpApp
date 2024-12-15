@@ -7,7 +7,7 @@ export type Post = {
   description?: string;
   imageUrl?: string;
   tags?: string[];
-  date?: {
+  date: {
     start?: Date;
     end?: Date;
   };
@@ -20,7 +20,7 @@ export type FirestorePost = {
   description?: string;
   imageId?: string;
   tags?: string[];
-  date?: {
+  date: {
     start?: Timestamp;
     end?: Timestamp;
   };
@@ -34,16 +34,16 @@ export type UpdatePostFields = {
   description?: string;
   imageId?: string;
   tags?: string[];
-  date?: {
-    start: Timestamp;
-    end: Timestamp;
+  date: {
+    start?: Timestamp;
+    end?: Timestamp;
   };
 };
 
 export type PostFormFields = {
   title: string;
   description?: string;
-  date?: { start: Date; end: Date };
+  date: { start?: Date; end?: Date };
   tags: string[];
   editor: { value: string; label: string };
   imageFile?: string;

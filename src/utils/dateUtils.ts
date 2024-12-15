@@ -1,88 +1,48 @@
-import { Timestamp } from "firebase/firestore";
-import moment from "moment";
-import "moment/locale/fr";
+import { format, intervalToDuration, isBefore } from "date-fns";
+import { fr } from "date-fns/locale";
 import { capitalize } from "utils/utils";
-moment.locale("fr");
 
 /**
  * @returns Returns a formatted date like "Dim. 25 avr. 2024 à 9:01"
  */
-export const formatAllDate = (date: moment.MomentInput) => {
-  return capitalize(moment(date).format("ddd D MMM YYYY [à] H:mm"));
+export const formatDayTime = (date: Date) => {
+  return capitalize(format(date, "E d MMM yyyy 'à' H:mm", { locale: fr }));
 };
 /**
  * @returns Returns a formatted date like "Dim. 25 avr. 2024"
  */
-export const formatDay = (date: moment.MomentInput) => {
-  return capitalize(moment(date).format("ddd D MMM YYYY"));
+export const formatDay = (date: Date) => {
+  return capitalize(format(date, "E d MMM yyyy", { locale: fr }));
 };
 /**
  * @returns Returns a formatted time like "09:01"
  */
-export const formatHour = (date: moment.MomentInput) => {
-  return capitalize(moment(date).format("HH:mm"));
+export const formatHour = (date: Date) => {
+  return format(date, "HH:mm", { locale: fr });
 };
 /**
  * @returns Returns a formatted date like "1987-03-05"
  */
-export const formatDate = (date: moment.MomentInput) => {
-  return capitalize(moment(date).format("YYYY-MM-DD"));
+export const formatDate = (date: Date) => {
+  return capitalize(format(date, "yyyy-MM-dd", { locale: fr }));
 };
 /**
- * Specific function for formatted date like "ddd D MMM YYYY [à] H:mm"
+ * Display difference between two dates, in hours and minutes, or in days
  * @param startDate
  * @param endDate
- * @returns Returns difference between start and end in hours and minutes
+ * @returns Returns difference between start and end in hours and minutes, or in days if more than 24 hours
  * @example const duration = getDuration("Dim. 28 avr. 2024 à 18:00", "Dim. 28 avr. 2024 à 19:30")
  * console.log(duration) // 1h30
  *
  * const duration = getDuration("Dim. 28 avr. 2024 à 18:00", "Dim. 28 avr. 2024 à 20:00")
  * console.log(duration) // 2h
  */
-export const getDuration = (
-  startDate: moment.MomentInput,
-  endDate: moment.MomentInput
-) => {
-  const start = moment(startDate, "ddd D MMM YYYY [à] H:mm");
-  const end = moment(endDate, "ddd D MMM YYYY [à] H:mm");
-  const duration = end.diff(start, "minutes");
-  const h = (duration / 60) | 0;
-  const m = duration % 60 | 0;
-
-  return `${h}h${m || ""}`;
-};
-
-/**
- *
- * @param date A date with Timestamps start and end
- * @returns If start and end have the same day an same time with seconds precision, returns allday : true and date with "ddd D MMM YYYY" format. Else, returns allday, : false and date with "ddd D MMM YYYY [à] H:mm" format.
- */
-export const displayDateFromTimestamp = (date: {
-  end: Timestamp;
-  start: Timestamp;
-}) => {
-  const startDate = date.start.toDate().toUTCString();
-  const endDate = date.end.toDate().toUTCString();
-  if (startDate === endDate) {
-    const day = formatDay(startDate);
-    return { allday: true, date: { start: day, end: day } };
-  } else {
-    const start = formatAllDate(startDate);
-    const end = formatAllDate(endDate);
-    return { allday: false, date: { start, end } };
-  }
-};
-
-export const displayDateFromDate = (date: { end: Date; start: Date }) => {
-  const startDate = date.start.toUTCString();
-  const endDate = date.end.toUTCString();
-  if (startDate === endDate) {
-    const day = formatDay(startDate);
-    return { allday: true, date: { start: day, end: day } };
-  } else {
-    const start = formatAllDate(startDate);
-    const end = formatAllDate(endDate);
-    return { allday: false, date: { start, end } };
+export const getDuration = (startDate: Date, endDate?: Date) => {
+  if (endDate) {
+    const duration = intervalToDuration({ start: startDate, end: endDate });
+    if (duration.days) {
+      return `${duration.days} jour${duration.days > 1 && "s"}`;
+    } else return `${duration.hours || 0}h${duration.minutes || ""}`;
   }
 };
 
@@ -95,4 +55,29 @@ export const formattedToday = () => {
   const MM = today.getMinutes();
   const ss = today.getSeconds();
   return `${yyyy}${mm}${dd}_${HH}${MM}${ss}_`;
+};
+
+export const displayDate = (date: { start: Date; end?: Date }) => {
+  if (date.end) {
+    const startDate = formatDayTime(date.start);
+    const endDate = formatDayTime(date.end);
+    return { startDate, endDate };
+  } else {
+    const startDate = formatDay(date.start);
+    return { startDate };
+  }
+};
+
+export const getCurrentScholarYear = () => {
+  const today = new Date();
+  const todayYear = today.getFullYear();
+  // si on est avant le 1er août (pré rentrée), la rentrée était l'année dernière, sinon c'est cette année
+  const startYear = isBefore(today, new Date(todayYear, 7, 1))
+    ? todayYear - 1
+    : todayYear;
+  const endYear = startYear + 1;
+  // rentrée = 1er aout année n , fin d'année = 31 juillet année n+1
+  const startDate = new Date(startYear, 7, 1);
+  const endDate = new Date(endYear, 6, 31);
+  return { startDate, endDate };
 };

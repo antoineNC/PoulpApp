@@ -13,6 +13,7 @@ import { useSubClub } from "hooks/club";
 import { useSubPartnership } from "hooks/partnership";
 import { useSubPoint } from "hooks/point";
 import { useSubStudent } from "hooks/student";
+import { useCalendar } from "hooks/calendar";
 
 const TabBar = createMaterialBottomTabNavigator<TabBarParamList>();
 
@@ -23,6 +24,7 @@ export default function TabBarContainer() {
   useSubPartnership();
   useSubPoint();
   useSubStudent();
+  useCalendar();
   return (
     <TabBar.Navigator>
       <TabBar.Screen

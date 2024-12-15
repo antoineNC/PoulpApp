@@ -37,6 +37,8 @@ import NotificationScreen from "@screens/menu/notification";
 import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
 import { $officeStore } from "@context/officeStore";
+import { getCalendarItems } from "@fb/service/post.service";
+import { actionCalendar } from "@context/calendar.store";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -133,6 +135,17 @@ export function HomeNavigator({
         component={CalendarScreen}
         options={{
           title: "Calendrier",
+          headerRight: () => (
+            <IconButton
+              icon={"sync"}
+              size={30}
+              iconColor={colors.white}
+              onPress={async () => {
+                const items = await getCalendarItems();
+                actionCalendar.setItems(items);
+              }}
+            />
+          ),
         }}
       />
       <HomeStack.Screen
