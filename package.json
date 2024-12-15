@@ -19,6 +19,7 @@
     "@react-navigation/native-stack": "^6.9.24",
     "@shopify/react-native-skia": "^1.2.3",
     "@types/lodash": "^4.17.13",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "eas-cli": "^14.2.0",
     "effector": "^23.2.0",

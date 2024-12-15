@@ -78,8 +78,10 @@ export function getFieldProps<T extends FieldValues>(
   if (type === "date") {
     rules = {
       ...rules,
-      validate: (value?: { start: Date; end: Date }) =>
-        value && (value.start <= value.end || errorTxt.dateOrder),
+      validate: (value: { start?: Date; end?: Date }) =>
+        value?.start &&
+        value?.end &&
+        (value.start <= value.end || errorTxt.dateOrder),
     };
   }
   if (optionRules)

@@ -3,7 +3,6 @@ import {
   addDoc,
   collection,
   deleteDoc,
-  deleteField,
   doc,
   DocumentData,
   getDoc,
@@ -52,7 +51,7 @@ const postMapping = async (
     editorId: postData.editorId,
     imageUrl,
     tags: postData.tags,
-    date: postData.date && {
+    date: {
       start: postData.date.start?.toDate(),
       end: postData.date.end?.toDate(),
     },
@@ -127,10 +126,13 @@ async function createPost(props: PostFormFields) {
       );
       createFields["imageId"] = imageId;
     }
-    if (props.date) {
+    if (props.date.start) {
       const start = Timestamp.fromDate(props.date.start);
-      const end = Timestamp.fromDate(props.date.end);
-      createFields["date"] = { start, end };
+      createFields["date"]["start"] = start;
+      if (props.date.end) {
+        const end = Timestamp.fromDate(props.date.end);
+        createFields["date"]["end"] = end;
+      }
     }
     await addDoc(postCollection, createFields);
   } catch (e) {
@@ -152,6 +154,7 @@ async function updatePost(props: PostFormFields, id: string) {
       description: props.description,
       tags: props.tags,
       imageId: props.imageFile,
+      date: {},
     };
 
     if (props.imageFile) {
@@ -175,15 +178,15 @@ async function updatePost(props: PostFormFields, id: string) {
       }
     }
 
-    if (props.date) {
+    if (props.date.start) {
       const start = Timestamp.fromDate(props.date.start);
-      const end = Timestamp.fromDate(props.date.end);
-      updatedFields["date"] = { start, end };
+      updatedFields["date"]["start"] = start;
+      if (props.date.end) {
+        const end = Timestamp.fromDate(props.date.end);
+        updatedFields["date"]["end"] = end;
+      }
     }
-    await updateDoc(postRef, {
-      ...updatedFields,
-      ...(!updatedFields.date && { date: deleteField() }),
-    });
+    await updateDoc(postRef, updatedFields);
   } catch (e) {
     throw new Error("[updatepost]: " + e);
   }
