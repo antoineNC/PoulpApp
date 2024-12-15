@@ -5,7 +5,7 @@ import { FieldValues } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import ImageView from "react-native-image-viewing";
 import { Container, Row, Text } from "@styledComponents";
-import { FieldInputProps } from "utils/formUtils";
+import { FieldInputProps } from "types/form.type";
 import { colors } from "@theme";
 
 export function ImagePickerForm<T extends FieldValues>({

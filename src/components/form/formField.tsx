@@ -1,11 +1,7 @@
 import React from "react";
 import { Controller, FieldValues } from "react-hook-form";
-import {
-  ControlFieldProps,
-  FormFieldProps,
-  getFieldInput,
-  getFieldProps,
-} from "utils/formUtils";
+import { ControlFieldProps, FormFieldProps } from "types/form.type";
+import { getFieldInput, getFieldProps } from "utils/formUtils";
 
 type FormFieldType<T extends FieldValues> = FormFieldProps &
   ControlFieldProps<T>;

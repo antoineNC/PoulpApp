@@ -1,45 +1,12 @@
 import { ReactElement } from "react";
-import {
-  Control,
-  ControllerFieldState,
-  ControllerRenderProps,
-  FieldValues,
-  Path,
-  ResolverOptions,
-} from "react-hook-form";
+import { FieldValues, ResolverOptions } from "react-hook-form";
 import { DateTimeFormPicker } from "components/form/dateTimePicker";
 import { TextInputForm } from "components/form/textInput";
 import { ChipInputForm } from "components/form/chipInput";
 import { SelectInputForm } from "components/form/selectInput";
 import { ImagePickerForm } from "components/form/imagePicker";
-import { FormFieldOptions, FormFieldType } from "types/form.type";
+import { FieldInputProps, FormFieldType, Params } from "types/form.type";
 import React from "react";
-
-export type ControlFieldProps<T extends FieldValues> = {
-  control: Control<T>;
-  name: Path<T>;
-  required?: boolean;
-  repeat?: string;
-};
-export type FormFieldProps = {
-  label: string;
-  type: FormFieldType;
-  options?: FormFieldOptions;
-  index: number;
-  lastInput: boolean;
-  setFocus: (state: number) => void;
-  submit: (e?: React.BaseSyntheticEvent) => Promise<void>;
-};
-
-export type FieldInputProps<T extends FieldValues> = FormFieldProps & {
-  field: ControllerRenderProps<T, Path<T>>;
-  fieldState: ControllerFieldState;
-};
-
-type Params<T extends FieldValues> = {
-  newLabel: string;
-  rules?: Omit<ResolverOptions<T>, keyof FieldValues>;
-};
 
 // TODO remplacer par un tooltip pour expliquer
 // const regEx_mail = /^[\w\-\.]+@ensc\.fr$/gm;

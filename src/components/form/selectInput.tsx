@@ -2,7 +2,7 @@ import { View, StyleSheet } from "react-native";
 import { FieldValues } from "react-hook-form";
 import { HelperText } from "react-native-paper";
 import { Dropdown } from "react-native-element-dropdown";
-import { FieldInputProps } from "utils/formUtils";
+import { FieldInputProps } from "types/form.type";
 import { Text } from "@styledComponents";
 import { colors } from "@theme";
 import React from "react";

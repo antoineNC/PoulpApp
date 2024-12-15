@@ -44,6 +44,7 @@ export default {
         measurementId: process.env.FB_MEASUREMENT_ID,
         storageUrl: process.env.FB_STORAGE_URL,
       },
+      codeENSC: process.env.CODE_ENSC,
     },
     owner: "aneyracontr",
   },

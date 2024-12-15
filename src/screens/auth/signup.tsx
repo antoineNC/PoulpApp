@@ -19,7 +19,6 @@ type FieldNames = {
   lastName: string;
   email: string;
   password: string;
-  repeatPassword: string;
   code: string;
 };
 
@@ -60,13 +59,6 @@ export default function SignupScreen({
       options: { secureText: true, rules: ["password"] },
     },
     {
-      name: "repeatPassword",
-      label: "Confirmer mot de passe",
-      type: "text",
-      required: true,
-      options: { secureText: true, confirm: true },
-    },
-    {
       name: "code",
       label: "Code ENSC",
       type: "text",
@@ -77,10 +69,10 @@ export default function SignupScreen({
   const onSubmit = async (data: FieldNames) => {
     setLoading(true);
     try {
-      const sessionCredential = await registerUser({ ...data });
+      const sessionCredential = await registerUser(data);
       actionSession.login(sessionCredential);
     } catch (e: any) {
-      throw Error("signup Error :", e);
+      throw new Error("signup Error :", e);
     } finally {
       setLoading(false);
     }

@@ -11,6 +11,7 @@ import { createStudent } from "./student.service";
 import { actionPost } from "@context/postStore";
 import { actionStudent } from "@context/studentStore";
 import { actionCalendar } from "@context/calendar.store";
+import Constants from "expo-constants";
 
 function subscribeUserState(observer: (user: User | null) => void) {
   return onAuthStateChanged(auth, (user) => observer(user));
@@ -40,13 +41,18 @@ async function registerUser({
   lastName,
   email,
   password,
+  code,
 }: {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
+  code: string;
 }) {
   try {
+    if (code !== Constants.expoConfig?.extra?.codeENSC) {
+      throw new Error("Code incorrect");
+    }
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
