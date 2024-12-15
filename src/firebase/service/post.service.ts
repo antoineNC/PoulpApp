@@ -16,6 +16,7 @@ import {
   startAfter,
   Timestamp,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import {
   getImgURL,
@@ -31,6 +32,14 @@ import {
   UpdatePostFields,
   CreatePostFields,
 } from "types/post.type";
+import { AgendaItemType, CalendarSection } from "types/calendar.type";
+import { MarkedDates } from "react-native-calendars/src/types";
+import {
+  formatDate,
+  formatHour,
+  getCurrentScholarYear,
+  getDuration,
+} from "utils/dateUtils";
 
 const POST_LIMIT = 10;
 
@@ -208,6 +217,55 @@ async function deletePost(idPost: string) {
   }
 }
 
+async function getCalendarItems() {
+  try {
+    const { startDate, endDate } = getCurrentScholarYear();
+    const q = query(
+      postCollection,
+      where("date.start", ">=", startDate),
+      where("date.start", "<=", endDate),
+      orderBy("date.start", "asc")
+    );
+    const snapshot = await getDocs(q);
+    const agendaItemsGroupped: { [date: string]: AgendaItemType[] } =
+      snapshot.docs.reduce<{
+        [date: string]: AgendaItemType[];
+      }>((groupedItems, postDoc) => {
+        const postData = postDoc.data() as FirestorePost;
+        if (postData.date?.start) {
+          const endDate = postData?.date?.end?.toDate();
+          const startDate = postData.date.start.toDate();
+          const date = formatDate(startDate);
+          const hour = endDate ? formatHour(startDate) : "Journée entière";
+          const duration = getDuration(startDate, endDate);
+          if (!groupedItems[date]) {
+            groupedItems[date] = [];
+          }
+          groupedItems[date].push({
+            title: postData.title,
+            description: postData.description,
+            startHour: hour,
+            duration,
+          });
+        }
+        return groupedItems;
+      }, {});
+
+    const sections: CalendarSection[] = [];
+    const markedDates: MarkedDates = {};
+    Object.keys(agendaItemsGroupped).forEach((key) => {
+      if (agendaItemsGroupped[key]) {
+        sections.push({ title: key, data: agendaItemsGroupped[key] });
+        markedDates[key] = { marked: true };
+      }
+    });
+
+    return { sections, markedDates };
+  } catch (e) {
+    throw new Error(`[get calendar items] ${e}`);
+  }
+}
+
 export {
   getPost,
   getInitialPost,
@@ -215,4 +273,5 @@ export {
   createPost,
   updatePost,
   deletePost,
+  getCalendarItems,
 };

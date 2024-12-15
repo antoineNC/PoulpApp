@@ -62,7 +62,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
       params: { officeId },
     });
   const onPressCalendar = (date?: Date) =>
-    navigation.navigate("calendar", { postDate: date });
+    navigation.navigate("calendar", { postDate: date?.getUTCMilliseconds() });
   const onPressUpdate = (id: string) =>
     navigation.navigate("updatePost", { postId: id });
   const onPressDelete = async (id: string) => {

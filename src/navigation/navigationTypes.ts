@@ -31,7 +31,7 @@ export type TabBarScreenProps<T extends keyof TabBarParamList> =
 // === Home tab
 export type HomeTabParamList = {
   feed: undefined;
-  calendar: { postDate?: Date };
+  calendar: { postDate?: number };
   createPost: undefined;
   updatePost: { postId: string };
 };

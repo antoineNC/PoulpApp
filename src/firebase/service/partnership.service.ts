@@ -7,7 +7,6 @@ import {
   getDoc,
   getFirestore,
   onSnapshot,
-  Timestamp,
   updateDoc,
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
@@ -26,6 +25,7 @@ import {
   PartnershipFormFields,
   UpdatePartnershipFields,
 } from "types/partnership.type";
+import { formattedToday } from "utils/dateUtils";
 
 const app = getApp();
 const db = getFirestore(app);
@@ -73,7 +73,7 @@ async function createPartnership(props: PartnershipFormFields) {
   };
   try {
     if (props.logoFile) {
-      const today = Timestamp.now().seconds;
+      const today = formattedToday();
       const logoId = await uploadImage(
         props.logoFile,
         `${today}_partner_`,
@@ -106,7 +106,7 @@ async function updatePartnership(props: PartnershipFormFields, id: string) {
     };
     if (props.logoFile) {
       if (!props.logoFile.startsWith(storageUrl)) {
-        const today = Timestamp.now().seconds;
+        const today = formattedToday();
         const logoId = await uploadImage(
           props.logoFile,
           `${today}_partner_`,
