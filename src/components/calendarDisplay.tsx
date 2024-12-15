@@ -99,7 +99,7 @@ export default function CalendarDisplay({ postDate }: { postDate?: Date }) {
         sections={sections}
         renderItem={({ item }) => renderItem(item)}
         dayFormat={"ddd d MMM"}
-        sectionStyle={styles.section}
+        // sectionStyle={styles.section}
       />
     </CalendarProvider>
   );
@@ -107,19 +107,19 @@ export default function CalendarDisplay({ postDate }: { postDate?: Date }) {
 
 const styles = StyleSheet.create({
   section: {
-    backgroundColor: colors.secondary,
-    color: "black",
+    // backgroundColor: colors.secondary,
+    // color: "black",
     textTransform: "lowercase",
   },
   item: {
     padding: 10,
-    backgroundColor: colors.white,
+    // backgroundColor: colors.white,
     borderBottomWidth: 0.5,
-    borderBottomColor: colors.black,
+    // borderBottomColor: colors.black,
     flexDirection: "row",
   },
   itemDurationText: {
-    color: "grey",
+    // color: "grey",
   },
   itemTitleText: {
     marginBottom: 5,

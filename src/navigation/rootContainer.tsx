@@ -1,4 +1,4 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, Theme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useUnit } from "effector-react";
 
@@ -11,23 +11,23 @@ import { colors } from "@theme";
 
 const AuthStack = createNativeStackNavigator<AuthParamList>();
 
-export default function RootContainer() {
+export default function RootContainer({ theme }: { theme: Theme }) {
   const { connected } = useUnit($sessionStore);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={theme}>
       {connected ? (
         <TabBarContainer />
       ) : (
         <AuthStack.Navigator
           screenOptions={{
             statusBarTranslucent: true,
-            headerTintColor: colors.white,
+            // headerTintColor: colors.white,
             headerTitleAlign: "center",
-            headerStyle: { backgroundColor: colors.primary },
+            // headerStyle: { backgroundColor: colors.primary },
             headerShadowVisible: false,
             contentStyle: {
-              backgroundColor: colors.secondary,
+              // backgroundColor: colors.secondary,
             },
           }}
         >

@@ -91,7 +91,7 @@ export const UpdatePostForm = ({
           <Spinner
             visible={loading}
             textContent={"Modification..."}
-            textStyle={{ color: colors.white }}
+            // textStyle={{ color: colors.white }}
           />
         )}
         <View style={authStyles.formList}>

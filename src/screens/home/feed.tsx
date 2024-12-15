@@ -86,7 +86,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
         <Spinner
           visible={loading}
           textContent={"Chargement..."}
-          textStyle={{ color: colors.white }}
+          // textStyle={{ color: colors.white }}
         />
       )}
       <FlatList

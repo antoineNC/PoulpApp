@@ -121,7 +121,7 @@ export default function ViewOfficeScreen({
                     borderRadius: 5,
                     width: 100,
                     height: 100,
-                    backgroundColor: colors.secondary,
+                    // backgroundColor: colors.secondary,
                   }}
                 />
                 <Text>{item.name}</Text>
@@ -157,7 +157,7 @@ export default function ViewOfficeScreen({
                     borderRadius: 5,
                     width: 100,
                     height: 100,
-                    backgroundColor: colors.secondary,
+                    // backgroundColor: colors.secondary,
                   }}
                 />
                 <Text>{item.name}</Text>

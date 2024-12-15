@@ -73,9 +73,9 @@ export default function ListMemberForm({
                     selectStyles.dropdown,
                     {
                       flex: 1,
-                      borderColor: errors.members?.[index]?.idRole
-                        ? MD3Colors.error50
-                        : "black",
+                      // borderColor: errors.members?.[index]?.idRole
+                      //   ? MD3Colors.error50
+                      //   : "black",
                     },
                   ]}
                   containerStyle={selectStyles.container}
@@ -103,9 +103,9 @@ export default function ListMemberForm({
                     selectStyles.dropdown,
                     {
                       flex: 1,
-                      borderColor: errors.members?.[index]?.idStudent
-                        ? MD3Colors.error50
-                        : "black",
+                      // borderColor: errors.members?.[index]?.idStudent
+                      //   ? MD3Colors.error50
+                      //   : "black",
                     },
                   ]}
                   containerStyle={selectStyles.container}
@@ -118,7 +118,7 @@ export default function ListMemberForm({
               <IconButton
                 icon={"window-close"}
                 mode="outlined"
-                iconColor={MD3Colors.error50}
+                // iconColor={MD3Colors.error50}
                 onPress={() => remove(index)}
               />
             </View>

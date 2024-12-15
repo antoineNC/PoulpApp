@@ -47,12 +47,12 @@ const MenuStack = createNativeStackNavigator<MenuTabParamList>();
 
 const screenOptions = {
   statusBarTranslucent: true,
-  headerTintColor: colors.white,
-  headerStyle: { backgroundColor: colors.primary },
+  // headerTintColor: colors.white,
+  // headerStyle: { backgroundColor: colors.primary },
   headerShadowVisible: false,
   headerBackTitleVisible: false,
   contentStyle: {
-    backgroundColor: colors.primary,
+    // backgroundColor: colors.primary,
   },
 };
 
@@ -115,11 +115,11 @@ export function HomeNavigator({
         component={FeedScreen}
         options={() => ({
           title: "Fil d'actualité",
-          headerRight: () => (
+          headerRight: ({ tintColor }) => (
             <IconButton
               icon="calendar-month-outline"
               size={30}
-              iconColor={colors.white}
+              iconColor={tintColor}
               onPress={() =>
                 navigation.navigate("homeContainer", {
                   screen: "calendar",
@@ -135,11 +135,11 @@ export function HomeNavigator({
         component={CalendarScreen}
         options={{
           title: "Calendrier",
-          headerRight: () => (
+          headerRight: ({ tintColor }) => (
             <IconButton
               icon={"sync"}
               size={30}
-              iconColor={colors.white}
+              iconColor={tintColor}
               onPress={async () => {
                 const items = await getCalendarItems();
                 actionCalendar.setItems(items);
@@ -153,12 +153,12 @@ export function HomeNavigator({
         component={CreatePostScreen}
         options={() => ({
           contentStyle: {
-            backgroundColor: colors.secondary,
+            // backgroundColor: colors.secondary,
           },
-          headerTitle: () => (
+          headerTitle: ({ tintColor }) => (
             <Row>
               <Title2>Création d'un post</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+              <IconButton icon="pencil" iconColor={tintColor} size={25} />
             </Row>
           ),
         })}
@@ -168,12 +168,12 @@ export function HomeNavigator({
         component={UpdatePostScreen}
         options={() => ({
           contentStyle: {
-            backgroundColor: colors.secondary,
+            // backgroundColor: colors.secondary,
           },
-          headerTitle: () => (
+          headerTitle: ({ tintColor }) => (
             <Row>
               <Title2>Modification du post</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+              <IconButton icon="pencil" iconColor={tintColor} size={25} />
             </Row>
           ),
         })}
@@ -204,12 +204,12 @@ export function OfficeNavigator() {
         component={UpdateOfficeScreen}
         options={() => ({
           contentStyle: {
-            backgroundColor: colors.secondary,
+            // backgroundColor: colors.secondary,
           },
-          headerTitle: () => (
+          headerTitle: ({ tintColor }) => (
             <Row>
               <Title2>Modification du bureau</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+              <IconButton icon="pencil" iconColor={tintColor} size={25} />
             </Row>
           ),
         })}
@@ -226,12 +226,12 @@ export function OfficeNavigator() {
         component={CreateClubScreen}
         options={() => ({
           contentStyle: {
-            backgroundColor: colors.secondary,
+            // backgroundColor: colors.secondary,
           },
-          headerTitle: () => (
+          headerTitle: ({ tintColor }) => (
             <Row>
               <Title2>Création d'un club</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+              <IconButton icon="pencil" iconColor={tintColor} size={25} />
             </Row>
           ),
         })}
@@ -241,12 +241,12 @@ export function OfficeNavigator() {
         component={UpdateClubScreen}
         options={() => ({
           contentStyle: {
-            backgroundColor: colors.secondary,
+            // backgroundColor: colors.secondary,
           },
-          headerTitle: () => (
+          headerTitle: ({ tintColor }) => (
             <Row>
               <Title2>Modification du club</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+              <IconButton icon="pencil" iconColor={tintColor} size={25} />
             </Row>
           ),
         })}
@@ -265,12 +265,12 @@ export function OfficeNavigator() {
         component={CreatePartnershipScreen}
         options={() => ({
           contentStyle: {
-            backgroundColor: colors.secondary,
+            // backgroundColor: colors.secondary,
           },
-          headerTitle: () => (
+          headerTitle: ({ tintColor }) => (
             <Row>
               <Title2>Création d'un partenariat</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+              <IconButton icon="pencil" iconColor={tintColor} size={25} />
             </Row>
           ),
         })}
@@ -280,12 +280,12 @@ export function OfficeNavigator() {
         component={UpdatePartnershipScreen}
         options={() => ({
           contentStyle: {
-            backgroundColor: colors.secondary,
+            // backgroundColor: colors.secondary,
           },
-          headerTitle: () => (
+          headerTitle: ({ tintColor }) => (
             <Row>
               <Title2>Modification du partenariat</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
+              <IconButton icon="pencil" iconColor={tintColor} size={25} />
             </Row>
           ),
         })}
@@ -307,7 +307,7 @@ export function FamCupNavigator() {
         component={CreateScoreScreen}
         options={{
           contentStyle: {
-            backgroundColor: colors.secondary,
+            // backgroundColor: colors.secondary,
           },
           title: "Ajouter des points",
         }}
@@ -317,7 +317,7 @@ export function FamCupNavigator() {
         component={UpdateScoreScreen}
         options={{
           contentStyle: {
-            backgroundColor: colors.secondary,
+            // backgroundColor: colors.secondary,
           },
           title: "Modifier les points",
         }}

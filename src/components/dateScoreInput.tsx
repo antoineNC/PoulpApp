@@ -27,7 +27,7 @@ export function DateComponent({
         borderRadius: 5,
         padding: 5,
         marginTop: 10,
-        borderColor: error ? "red" : colors.black,
+        // borderColor: error ? "red" : colors.black,
       }}
     >
       <Row>

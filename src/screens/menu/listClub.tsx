@@ -87,7 +87,7 @@ export default function ListClubScreen({ navigation }: ListClubProps) {
                       style={{
                         width: props.size,
                         height: props.size,
-                        backgroundColor: colors.secondary,
+                        // backgroundColor: colors.secondary,
                       }}
                     />
                   </View>

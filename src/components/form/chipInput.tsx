@@ -33,7 +33,7 @@ export function ChipInputForm<T extends FieldValues>({
           style={styles.dropdown}
           containerStyle={styles.container}
           inputSearchStyle={styles.inputSearch}
-          activeColor={colors.secondary}
+          // activeColor={colors.secondary}
           renderItem={(item) => (
             <View key={item.value} style={styles.item}>
               <Text $dark>{item.label}</Text>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   label: {
     alignSelf: "flex-start",
-    backgroundColor: colors.secondary,
+    // backgroundColor: colors.secondary,
     zIndex: 2,
     left: 15,
     top: 8,
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   //list of choices
   container: {
-    borderColor: colors.black,
+    // borderColor: colors.black,
     borderWidth: 1,
     borderRadius: 5,
     overflow: "hidden",
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
-    backgroundColor: colors.primary,
+    // backgroundColor: colors.primary,
     shadowColor: "#000",
     marginTop: 8,
     marginRight: 12,

@@ -31,9 +31,9 @@ export default function ListOfficeScreen({ navigation }: ListOfficeProps) {
           >
             <Card
               style={{
-                backgroundColor: colors.primary,
+                // backgroundColor: colors.primary,
                 borderWidth: 0.5,
-                borderColor: colors.secondary,
+                // borderColor: colors.secondary,
                 paddingBottom: 15,
               }}
             >

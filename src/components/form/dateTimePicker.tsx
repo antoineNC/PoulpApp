@@ -66,7 +66,7 @@ export function DateTimeFormPicker<T extends FieldValues>({
         styles.border,
         {
           marginTop: 10,
-          borderColor: error ? "red" : colors.black,
+          // borderColor: error ? "red" : colors.black,
         },
       ]}
     >
@@ -92,15 +92,15 @@ export function DateTimeFormPicker<T extends FieldValues>({
                 {
                   alignSelf: "center",
                   marginVertical: 10,
-                  backgroundColor: allDay ? colors.primary : "transparent",
+                  // backgroundColor: allDay ? colors.primary : "transparent",
                 },
               ]}
             >
               <Text $dark={!allDay}>Journée entière</Text>
               <Checkbox
                 status={allDay ? "checked" : "unchecked"}
-                color={colors.secondary}
-                uncheckedColor={colors.primary}
+                // color={colors.secondary}
+                // uncheckedColor={colors.primary}
               />
             </Row>
           </TouchableOpacity>

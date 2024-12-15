@@ -26,7 +26,7 @@ export default function UpdatePostScreen({
       <Spinner
         visible={true}
         textContent={"Chargement..."}
-        textStyle={{ color: colors.white }}
+        // textStyle={{ color: colors.white }}
       />
     );
   }

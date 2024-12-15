@@ -41,7 +41,10 @@ export function PointInputController<T extends FieldValues>({
               value={value.toLocaleString()}
               error={invalid}
               inputMode={"numeric"}
-              style={{ backgroundColor: colors.secondary, flex: 2 }}
+              style={{
+                // backgroundColor: colors.secondary,
+                flex: 2,
+              }}
             />
           </Row>
           {error && <HelperText type="error">{error.message}</HelperText>}

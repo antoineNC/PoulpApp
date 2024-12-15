@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
   },
   label: {
     alignSelf: "flex-start",
-    backgroundColor: colors.secondary,
+    // backgroundColor: colors.secondary,
     zIndex: 2,
     left: 15,
     top: 8,

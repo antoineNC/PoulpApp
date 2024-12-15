@@ -107,7 +107,11 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
           data={score}
           xKey="family"
           yKeys={["score"]}
-          xAxis={{ font, lineWidth: 0, labelColor: colors.white }}
+          xAxis={{
+            font,
+            lineWidth: 0,
+            // labelColor: colors.white,
+          }}
           yAxis={[{ lineWidth: 0 }]}
           padding={10}
           domainPadding={{ left: 40, right: 40 }}
@@ -125,7 +129,7 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
                 labels={{
                   font,
                   position: "top",
-                  color: colors.white,
+                  // color: colors.white,
                 }}
               />
             ));

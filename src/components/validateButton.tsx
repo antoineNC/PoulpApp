@@ -21,7 +21,7 @@ export const ValidateButton = ({
       icon={icon}
       onPress={onPress}
       uppercase
-      buttonColor={colors.primary}
+      // buttonColor={colors.primary}
       disabled={loading}
       style={{ borderRadius: 5 }}
       contentStyle={{

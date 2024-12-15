@@ -58,7 +58,7 @@ const PartnershipForm = ({
           <Spinner
             visible={loading}
             textContent={loaderTxt}
-            textStyle={{ color: colors.white }}
+            // textStyle={{ color: colors.white }}
           />
         )}
         <View style={authStyles.formList}>
@@ -85,7 +85,10 @@ const PartnershipForm = ({
               <View style={{ flexDirection: "row" }}>
                 <TextInput
                   mode="outlined"
-                  style={{ flex: 1, backgroundColor: colors.secondary }}
+                  style={{
+                    flex: 1,
+                    // backgroundColor: colors.secondary,
+                  }}
                   error={
                     errors?.benefits?.[index]?.value?.message !== undefined
                   }
@@ -101,7 +104,7 @@ const PartnershipForm = ({
                 <IconButton
                   icon={"window-close"}
                   mode="outlined"
-                  iconColor={MD3Colors.error50}
+                  // iconColor={MD3Colors.error50}
                   onPress={() => remove(index)}
                 />
               </View>

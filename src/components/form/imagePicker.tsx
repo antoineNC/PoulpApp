@@ -64,7 +64,7 @@ export function ImagePickerForm<T extends FieldValues>({
           <IconButton
             icon="delete-circle"
             size={40}
-            iconColor={MD3Colors.error50}
+            // iconColor={MD3Colors.error50}
             style={{ position: "absolute", right: 0, zIndex: 10 }}
             onPress={deletePickChoice}
           />
@@ -82,7 +82,7 @@ export function ImagePickerForm<T extends FieldValues>({
       <Row style={styles.btnContainer}>
         <Button
           mode="outlined"
-          textColor={colors.primary}
+          // textColor={colors.primary}
           onPress={pickImageFromLibrary}
           icon={"folder-image"}
           style={{ borderRadius: 5 }}
@@ -91,7 +91,7 @@ export function ImagePickerForm<T extends FieldValues>({
         </Button>
         <Button
           mode="outlined"
-          textColor={colors.primary}
+          // textColor={colors.primary}
           onPress={pickImageFromCamera}
           icon={"camera"}
           style={{ borderRadius: 5 }}

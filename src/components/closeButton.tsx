@@ -8,7 +8,7 @@ export const CloseButton = ({ onPress }: { onPress: () => void }) => {
       <Ionicons
         name="close-circle-outline"
         size={35}
-        color={colors.white}
+        // color={colors.white}
         style={{ marginRight: 15 }}
       />
     </TouchableOpacity>

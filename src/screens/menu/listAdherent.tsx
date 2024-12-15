@@ -42,7 +42,7 @@ export default function ListAdherent() {
         <Spinner
           visible={loading}
           textContent={"Chargement..."}
-          textStyle={{ color: colors.white }}
+          // textStyle={{ color: colors.white }}
         />
       )}
       <Searchbar
@@ -55,9 +55,9 @@ export default function ListAdherent() {
         data={filter}
         renderItem={({ item }) => (
           <Checkbox.Item
-            color={colors.white}
-            uncheckedColor={colors.black}
-            labelStyle={{ color: colors.white }}
+            // color={colors.white}
+            // uncheckedColor={colors.black}
+            // labelStyle={{ color: colors.white }}
             label={`${item.firstName} ${item.lastName}`}
             status={item.adhesion?.includes(officeId) ? "checked" : "unchecked"}
             onPress={() => {

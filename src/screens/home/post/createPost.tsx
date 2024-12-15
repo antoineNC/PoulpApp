@@ -84,7 +84,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
           <Spinner
             visible={loading}
             textContent={"Création..."}
-            textStyle={{ color: colors.white }}
+            // textStyle={{ color: colors.white }}
           />
         )}
         <View style={authStyles.formList}>

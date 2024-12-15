@@ -84,7 +84,7 @@ export default function SignupScreen({
         <Spinner
           visible={loading}
           textContent={"Connexion..."}
-          textStyle={{ color: colors.white }}
+          // textStyle={{ color: colors.white }}
         />
       )}
       <Container style={authStyles.container}>

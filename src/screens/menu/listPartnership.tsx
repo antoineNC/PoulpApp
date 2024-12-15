@@ -90,7 +90,7 @@ export default function ListPartnershipScreen({
                     style={{
                       width: props.size,
                       height: props.size,
-                      backgroundColor: colors.secondary,
+                      // backgroundColor: colors.secondary,
                     }}
                   />
                 )}

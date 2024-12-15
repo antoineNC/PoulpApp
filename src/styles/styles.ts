@@ -21,7 +21,7 @@ export const officeStyles = StyleSheet.create({
   },
   borderRounded: {
     borderWidth: 0.5,
-    borderColor: colors.secondary,
+    // borderColor: colors.secondary,
     borderRadius: 5,
     padding: 5,
     marginVertical: 10,

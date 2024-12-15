@@ -84,7 +84,7 @@ export default function UpdateOfficeScreen({
           <Spinner
             visible={loading}
             textContent={"Modification..."}
-            textStyle={{ color: colors.white }}
+            // textStyle={{ color: colors.white }}
           />
         )}
         <View style={[authStyles.formList, officeStyles.container]}>
