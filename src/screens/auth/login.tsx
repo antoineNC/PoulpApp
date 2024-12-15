@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useForm } from "react-hook-form";
-import { Button } from "react-native-paper";
+import { Button, useTheme } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Spinner from "react-native-loading-spinner-overlay";
 
 import { AuthParamList } from "@navigation/navigationTypes";
 import CustomField from "components/form/formField";
 import { ContainerScroll as Container } from "@styledComponents";
-import { colors } from "@theme";
 import { authStyles } from "@styles";
 import { loginUser } from "firebase/service/auth.service";
 import { actionSession } from "@context/sessionStore";
@@ -23,6 +22,7 @@ type FieldNames = {
 export default function LoginScreen({
   navigation,
 }: NativeStackScreenProps<AuthParamList>) {
+  const { colors } = useTheme();
   const [loading, setLoading] = useState(false);
   const { control, handleSubmit, setFocus } = useForm<FieldNames>();
 
@@ -61,7 +61,7 @@ export default function LoginScreen({
         <Spinner
           visible={loading}
           textContent={"Connexion..."}
-          // textStyle={{ color: colors.white }}
+          textStyle={{ color: colors.onBackground }}
         />
       )}
       <Container style={authStyles.container}>

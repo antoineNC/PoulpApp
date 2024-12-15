@@ -7,12 +7,13 @@ import { AuthParamList } from "@navigation/navigationTypes";
 import LoginScreen from "@screens/auth/login";
 import SignupScreen from "@screens/auth/signup";
 import { $sessionStore } from "@context/sessionStore";
-import { colors } from "@theme";
+import { useTheme } from "react-native-paper";
 
 const AuthStack = createNativeStackNavigator<AuthParamList>();
 
 export default function RootContainer({ theme }: { theme: Theme }) {
   const { connected } = useUnit($sessionStore);
+  const { colors } = useTheme();
 
   return (
     <NavigationContainer theme={theme}>
@@ -22,13 +23,9 @@ export default function RootContainer({ theme }: { theme: Theme }) {
         <AuthStack.Navigator
           screenOptions={{
             statusBarTranslucent: true,
-            // headerTintColor: colors.white,
             headerTitleAlign: "center",
-            // headerStyle: { backgroundColor: colors.primary },
+            headerStyle: { backgroundColor: colors.background },
             headerShadowVisible: false,
-            contentStyle: {
-              // backgroundColor: colors.secondary,
-            },
           }}
         >
           <AuthStack.Screen
@@ -41,7 +38,6 @@ export default function RootContainer({ theme }: { theme: Theme }) {
             component={SignupScreen}
             options={{ title: "Inscription" }}
           />
-          <AuthStack.Screen name="forgotPassword" component={LoginScreen} />
         </AuthStack.Navigator>
       )}
     </NavigationContainer>

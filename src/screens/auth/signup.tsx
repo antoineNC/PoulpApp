@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { useForm } from "react-hook-form";
-import { Button } from "react-native-paper";
+import { Button, useTheme } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Spinner from "react-native-loading-spinner-overlay";
 
@@ -9,7 +9,6 @@ import { AuthParamList } from "@navigation/navigationTypes";
 import CustomField from "components/form/formField";
 import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
-import { colors } from "@theme";
 import { registerUser } from "@fb/service/auth.service";
 import { actionSession } from "@context/sessionStore";
 import { FormFieldValues } from "types/form.type";
@@ -25,9 +24,9 @@ type FieldNames = {
 export default function SignupScreen({
   navigation,
 }: NativeStackScreenProps<AuthParamList>) {
+  const { colors } = useTheme();
   const [loading, setLoading] = useState(false);
-  const { control, handleSubmit, watch, setFocus } = useForm<FieldNames>();
-  const pwd = watch("password");
+  const { control, handleSubmit, setFocus } = useForm<FieldNames>();
 
   const values: FormFieldValues<FieldNames> = [
     {
@@ -84,7 +83,7 @@ export default function SignupScreen({
         <Spinner
           visible={loading}
           textContent={"Connexion..."}
-          // textStyle={{ color: colors.white }}
+          textStyle={{ color: colors.onBackground }}
         />
       )}
       <Container style={authStyles.container}>
@@ -94,7 +93,6 @@ export default function SignupScreen({
               {...field}
               key={index}
               control={control}
-              repeat={field.options?.confirm ? pwd : undefined}
               index={index}
               lastInput={index === values.length - 1}
               setFocus={(index) =>
