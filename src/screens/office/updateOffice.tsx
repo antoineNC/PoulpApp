@@ -172,7 +172,6 @@ export default function UpdateOfficeScreen({
               />
             )}
           />
-          {/* TODO : gérer le display des clubs plus proprement */}
           {office.acronym !== "I2C" && (
             <>
               <Text $bold $dark>

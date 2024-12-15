@@ -6,7 +6,7 @@ import { Container, Row, Text } from "@styledComponents";
 import { formatDay, formatHour } from "utils/dateUtils";
 import { colors } from "@theme";
 import { FieldValues } from "react-hook-form";
-import { FieldInputProps } from "utils/formUtils";
+import { FieldInputProps } from "types/form.type";
 import React from "react";
 import { setHours, setMinutes, setSeconds } from "date-fns";
 

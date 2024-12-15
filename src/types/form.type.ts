@@ -1,3 +1,11 @@
+import {
+  Control,
+  ControllerFieldState,
+  ControllerRenderProps,
+  FieldValues,
+  Path,
+  ResolverOptions,
+} from "react-hook-form";
 import { InputModeOptions } from "react-native";
 
 export type FormFieldType =
@@ -29,3 +37,29 @@ export type FormFieldValues<T> = {
   required?: boolean;
   options?: FormFieldOptions;
 }[];
+
+export type ControlFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: Path<T>;
+  required?: boolean;
+  repeat?: string;
+};
+export type FormFieldProps = {
+  label: string;
+  type: FormFieldType;
+  options?: FormFieldOptions;
+  index: number;
+  lastInput: boolean;
+  setFocus: (state: number) => void;
+  submit: (e?: React.BaseSyntheticEvent) => Promise<void>;
+};
+
+export type FieldInputProps<T extends FieldValues> = FormFieldProps & {
+  field: ControllerRenderProps<T, Path<T>>;
+  fieldState: ControllerFieldState;
+};
+
+export type Params<T extends FieldValues> = {
+  newLabel: string;
+  rules?: Omit<ResolverOptions<T>, keyof FieldValues>;
+};

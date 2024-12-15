@@ -4,8 +4,8 @@ import { HelperText } from "react-native-paper";
 import { MultiSelect } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Text } from "@styledComponents";
-import { FieldInputProps } from "utils/formUtils";
 import { colors } from "@theme";
+import { FieldInputProps } from "types/form.type";
 
 export function ChipInputForm<T extends FieldValues>({
   field: { onBlur, onChange, value },

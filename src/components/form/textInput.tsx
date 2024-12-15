@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import { FieldValues } from "react-hook-form";
 import { HelperText, TextInput } from "react-native-paper";
-import { FieldInputProps } from "utils/formUtils";
+import { FieldInputProps } from "types/form.type";
 import { colors } from "@theme";
 
 export function TextInputForm<T extends FieldValues>({
