@@ -2,14 +2,13 @@ import { useState } from "react";
 import { FlatList, View, Alert } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useStoreMap } from "effector-react";
-import { IconButton } from "react-native-paper";
+import { IconButton, useTheme } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 
 import { UpdateOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import { authStyles, officeStyles } from "@styles";
-import { ContainerScroll, Text } from "@styledComponents";
-import { colors } from "@theme";
+import { ContainerScroll } from "@styledComponents";
 import { TextInputForm } from "components/form/textInput";
 import { ImagePickerForm } from "components/form/imagePicker";
 import { SmallCardItem } from "components/smallCardItem";
@@ -20,12 +19,14 @@ import { updateOffice } from "@fb/service/office.service";
 import { deleteClub } from "@fb/service/club.service";
 import { deletePartnership } from "@fb/service/partnership.service";
 import React from "react";
+import { BodyText } from "components/customText";
 
 export default function UpdateOfficeScreen({
   navigation,
   route,
 }: UpdateOfficeProps) {
   const { officeId } = route.params;
+  const { colors } = useTheme();
   const [loading, setLoading] = useState(false);
   const office = useStoreMap({
     store: $officeStore,
@@ -84,7 +85,7 @@ export default function UpdateOfficeScreen({
           <Spinner
             visible={loading}
             textContent={"Modification..."}
-            // textStyle={{ color: colors.white }}
+            textStyle={{ color: colors.onBackground }}
           />
         )}
         <View style={[authStyles.formList, officeStyles.container]}>
@@ -173,10 +174,8 @@ export default function UpdateOfficeScreen({
             )}
           />
           {office.acronym !== "I2C" && (
-            <>
-              <Text $bold $dark>
-                Les clubs :
-              </Text>
+            <View style={{ paddingVertical: 10 }}>
+              <BodyText>Les clubs :</BodyText>
               <View style={{ marginHorizontal: -15 }}>
                 <FlatList
                   horizontal
@@ -192,7 +191,6 @@ export default function UpdateOfficeScreen({
                       icon="plus"
                       mode="contained"
                       size={40}
-                      style={{ borderRadius: 5 }}
                       onPress={() =>
                         navigation.navigate("createClub", { officeId })
                       }
@@ -224,56 +222,55 @@ export default function UpdateOfficeScreen({
                   }}
                 />
               </View>
-            </>
+            </View>
           )}
-          <Text $bold $dark>
-            Les partenariats :
-          </Text>
-          <View style={{ marginHorizontal: -15 }}>
-            <FlatList
-              horizontal
-              data={partnerships}
-              contentContainerStyle={{ columnGap: 10, padding: 10 }}
-              showsHorizontalScrollIndicator={false}
-              ListHeaderComponentStyle={{ justifyContent: "center" }}
-              ListHeaderComponent={
-                <IconButton
-                  icon="plus"
-                  mode="contained"
-                  size={40}
-                  style={{ borderRadius: 5 }}
-                  onPress={() =>
-                    navigation.navigate("createPartnership", { officeId })
-                  }
-                />
-              }
-              renderItem={({ item }) => {
-                return (
-                  <SmallCardItem
-                    title={item.name}
-                    logo={item.logoUrl}
-                    onEdit={() =>
-                      navigation.navigate("updatePartnership", {
-                        partnershipId: item.id,
-                      })
-                    }
-                    onDelete={() =>
-                      Alert.alert(
-                        "Supprimer un partenariat",
-                        "Voulez-vous vraiment supprimer définitivement ce partenariat ?",
-                        [
-                          {
-                            text: "OUI",
-                            onPress: () => onDeletePartnership(item.id),
-                          },
-                          { text: "NON" },
-                        ]
-                      )
+          <View style={{ paddingVertical: 10 }}>
+            <BodyText>Les partenariats :</BodyText>
+            <View style={{ marginHorizontal: -15 }}>
+              <FlatList
+                horizontal
+                data={partnerships}
+                contentContainerStyle={{ columnGap: 10, padding: 10 }}
+                showsHorizontalScrollIndicator={false}
+                ListHeaderComponentStyle={{ justifyContent: "center" }}
+                ListHeaderComponent={
+                  <IconButton
+                    icon="plus"
+                    mode="contained"
+                    size={40}
+                    onPress={() =>
+                      navigation.navigate("createPartnership", { officeId })
                     }
                   />
-                );
-              }}
-            />
+                }
+                renderItem={({ item }) => {
+                  return (
+                    <SmallCardItem
+                      title={item.name}
+                      logo={item.logoUrl}
+                      onEdit={() =>
+                        navigation.navigate("updatePartnership", {
+                          partnershipId: item.id,
+                        })
+                      }
+                      onDelete={() =>
+                        Alert.alert(
+                          "Supprimer un partenariat",
+                          "Voulez-vous vraiment supprimer définitivement ce partenariat ?",
+                          [
+                            {
+                              text: "OUI",
+                              onPress: () => onDeletePartnership(item.id),
+                            },
+                            { text: "NON" },
+                          ]
+                        )
+                      }
+                    />
+                  );
+                }}
+              />
+            </View>
           </View>
           <ListMemberForm
             control={control}
@@ -285,7 +282,7 @@ export default function UpdateOfficeScreen({
         <View style={{ height: 100 }} />
       </ContainerScroll>
       <FloatingValidateBtn
-        label="Enregistrer les informations du bureau"
+        label="Enregistrer le bureau"
         onPress={handleSubmit(onSubmit)}
       />
     </>

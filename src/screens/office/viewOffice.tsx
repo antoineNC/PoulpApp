@@ -3,17 +3,10 @@ import { useStoreMap } from "effector-react";
 import { ViewOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import { $studentStore } from "@context/studentStore";
-import {
-  Row,
-  Image,
-  Text,
-  Link,
-  BodyTitle,
-  ContainerScroll,
-} from "@styledComponents";
+import { Row, Image, ContainerScroll } from "@styledComponents";
 import { officeStyles } from "@styles";
-import { colors } from "@theme";
 import React from "react";
+import { BodyText, LinkText, Title2Text } from "components/customText";
 
 export default function ViewOfficeScreen({
   navigation,
@@ -70,35 +63,35 @@ export default function ViewOfficeScreen({
       // by some browser in the mobile
       await Linking.openURL("mailto:" + url);
     } else {
-      Alert.alert(`Don't know how to open this URL: ${url}`);
+      Alert.alert(`Nous ne parvenons pas à ouvrir ce lien: ${url}`);
     }
   };
   return (
     <ContainerScroll style={officeStyles.container}>
-      <Row>
-        <Text>Envoyez nous un mail : </Text>
+      <Row $padding="10px 0">
+        <Title2Text>Contact : </Title2Text>
         <TouchableOpacity onPress={() => handlePress(office.mail)}>
-          <Link>{office.mail}</Link>
+          <LinkText>{office.mail}</LinkText>
         </TouchableOpacity>
       </Row>
-      <View style={officeStyles.borderRounded}>
-        <BodyTitle>Description :</BodyTitle>
-        <Text>{office.description}</Text>
+      <View style={{ paddingVertical: 10 }}>
+        <Title2Text>Description</Title2Text>
+        <BodyText>{office.description}</BodyText>
       </View>
       {members.length > 0 && (
-        <View style={officeStyles.borderRounded}>
-          <BodyTitle>Liste des membres :</BodyTitle>
+        <View style={{ paddingVertical: 10 }}>
+          <Title2Text>Liste des membres</Title2Text>
           {members.map((member, index) => (
             <Row key={index} style={{ marginVertical: 5 }}>
-              <Text style={{ flex: 1 }}>{member.role} :</Text>
-              <Text style={{ flex: 2 }}>{member.student}</Text>
+              <BodyText style={{ flex: 1 }}>{member.role} :</BodyText>
+              <BodyText style={{ flex: 2 }}>{member.student}</BodyText>
             </Row>
           ))}
         </View>
       )}
       {clubs && clubs.length > 0 && (
-        <View>
-          <BodyTitle>Liste des clubs :</BodyTitle>
+        <View style={{ paddingVertical: 10 }}>
+          <Title2Text>Liste des clubs</Title2Text>
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -121,18 +114,17 @@ export default function ViewOfficeScreen({
                     borderRadius: 5,
                     width: 100,
                     height: 100,
-                    // backgroundColor: colors.secondary,
                   }}
                 />
-                <Text>{item.name}</Text>
+                <BodyText>{item.name}</BodyText>
               </TouchableOpacity>
             )}
           />
         </View>
       )}
       {partnerships && partnerships.length > 0 && (
-        <View>
-          <BodyTitle>Liste des partenariats :</BodyTitle>
+        <View style={{ paddingVertical: 10 }}>
+          <Title2Text>Liste des partenariats</Title2Text>
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -157,10 +149,9 @@ export default function ViewOfficeScreen({
                     borderRadius: 5,
                     width: 100,
                     height: 100,
-                    // backgroundColor: colors.secondary,
                   }}
                 />
-                <Text>{item.name}</Text>
+                <BodyText>{item.name}</BodyText>
               </TouchableOpacity>
             )}
           />

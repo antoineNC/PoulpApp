@@ -4,7 +4,7 @@ import { HelperText, useTheme } from "react-native-paper";
 import { MultiSelect } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { FieldInputProps } from "types/form.type";
-import { BodyText } from "components/customText";
+import { BodyText, LabelText } from "components/customText";
 import { Container } from "@styledComponents";
 
 export function ChipInputForm<T extends FieldValues>({
@@ -16,9 +16,9 @@ export function ChipInputForm<T extends FieldValues>({
   const { colors, roundness } = useTheme();
   return (
     <Container style={styles.container}>
-      <BodyText style={[styles.label, { backgroundColor: colors.background }]}>
+      <LabelText style={[styles.label, { backgroundColor: colors.background }]}>
         {label}
-      </BodyText>
+      </LabelText>
       <MultiSelect
         data={options?.choices || []}
         value={value || []}

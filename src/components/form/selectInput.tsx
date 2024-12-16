@@ -4,7 +4,7 @@ import { HelperText, useTheme } from "react-native-paper";
 import { Dropdown } from "react-native-element-dropdown";
 import { FieldInputProps } from "types/form.type";
 import React from "react";
-import { BodyText } from "components/customText";
+import { LabelText } from "components/customText";
 
 export function SelectInputForm<T extends FieldValues>({
   field: { onBlur, onChange, value },
@@ -15,9 +15,9 @@ export function SelectInputForm<T extends FieldValues>({
   const { colors, roundness } = useTheme();
   return (
     <View>
-      <BodyText style={[styles.label, { backgroundColor: colors.background }]}>
+      <LabelText style={[styles.label, { backgroundColor: colors.background }]}>
         {label}
-      </BodyText>
+      </LabelText>
       <Dropdown
         data={options?.choices || []}
         value={value}

@@ -10,7 +10,7 @@ import { formatDate } from "utils/dateUtils";
 import { AgendaItemType } from "types/calendar.type";
 import { useUnit } from "effector-react";
 import { $calendarStore } from "@context/calendar.store";
-import { BodyText, LabelText } from "./customText";
+import { BodyText, TitleText } from "./customText";
 import { useTheme } from "react-native-paper";
 
 LocaleConfig.locales["fr"] = {
@@ -73,7 +73,7 @@ export default function CalendarDisplay({ postDate }: { postDate?: Date }) {
           {item.duration && <BodyText>{item.duration}</BodyText>}
         </View>
         <View style={{ flex: 5 }}>
-          <LabelText style={styles.itemTitleText}>{item.title}</LabelText>
+          <TitleText style={styles.itemTitleText}>{item.title}</TitleText>
           <BodyText numberOfLines={2}>{item.description}</BodyText>
         </View>
       </TouchableOpacity>

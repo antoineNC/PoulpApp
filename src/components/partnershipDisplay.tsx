@@ -1,19 +1,11 @@
 import { Alert, Linking, TouchableOpacity, View } from "react-native";
-import {
-  Body,
-  BodyTitle,
-  ContainerScroll,
-  Image,
-  Link,
-  Row,
-  Text,
-  Title1,
-} from "@styledComponents";
+import { Body, ContainerScroll, Image, Row } from "@styledComponents";
 import ImageView from "react-native-image-viewing";
 import { useStoreMap } from "effector-react";
 import { $officeStore } from "@context/officeStore";
 import { useState } from "react";
 import React from "react";
+import { BodyText, HeaderText, LinkText, Title2Text } from "./customText";
 
 export default function PartnershipDisplay({
   id,
@@ -78,41 +70,41 @@ export default function PartnershipDisplay({
             />
           </>
         )}
-        <Title1>{partnership.name}</Title1>
+        <HeaderText>{partnership.name}</HeaderText>
       </View>
       <Body>
-        <Text>{partnership.description}</Text>
+        <BodyText>{partnership.description}</BodyText>
         {partnership.address && (
           <Row style={{ flexWrap: "wrap" }}>
-            <BodyTitle>Contact : </BodyTitle>
+            <BodyText>Adresse : </BodyText>
             {partnership.addressMap ? (
-              <Link
+              <TouchableOpacity
                 onPress={() =>
                   partnership.addressMap && handlePress(partnership.addressMap)
                 }
               >
-                {partnership.address}
-              </Link>
+                <LinkText>{partnership.address}</LinkText>
+              </TouchableOpacity>
             ) : (
-              <Text>{partnership.address}</Text>
+              <BodyText>{partnership.address}</BodyText>
             )}
           </Row>
         )}
         {partnership.benefits && partnership.benefits.length > 0 && (
           <View>
-            <BodyTitle>Les avantages du partenariat :</BodyTitle>
+            <Title2Text>Les avantages du partenariat :</Title2Text>
             <View style={{ margin: 10, rowGap: 10 }}>
               {partnership.benefits.map((benefit, index) => (
-                <Text $size="l" key={index}>
+                <BodyText key={index}>
                   {index + 1}. {benefit}
-                </Text>
+                </BodyText>
               ))}
             </View>
           </View>
         )}
         {office && (
           <Row>
-            <Text>Partneriat du : </Text>
+            <BodyText>Partneriat du : </BodyText>
             <TouchableOpacity onPress={() => onPress(office.id)}>
               <Row>
                 <Image
@@ -120,7 +112,7 @@ export default function PartnershipDisplay({
                   source={{ uri: office?.logoUrl }}
                   style={{ marginHorizontal: 5 }}
                 />
-                <Text $bold>{office?.name}</Text>
+                <BodyText>{office?.name}</BodyText>
               </Row>
             </TouchableOpacity>
           </Row>

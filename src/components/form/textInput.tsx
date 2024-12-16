@@ -50,7 +50,6 @@ export function TextInputForm<T extends FieldValues>({
         onSubmitEditing={
           lastInput ? async (e) => await submit(e) : () => setFocus(index + 1)
         }
-        // style={{ backgroundColor: colors.secondary }}
       />
       {error && <HelperText type="error">{error.message}</HelperText>}
     </View>

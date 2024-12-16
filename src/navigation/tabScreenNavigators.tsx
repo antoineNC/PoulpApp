@@ -34,11 +34,11 @@ import ViewClubMenuScreen from "@screens/menu/viewClub";
 import ListPartnershipScreen from "@screens/menu/listPartnership";
 import ViewPartnershipMenuScreen from "@screens/menu/viewPartnership";
 import NotificationScreen from "@screens/menu/notification";
-import { Image, Row, Title2 } from "@styledComponents";
+import { Image, Row } from "@styledComponents";
 import { $officeStore } from "@context/officeStore";
 import { getCalendarItems } from "@fb/service/post.service";
 import { actionCalendar } from "@context/calendar.store";
-import { HeaderText } from "components/customText";
+import { TitleText } from "components/customText";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -58,11 +58,11 @@ const TitleComponent = ({
   name: string;
   logoUrl?: string;
 }) => (
-  <Row>
+  <Row style={{ columnGap: 10 }}>
     {logoUrl && (
       <Image style={{ borderRadius: 5 }} $size={45} source={{ uri: logoUrl }} />
     )}
-    <Title2>{name}</Title2>
+    <TitleText>{name}</TitleText>
   </Row>
 );
 
@@ -153,34 +153,26 @@ export function HomeNavigator({
       <HomeStack.Screen
         name="createPost"
         component={CreatePostScreen}
-        options={() => ({
-          headerTitle: ({ tintColor }) => (
-            <Row>
-              <HeaderText>Création d'un post</HeaderText>
-              <IconButton icon="pencil" iconColor={tintColor} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Création d'un post" }}
       />
       <HomeStack.Screen
         name="updatePost"
         component={UpdatePostScreen}
-        options={() => ({
-          headerTitle: ({ tintColor }) => (
-            <Row>
-              <HeaderText>Modification du post</HeaderText>
-              <IconButton icon="pencil" iconColor={tintColor} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Modification du post" }}
       />
     </HomeStack.Navigator>
   );
 }
 
 export function OfficeNavigator() {
+  const { colors } = useTheme();
   return (
-    <OfficeStack.Navigator screenOptions={screenOptions}>
+    <OfficeStack.Navigator
+      screenOptions={{
+        ...screenOptions,
+        headerStyle: { backgroundColor: colors.background },
+      }}
+    >
       <OfficeStack.Screen
         name="listOffice"
         component={ListOfficeScreen}
@@ -198,17 +190,7 @@ export function OfficeNavigator() {
       <OfficeStack.Screen
         name="updateOffice"
         component={UpdateOfficeScreen}
-        options={() => ({
-          contentStyle: {
-            // backgroundColor: colors.secondary,
-          },
-          headerTitle: ({ tintColor }) => (
-            <Row>
-              <Title2>Modification du bureau</Title2>
-              <IconButton icon="pencil" iconColor={tintColor} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Modification du bureau" }}
       />
       <OfficeStack.Screen
         name="viewClub"
@@ -220,32 +202,12 @@ export function OfficeNavigator() {
       <OfficeStack.Screen
         name="createClub"
         component={CreateClubScreen}
-        options={() => ({
-          contentStyle: {
-            // backgroundColor: colors.secondary,
-          },
-          headerTitle: ({ tintColor }) => (
-            <Row>
-              <Title2>Création d'un club</Title2>
-              <IconButton icon="pencil" iconColor={tintColor} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Création d'un club" }}
       />
       <OfficeStack.Screen
         name="updateClub"
         component={UpdateClubScreen}
-        options={() => ({
-          contentStyle: {
-            // backgroundColor: colors.secondary,
-          },
-          headerTitle: ({ tintColor }) => (
-            <Row>
-              <Title2>Modification du club</Title2>
-              <IconButton icon="pencil" iconColor={tintColor} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Modification du club" }}
       />
       <OfficeStack.Screen
         name="viewPartnership"
@@ -259,32 +221,12 @@ export function OfficeNavigator() {
       <OfficeStack.Screen
         name="createPartnership"
         component={CreatePartnershipScreen}
-        options={() => ({
-          contentStyle: {
-            // backgroundColor: colors.secondary,
-          },
-          headerTitle: ({ tintColor }) => (
-            <Row>
-              <Title2>Création d'un partenariat</Title2>
-              <IconButton icon="pencil" iconColor={tintColor} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Création d'un partenariat" }}
       />
       <OfficeStack.Screen
         name="updatePartnership"
         component={UpdatePartnershipScreen}
-        options={() => ({
-          contentStyle: {
-            // backgroundColor: colors.secondary,
-          },
-          headerTitle: ({ tintColor }) => (
-            <Row>
-              <Title2>Modification du partenariat</Title2>
-              <IconButton icon="pencil" iconColor={tintColor} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Modification du partenariat" }}
       />
     </OfficeStack.Navigator>
   );

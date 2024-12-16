@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useUnit } from "effector-react";
 import {
   Control,
@@ -7,15 +7,15 @@ import {
   UseFormRegister,
   UseFormSetValue,
 } from "react-hook-form";
-import { HelperText, IconButton, MD3Colors } from "react-native-paper";
+import { HelperText, IconButton, useTheme } from "react-native-paper";
 import { Dropdown } from "react-native-element-dropdown";
 
 import { $officeStore } from "@context/officeStore";
 import { $studentStore } from "@context/studentStore";
-import { Container, Text } from "@styledComponents";
-import { styles as selectStyles } from "components/form/selectInput";
+import { Container } from "@styledComponents";
 import { OfficeFormFields, RoleOffice } from "types/office.type";
 import { Student } from "types/student.type";
+import { BodyText } from "./customText";
 
 export default function ListMemberForm({
   control,
@@ -30,7 +30,7 @@ export default function ListMemberForm({
 }) {
   const studentList = useUnit($studentStore);
   const { roleList } = useUnit($officeStore);
-
+  const { colors, roundness } = useTheme();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "members",
@@ -45,10 +45,8 @@ export default function ListMemberForm({
   });
   return (
     <Container>
-      <View style={{ paddingVertical: 20 }}>
-        <Text $bold $dark>
-          Les membres :
-        </Text>
+      <View style={{ paddingVertical: 10 }}>
+        <BodyText>Les membres :</BodyText>
       </View>
       <View>
         {fields.map((member, index) => (
@@ -61,27 +59,30 @@ export default function ListMemberForm({
                       return role !== "" || "Ne peut pas être vide";
                     },
                   })}
+                  mode="modal"
                   ref={null}
                   onBlur={() => {}}
                   onChange={(e) => setValue(`members.${index}.idRole`, e.id)}
                   data={roleList}
                   labelField="name"
                   valueField="id"
-                  placeholder="Sélectionner un rôle"
                   value={member.idRole}
+                  placeholder="Sélectionner un rôle"
+                  placeholderStyle={{ color: colors.onSurfaceVariant }}
+                  selectedTextStyle={{ color: colors.onSurfaceVariant }}
                   style={[
-                    selectStyles.dropdown,
+                    styles.dropdown,
                     {
-                      flex: 1,
-                      // borderColor: errors.members?.[index]?.idRole
-                      //   ? MD3Colors.error50
-                      //   : "black",
+                      borderRadius: roundness,
+                      borderColor: colors.onSurfaceVariant,
                     },
                   ]}
-                  containerStyle={selectStyles.container}
-                  itemTextStyle={{ fontSize: 13 }}
-                  selectedTextStyle={{ fontSize: 13 }}
-                  placeholderStyle={{ fontSize: 13 }}
+                  itemTextStyle={{ color: colors.primary }}
+                  activeColor={colors.background}
+                  containerStyle={{
+                    backgroundColor: colors.surfaceVariant,
+                    borderColor: colors.surfaceVariant,
+                  }}
                 />
                 <Dropdown<Student>
                   {...register(`members.${index}.idStudent` as const, {
@@ -89,36 +90,40 @@ export default function ListMemberForm({
                       return role !== "" || "Ne peut pas être vide";
                     },
                   })}
+                  mode="modal"
                   ref={null}
                   onBlur={() => {}}
                   onChange={(e) => setValue(`members.${index}.idStudent`, e.id)}
                   data={studentList}
                   labelField="mail"
                   valueField="id"
-                  placeholder="Sélectionner un étudiant"
                   value={member.idStudent}
                   search
+                  placeholder="Sélectionner un étudiant"
                   searchPlaceholder="Sélectionner un étudiant"
+                  placeholderStyle={{ color: colors.onSurfaceVariant }}
+                  selectedTextStyle={{ color: colors.onSurfaceVariant }}
+                  inputSearchStyle={{ color: colors.onSurfaceVariant }}
                   style={[
-                    selectStyles.dropdown,
+                    styles.dropdown,
                     {
-                      flex: 1,
-                      // borderColor: errors.members?.[index]?.idStudent
-                      //   ? MD3Colors.error50
-                      //   : "black",
+                      borderRadius: roundness,
+                      borderColor: colors.onSurfaceVariant,
                     },
                   ]}
-                  containerStyle={selectStyles.container}
-                  itemTextStyle={{ fontSize: 13 }}
-                  selectedTextStyle={{ fontSize: 13 }}
-                  inputSearchStyle={{ fontSize: 13 }}
-                  placeholderStyle={{ fontSize: 13 }}
+                  itemTextStyle={{ color: colors.primary }}
+                  activeColor={colors.background}
+                  containerStyle={{
+                    backgroundColor: colors.surfaceVariant,
+                    borderColor: colors.surfaceVariant,
+                    borderRadius: roundness,
+                  }}
                 />
               </View>
               <IconButton
                 icon={"window-close"}
                 mode="outlined"
-                // iconColor={MD3Colors.error50}
+                iconColor={colors.error}
                 onPress={() => remove(index)}
               />
             </View>
@@ -133,10 +138,26 @@ export default function ListMemberForm({
       </View>
       <IconButton
         icon={"plus"}
-        mode="outlined"
-        style={{ width: "auto", borderRadius: 5 }}
+        mode="contained"
+        style={{ width: "auto" }}
         onPress={() => append({ idRole: "", idStudent: "" })}
       />
     </Container>
   );
 }
+
+export const styles = StyleSheet.create({
+  // select input
+  label: {
+    alignSelf: "flex-start",
+    zIndex: 2,
+    left: 15,
+    top: 8,
+    paddingHorizontal: 5,
+  },
+  dropdown: {
+    height: 50,
+    borderWidth: 0.5,
+    paddingHorizontal: 10,
+  },
+});

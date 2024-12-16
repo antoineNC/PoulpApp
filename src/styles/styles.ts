@@ -17,6 +17,7 @@ export const authStyles = StyleSheet.create({
 export const officeStyles = StyleSheet.create({
   container: {
     paddingHorizontal: 15,
+    paddingTop: 5,
   },
   borderRounded: {
     borderWidth: 0.5,

@@ -8,7 +8,7 @@ import { FieldValues } from "react-hook-form";
 import { FieldInputProps } from "types/form.type";
 import React from "react";
 import { setHours, setMinutes, setSeconds } from "date-fns";
-import { BodyText } from "components/customText";
+import { BodyText, LabelText } from "components/customText";
 
 export function DateTimeFormPicker<T extends FieldValues>({
   field: { value, onChange },
@@ -72,9 +72,9 @@ export function DateTimeFormPicker<T extends FieldValues>({
         },
       ]}
     >
-      <BodyText style={[styles.label, { backgroundColor: colors.background }]}>
+      <LabelText style={[styles.label, { backgroundColor: colors.background }]}>
         {label}
-      </BodyText>
+      </LabelText>
       {/* Is date switch */}
       <Row $justify="space-between">
         <BodyText>Définir une date : </BodyText>
