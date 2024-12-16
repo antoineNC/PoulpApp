@@ -1,7 +1,8 @@
 import { PreferencesContext } from "@context/themeContext";
 import { signoutUser } from "@fb/service/auth.service";
 import { MenuProps } from "@navigation/navigationTypes";
-import { ContainerScroll, Row, Text } from "@styledComponents";
+import { ContainerScroll, Row } from "@styledComponents";
+import { TitleText } from "components/customText";
 import React, { useContext } from "react";
 import { TouchableOpacity } from "react-native";
 import { Divider, Icon, Switch } from "react-native-paper";
@@ -17,15 +18,16 @@ const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
         marginVertical: 20,
       }}
     >
-      <Text $size="l">{text}</Text>
-      <Icon size={20} source={"chevron-right"} color="white" />
+      <TitleText>{text}</TitleText>
+      <Icon size={20} source={"chevron-right"} />
     </Row>
   </TouchableOpacity>
 );
 
 export default function MenuScreen({ navigation }: MenuProps) {
   const { isStudent, isOffice } = useRight();
-  const { toggleTheme, isThemeLight } = useContext(PreferencesContext);
+  const { toggleTheme, isThemeDark: isThemeLight } =
+    useContext(PreferencesContext);
   return (
     <ContainerScroll>
       {isStudent && (
@@ -65,7 +67,17 @@ export default function MenuScreen({ navigation }: MenuProps) {
       <Divider />
       <Item text="Se déconnecter" onPress={signoutUser} />
       <Divider />
-      <Switch color={"red"} value={isThemeLight} onValueChange={toggleTheme} />
+      <Row
+        style={{
+          justifyContent: "flex-end",
+          columnGap: 20,
+          paddingRight: 20,
+          marginVertical: 20,
+        }}
+      >
+        <TitleText>Mode sombre</TitleText>
+        <Switch value={isThemeLight} onValueChange={toggleTheme} />
+      </Row>
     </ContainerScroll>
   );
 }

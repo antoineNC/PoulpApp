@@ -2,8 +2,8 @@ import React from "react";
 
 export const PreferencesContext = React.createContext<{
   toggleTheme: () => void;
-  isThemeLight: boolean;
+  isThemeDark: boolean;
 }>({
   toggleTheme: () => {},
-  isThemeLight: false,
+  isThemeDark: false,
 });

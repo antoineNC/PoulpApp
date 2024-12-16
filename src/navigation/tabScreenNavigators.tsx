@@ -1,4 +1,7 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationOptions,
+} from "@react-navigation/native-stack";
 import { IconButton, useTheme } from "react-native-paper";
 import { useStoreMap } from "effector-react";
 
@@ -45,7 +48,7 @@ const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
 const FamCupStack = createNativeStackNavigator<FamCupTabParamList>();
 const MenuStack = createNativeStackNavigator<MenuTabParamList>();
 
-const screenOptions = {
+const screenOptions: NativeStackNavigationOptions = {
   statusBarTranslucent: true,
   headerShadowVisible: false,
   headerBackTitleVisible: false,
@@ -261,8 +264,14 @@ export function FamCupNavigator() {
 }
 
 export function MenuNavigator() {
+  const { colors } = useTheme();
   return (
-    <MenuStack.Navigator screenOptions={screenOptions}>
+    <MenuStack.Navigator
+      screenOptions={{
+        ...screenOptions,
+        headerStyle: { backgroundColor: colors.background },
+      }}
+    >
       <MenuStack.Screen
         name="menu"
         component={MenuScreen}

@@ -5,7 +5,6 @@ import { FlatList, TouchableOpacity } from "react-native";
 import { Card, Chip, Searchbar } from "react-native-paper";
 import { ListPartnershipProps } from "@navigation/navigationTypes";
 import { Container, Image, Row } from "@styledComponents";
-import { colors } from "@theme";
 
 export default function ListPartnershipScreen({
   navigation,
@@ -50,7 +49,7 @@ export default function ListPartnershipScreen({
         placeholder="Sélectionner un partenariat"
         onChangeText={setQuery}
         value={query}
-        style={{ borderRadius: 5, marginHorizontal: 10 }}
+        style={{ marginHorizontal: 10 }}
       />
       <Row style={{ columnGap: 20, margin: 10, marginLeft: 30 }}>
         {officeList.map((office) => (
@@ -79,6 +78,7 @@ export default function ListPartnershipScreen({
               <Card.Title
                 title={item.name}
                 subtitle={item.description}
+                style={{ flex: 1 }}
                 left={(props) => (
                   <Image
                     source={
@@ -90,11 +90,9 @@ export default function ListPartnershipScreen({
                     style={{
                       width: props.size,
                       height: props.size,
-                      // backgroundColor: colors.secondary,
                     }}
                   />
                 )}
-                style={{ flex: 1 }}
               />
             </Card>
           </TouchableOpacity>

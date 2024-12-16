@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Alert, FlatList } from "react-native";
 import { useUnit } from "effector-react";
-import { Checkbox, Searchbar } from "react-native-paper";
+import { Checkbox, Searchbar, useTheme } from "react-native-paper";
 import { $studentStore } from "@context/studentStore";
 import { Container } from "@styledComponents";
-import { colors } from "@theme";
 import { $sessionStore } from "@context/sessionStore";
 import Spinner from "react-native-loading-spinner-overlay";
 import { updateStudentAdhesion } from "@fb/service/student.service";
 
 export default function ListAdherent() {
   const { userId } = useUnit($sessionStore);
+  const { colors } = useTheme();
   const officeId = userId;
   const studentList = useUnit($studentStore);
   const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ export default function ListAdherent() {
         <Spinner
           visible={loading}
           textContent={"Chargement..."}
-          // textStyle={{ color: colors.white }}
+          textStyle={{ color: colors.onBackground }}
         />
       )}
       <Searchbar
@@ -55,9 +55,6 @@ export default function ListAdherent() {
         data={filter}
         renderItem={({ item }) => (
           <Checkbox.Item
-            // color={colors.white}
-            // uncheckedColor={colors.black}
-            // labelStyle={{ color: colors.white }}
             label={`${item.firstName} ${item.lastName}`}
             status={item.adhesion?.includes(officeId) ? "checked" : "unchecked"}
             onPress={() => {

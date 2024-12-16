@@ -47,21 +47,20 @@ SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const authIsDone = useAuthState(false);
+  const [isThemeDark, setIsThemeDark] = useState(true);
 
-  const [isThemeLight, setIsThemeLight] = useState(false);
-
-  let theme = isThemeLight ? CombinedLightTheme : CombinedDarkTheme;
+  let theme = isThemeDark ? CombinedDarkTheme : CombinedLightTheme;
 
   const toggleTheme = useCallback(() => {
-    return setIsThemeLight((value) => !value);
+    return setIsThemeDark((value) => !value);
   }, []);
 
   const preferences = useMemo(
     () => ({
       toggleTheme,
-      isThemeLight,
+      isThemeDark,
     }),
-    [toggleTheme, isThemeLight]
+    [toggleTheme, isThemeDark]
   );
 
   const onLayoutRootView = useCallback(async () => {
