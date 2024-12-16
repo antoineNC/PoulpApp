@@ -1,7 +1,7 @@
-import React from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 
-export const PreferencesContext = React.createContext<{
-  toggleTheme: () => void;
+export const PreferencesContext = createContext<{
+  toggleTheme: Dispatch<SetStateAction<boolean>>;
   isThemeDark: boolean;
 }>({
   toggleTheme: () => {},

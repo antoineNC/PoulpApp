@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
@@ -17,6 +17,7 @@ import darkCustomColor from "styles/darkColorScheme.json";
 import RootContainer from "navigation/rootContainer";
 import { useAuthState } from "hooks/authentication";
 import { PreferencesContext } from "@context/themeContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -48,19 +49,23 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   const authIsDone = useAuthState(false);
   const [isThemeDark, setIsThemeDark] = useState(true);
-
-  let theme = isThemeDark ? CombinedDarkTheme : CombinedLightTheme;
-
-  const toggleTheme = useCallback(() => {
-    return setIsThemeDark((value) => !value);
+  useEffect(() => {
+    const loadTheme = async () => {
+      const value = await AsyncStorage.getItem("isDarkMode");
+      if (value !== null) {
+        setIsThemeDark(JSON.parse(value));
+      }
+    };
+    loadTheme();
   }, []);
+  let theme = isThemeDark ? CombinedDarkTheme : CombinedLightTheme;
 
   const preferences = useMemo(
     () => ({
-      toggleTheme,
+      toggleTheme: setIsThemeDark,
       isThemeDark,
     }),
-    [toggleTheme, isThemeDark]
+    [isThemeDark]
   );
 
   const onLayoutRootView = useCallback(async () => {

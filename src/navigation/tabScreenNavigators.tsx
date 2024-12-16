@@ -42,6 +42,9 @@ import { $officeStore } from "@context/officeStore";
 import { getCalendarItems } from "@fb/service/post.service";
 import { actionCalendar } from "@context/calendar.store";
 import { TitleText } from "components/customText";
+import { useContext } from "react";
+import { PreferencesContext } from "@context/themeContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -265,6 +268,12 @@ export function FamCupNavigator() {
 
 export function MenuNavigator() {
   const { colors } = useTheme();
+  const { toggleTheme, isThemeDark } = useContext(PreferencesContext);
+  async function toggle() {
+    const newValue = JSON.stringify(!isThemeDark);
+    await AsyncStorage.setItem("isDarkMode", newValue);
+    toggleTheme((prev) => !prev);
+  }
   return (
     <MenuStack.Navigator
       screenOptions={{
@@ -275,7 +284,12 @@ export function MenuNavigator() {
       <MenuStack.Screen
         name="menu"
         component={MenuScreen}
-        options={{ title: "Menu" }}
+        options={{
+          title: "Menu",
+          headerRight: () => (
+            <IconButton icon={"brightness-6"} onPress={toggle} />
+          ),
+        }}
       />
       <MenuStack.Screen
         name="listAdhesion"

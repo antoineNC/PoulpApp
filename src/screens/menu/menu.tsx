@@ -1,11 +1,10 @@
-import { PreferencesContext } from "@context/themeContext";
 import { signoutUser } from "@fb/service/auth.service";
 import { MenuProps } from "@navigation/navigationTypes";
 import { ContainerScroll, Row } from "@styledComponents";
 import { TitleText } from "components/customText";
-import React, { useContext } from "react";
+import React from "react";
 import { TouchableOpacity } from "react-native";
-import { Divider, Icon, Switch } from "react-native-paper";
+import { Divider, Icon } from "react-native-paper";
 import { useRight } from "utils/rights";
 
 const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
@@ -26,8 +25,6 @@ const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
 
 export default function MenuScreen({ navigation }: MenuProps) {
   const { isStudent, isOffice } = useRight();
-  const { toggleTheme, isThemeDark: isThemeLight } =
-    useContext(PreferencesContext);
   return (
     <ContainerScroll>
       {isStudent && (
@@ -67,17 +64,6 @@ export default function MenuScreen({ navigation }: MenuProps) {
       <Divider />
       <Item text="Se déconnecter" onPress={signoutUser} />
       <Divider />
-      <Row
-        style={{
-          justifyContent: "flex-end",
-          columnGap: 20,
-          paddingRight: 20,
-          marginVertical: 20,
-        }}
-      >
-        <TitleText>Mode sombre</TitleText>
-        <Switch value={isThemeLight} onValueChange={toggleTheme} />
-      </Row>
     </ContainerScroll>
   );
 }
