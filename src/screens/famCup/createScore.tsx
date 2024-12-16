@@ -5,7 +5,6 @@ import { Container } from "@styledComponents";
 import { HelperText, TextInput } from "react-native-paper";
 import { Timestamp } from "firebase/firestore";
 import { View } from "react-native";
-import { colors } from "@theme";
 import { officeStyles } from "@styles";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PointInputController } from "components/pointInput";
@@ -79,7 +78,6 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
               autoFocus={true}
               enterKeyHint={"next"}
               inputMode={"text"}
-              // style={{ backgroundColor: colors.secondary }}
             />
             {error && <HelperText type="error">{error.message}</HelperText>}
           </>
@@ -96,8 +94,6 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
       <View
         style={{
           justifyContent: "center",
-          borderWidth: 0.5,
-          borderRadius: 5,
           padding: 5,
           marginTop: 20,
           rowGap: 10,

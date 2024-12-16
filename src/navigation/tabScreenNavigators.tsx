@@ -233,8 +233,14 @@ export function OfficeNavigator() {
 }
 
 export function FamCupNavigator() {
+  const { colors } = useTheme();
   return (
-    <FamCupStack.Navigator screenOptions={screenOptions}>
+    <FamCupStack.Navigator
+      screenOptions={{
+        ...screenOptions,
+        headerStyle: { backgroundColor: colors.background },
+      }}
+    >
       <FamCupStack.Screen
         name="score"
         component={ScoreScreen}
@@ -243,22 +249,12 @@ export function FamCupNavigator() {
       <FamCupStack.Screen
         name="createScore"
         component={CreateScoreScreen}
-        options={{
-          contentStyle: {
-            // backgroundColor: colors.secondary,
-          },
-          title: "Ajouter des points",
-        }}
+        options={{ title: "Ajouter des points" }}
       />
       <FamCupStack.Screen
         name="updateScore"
         component={UpdateScoreScreen}
-        options={{
-          contentStyle: {
-            // backgroundColor: colors.secondary,
-          },
-          title: "Modifier les points",
-        }}
+        options={{ title: "Modifier les points" }}
       />
     </FamCupStack.Navigator>
   );

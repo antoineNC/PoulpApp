@@ -1,12 +1,12 @@
-import { Row, Text } from "@styledComponents";
-import { colors } from "@theme";
+import { Row } from "@styledComponents";
 import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
 import { FieldError } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
-import { HelperText } from "react-native-paper";
+import { HelperText, useTheme } from "react-native-paper";
 import { formatDay } from "utils/dateUtils";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { BodyText } from "./customText";
 
 export function DateComponent({
   value,
@@ -18,22 +18,21 @@ export function DateComponent({
   error?: FieldError;
 }) {
   const date = value?.toDate();
+  const { colors, roundness } = useTheme();
   const [show, setShow] = useState(false);
   return (
     <View
       style={{
         justifyContent: "center",
         borderWidth: 0.5,
-        borderRadius: 5,
+        borderRadius: roundness,
         padding: 5,
-        marginTop: 10,
-        // borderColor: error ? "red" : colors.black,
+        marginTop: 20,
+        borderColor: error ? colors.error : colors.onBackground,
       }}
     >
       <Row>
-        <Text $dark style={{ flex: 1 }}>
-          Date :
-        </Text>
+        <BodyText style={{ flex: 1 }}>Date :</BodyText>
         <Row $justify="space-evenly" style={{ flex: 5 }}>
           <TouchableOpacity onPress={() => setShow(true)}>
             <View
@@ -43,7 +42,7 @@ export function DateComponent({
                 height: 50,
               }}
             >
-              <Text $dark>{formatDay(date)}</Text>
+              <BodyText>{formatDay(date)}</BodyText>
             </View>
           </TouchableOpacity>
         </Row>
