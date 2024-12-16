@@ -7,11 +7,11 @@ import {
   LocaleConfig,
 } from "react-native-calendars";
 import { formatDate } from "utils/dateUtils";
-import { Text } from "@styledComponents";
-import { colors } from "@theme";
 import { AgendaItemType } from "types/calendar.type";
 import { useUnit } from "effector-react";
 import { $calendarStore } from "@context/calendar.store";
+import { BodyText, LabelText } from "./customText";
+import { useTheme } from "react-native-paper";
 
 LocaleConfig.locales["fr"] = {
   monthNames: [
@@ -58,68 +58,69 @@ LocaleConfig.defaultLocale = "fr";
 
 export default function CalendarDisplay({ postDate }: { postDate?: Date }) {
   const { sections, markedDates } = useUnit($calendarStore);
+  const { colors } = useTheme();
   const today = formatDate(postDate || new Date());
 
-  const AgendaItem = (props: { item: AgendaItemType }) => {
-    const { item } = props;
-    const itemPressed = useCallback(() => {
-      Alert.alert(item.title);
-    }, [item.title]);
+  const renderItem = useCallback((item: AgendaItemType) => {
+    const itemPressed = () => {
+      Alert.alert(item.title, item.description);
+    };
 
     return (
       <TouchableOpacity onPress={itemPressed} style={styles.item}>
         <View style={{ flex: 1, justifyContent: "center" }}>
-          <Text $dark>{item.startHour}</Text>
-          {item.duration && (
-            <Text $size="s" style={styles.itemDurationText}>
-              {item.duration}
-            </Text>
-          )}
+          <BodyText>{item.startHour}</BodyText>
+          {item.duration && <BodyText>{item.duration}</BodyText>}
         </View>
         <View style={{ flex: 5 }}>
-          <Text $size="l" $bold $dark style={styles.itemTitleText}>
-            {item.title}
-          </Text>
-          <Text $dark numberOfLines={2}>
-            {item.description}
-          </Text>
+          <LabelText style={styles.itemTitleText}>{item.title}</LabelText>
+          <BodyText numberOfLines={2}>{item.description}</BodyText>
         </View>
       </TouchableOpacity>
     );
-  };
-
-  const renderItem = useCallback((item: AgendaItemType) => {
-    return <AgendaItem item={item} />;
   }, []);
 
   return (
     <CalendarProvider date={today} showTodayButton>
-      <ExpandableCalendar firstDay={1} markedDates={markedDates} />
+      <ExpandableCalendar
+        firstDay={1}
+        markedDates={markedDates}
+        calendarStyle={{ backgroundColor: colors.background }}
+        headerStyle={{ backgroundColor: colors.background }}
+        theme={{
+          monthTextColor: colors.onBackground,
+          calendarBackground: colors.background,
+          dotColor: colors.primary,
+          selectedDotColor: colors.background,
+          selectedDayBackgroundColor: colors.primary,
+          selectedDayTextColor: colors.background,
+          todayTextColor: colors.primary,
+          dayTextColor: colors.onBackground,
+        }}
+      />
       <AgendaList
         sections={sections}
         renderItem={({ item }) => renderItem(item)}
         dayFormat={"ddd d MMM"}
-        // sectionStyle={styles.section}
+        ItemSeparatorComponent={() => (
+          <View
+            style={{ borderBottomWidth: 1, borderColor: colors.surfaceVariant }}
+          />
+        )}
+        sectionStyle={{
+          backgroundColor: colors.surfaceVariant,
+          color: colors.onBackground,
+        }}
       />
     </CalendarProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  section: {
-    // backgroundColor: colors.secondary,
-    // color: "black",
-    textTransform: "lowercase",
-  },
   item: {
-    padding: 10,
-    // backgroundColor: colors.white,
-    borderBottomWidth: 0.5,
-    // borderBottomColor: colors.black,
     flexDirection: "row",
-  },
-  itemDurationText: {
-    // color: "grey",
+    padding: 10,
+    marginVertical: 10,
   },
   itemTitleText: {
     marginBottom: 5,

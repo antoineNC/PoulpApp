@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { IconButton } from "react-native-paper";
+import { IconButton, useTheme } from "react-native-paper";
 import { useStoreMap } from "effector-react";
 
 import {
@@ -34,11 +34,11 @@ import ViewClubMenuScreen from "@screens/menu/viewClub";
 import ListPartnershipScreen from "@screens/menu/listPartnership";
 import ViewPartnershipMenuScreen from "@screens/menu/viewPartnership";
 import NotificationScreen from "@screens/menu/notification";
-import { colors } from "@theme";
 import { Image, Row, Title2 } from "@styledComponents";
 import { $officeStore } from "@context/officeStore";
 import { getCalendarItems } from "@fb/service/post.service";
 import { actionCalendar } from "@context/calendar.store";
+import { HeaderText } from "components/customText";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -47,13 +47,8 @@ const MenuStack = createNativeStackNavigator<MenuTabParamList>();
 
 const screenOptions = {
   statusBarTranslucent: true,
-  // headerTintColor: colors.white,
-  // headerStyle: { backgroundColor: colors.primary },
   headerShadowVisible: false,
   headerBackTitleVisible: false,
-  contentStyle: {
-    // backgroundColor: colors.primary,
-  },
 };
 
 const TitleComponent = ({
@@ -108,8 +103,15 @@ const PartnerHeaderTitle = ({ partnerId }: { partnerId: string }) => {
 export function HomeNavigator({
   navigation,
 }: TabBarScreenProps<"homeContainer">) {
+  const { colors } = useTheme();
   return (
-    <HomeStack.Navigator screenOptions={screenOptions} initialRouteName="feed">
+    <HomeStack.Navigator
+      screenOptions={{
+        ...screenOptions,
+        headerStyle: { backgroundColor: colors.background },
+      }}
+      initialRouteName="feed"
+    >
       <HomeStack.Screen
         name="feed"
         component={FeedScreen}
@@ -152,12 +154,9 @@ export function HomeNavigator({
         name="createPost"
         component={CreatePostScreen}
         options={() => ({
-          contentStyle: {
-            // backgroundColor: colors.secondary,
-          },
           headerTitle: ({ tintColor }) => (
             <Row>
-              <Title2>Création d'un post</Title2>
+              <HeaderText>Création d'un post</HeaderText>
               <IconButton icon="pencil" iconColor={tintColor} size={25} />
             </Row>
           ),
@@ -167,12 +166,9 @@ export function HomeNavigator({
         name="updatePost"
         component={UpdatePostScreen}
         options={() => ({
-          contentStyle: {
-            // backgroundColor: colors.secondary,
-          },
           headerTitle: ({ tintColor }) => (
             <Row>
-              <Title2>Modification du post</Title2>
+              <HeaderText>Modification du post</HeaderText>
               <IconButton icon="pencil" iconColor={tintColor} size={25} />
             </Row>
           ),

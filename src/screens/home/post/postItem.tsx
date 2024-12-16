@@ -7,23 +7,16 @@ import {
   View,
 } from "react-native";
 import { useStoreMap } from "effector-react";
-import { Button } from "react-native-paper";
+import { Button, Icon } from "react-native-paper";
 import ImageView from "react-native-image-viewing";
-import {
-  Text,
-  Image,
-  Title2,
-  Row,
-  BodyTitle,
-  Container,
-} from "@styledComponents";
-import { officeStyles } from "@styles";
+import { Image, Row } from "@styledComponents";
 import { displayDate } from "utils/dateUtils";
 import { useRight } from "utils/rights";
 import { $officeStore } from "@context/officeStore";
 import { PostItemProps } from "types/post.type";
 import { DateType } from "types/date.type";
 import React from "react";
+import { BodyText, LinkText, TitleText } from "components/customText";
 
 export const PostItem = ({
   post,
@@ -84,54 +77,43 @@ export const PostItem = ({
             <Image source={{ uri: office?.logoUrl }} $size={50} />
           </TouchableOpacity>
           <View style={{ flex: 1, paddingHorizontal: 10 }}>
-            <Title2>{post.title}</Title2>
+            <TitleText>{post.title}</TitleText>
             <Row style={{ flexWrap: "wrap" }}>
               {post.tags &&
                 post.tags.map((value, index) => (
-                  <Text key={index}>[{value}] </Text>
+                  <BodyText key={index}>[{value}] </BodyText>
                 ))}
             </Row>
           </View>
         </Row>
         {date.start && (
-          <Row>
-            <BodyTitle>Date : </BodyTitle>
-            <Container style={officeStyles.borderRounded}>
-              <TouchableOpacity onPress={onCalendar}>
+          <TouchableOpacity onPress={onCalendar} style={{ marginVertical: 5 }}>
+            <Row style={{ columnGap: 10 }}>
+              <Icon source={"calendar-month-outline"} size={20} />
+              <View>
                 {allDay ? (
-                  <Text>{date.start} (toute la journée)</Text>
+                  <LinkText>{date.start} (toute la journée)</LinkText>
                 ) : (
                   <>
-                    <Row>
-                      <BodyTitle>Début : </BodyTitle>
-                      <Text>{date.start}</Text>
-                    </Row>
-                    <Row>
-                      <BodyTitle>Fin : </BodyTitle>
-                      <Text>{date.end}</Text>
-                    </Row>
+                    <LinkText>Du : {date.start}</LinkText>
+                    <LinkText>au : {date.end}</LinkText>
                   </>
                 )}
-              </TouchableOpacity>
-            </Container>
-          </Row>
+              </View>
+            </Row>
+          </TouchableOpacity>
         )}
         {post.description && (
           <TouchableOpacity
             onPress={toggleNumberOfLines}
             disabled={!lengthMore}
           >
-            <Text
+            <BodyText
               onTextLayout={onTextLayout}
               numberOfLines={textShown ? undefined : 3}
             >
               {post.description}
-            </Text>
-            {lengthMore && (
-              <Text style={{ textDecorationLine: "underline", marginTop: 5 }}>
-                {textShown ? "Voir moins" : "Voir plus"}
-              </Text>
-            )}
+            </BodyText>
           </TouchableOpacity>
         )}
       </View>
@@ -150,12 +132,7 @@ export const PostItem = ({
       )}
       <Row $justify="space-around">
         {hasRight("POST", "UPDATE", office?.id) && (
-          <Button
-            mode="contained-tonal"
-            icon="pencil"
-            onPress={onUpdate}
-            style={{ borderRadius: 10 }}
-          >
+          <Button mode="contained-tonal" icon="pencil" onPress={onUpdate}>
             Modifier
           </Button>
         )}
@@ -176,7 +153,6 @@ export const PostItem = ({
                 ]
               )
             }
-            style={{ borderRadius: 10 }}
           >
             Supprimer
           </Button>

@@ -8,16 +8,17 @@ import { $officeStore } from "@context/officeStore";
 import CustomField from "components/form/formField";
 import { ContainerScroll } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
-import { colors } from "@theme";
 import { postTags } from "data";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PostFormFields } from "types/post.type";
 import { createPost } from "@fb/service/post.service";
 import { FormFieldValues } from "types/form.type";
 import React from "react";
+import { useTheme } from "react-native-paper";
 
 export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const { officeList } = useUnit($officeStore);
+  const { colors } = useTheme();
   const [loading, setLoading] = useState(false);
   const { control, handleSubmit, setFocus } = useForm<PostFormFields>();
   const officeChoices = officeList.map((office) => ({
@@ -84,7 +85,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
           <Spinner
             visible={loading}
             textContent={"Création..."}
-            // textStyle={{ color: colors.white }}
+            textStyle={{ color: colors.onBackground }}
           />
         )}
         <View style={authStyles.formList}>

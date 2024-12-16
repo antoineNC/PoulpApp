@@ -7,13 +7,12 @@ import {
   StyleSheet,
   RefreshControl,
 } from "react-native";
-import { AnimatedFAB, Divider } from "react-native-paper";
+import { AnimatedFAB, useTheme } from "react-native-paper";
 import { PostItem } from "@screens/home/post/postItem";
 import { Container } from "@styledComponents";
 import { FeedProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
 import Spinner from "react-native-loading-spinner-overlay";
-import { colors } from "@theme";
 import {
   deletePost,
   getInitialPost,
@@ -25,6 +24,7 @@ import { useGetPost } from "hooks/post";
 
 export default function FeedScreen({ navigation }: FeedProps) {
   const { posts, lastVisibleId } = useUnit($postStore);
+  const { colors } = useTheme();
   const { hasRight } = useRight();
   const [isExtended, setIsExtended] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -66,7 +66,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
       params: { officeId },
     });
   const onPressCalendar = (date?: Date) =>
-    navigation.navigate("calendar", { postDate: date?.getUTCMilliseconds() });
+    navigation.navigate("calendar", { postDate: date?.valueOf() });
   const onPressUpdate = (id: string) =>
     navigation.navigate("updatePost", { postId: id });
   const onPressDelete = async (id: string) => {
@@ -86,7 +86,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
         <Spinner
           visible={loading}
           textContent={"Chargement..."}
-          // textStyle={{ color: colors.white }}
+          textStyle={{ color: colors.onBackground }}
         />
       )}
       <FlatList
@@ -103,9 +103,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
             onPressDelete={() => onPressDelete(item.id)}
           />
         )}
-        ItemSeparatorComponent={() => (
-          <Divider style={{ marginVertical: 20 }} />
-        )}
+        ItemSeparatorComponent={() => <View style={{ height: 40 }} />}
         ListFooterComponent={<View style={{ marginVertical: 40 }} />}
         onEndReached={onEndReachedHandle}
         onEndReachedThreshold={1}
@@ -121,7 +119,6 @@ export default function FeedScreen({ navigation }: FeedProps) {
           onPress={() => navigation.navigate("createPost")}
           visible={true}
           style={styles.fabStyle}
-          variant="secondary"
         />
       )}
     </Container>

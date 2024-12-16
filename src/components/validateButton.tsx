@@ -21,7 +21,6 @@ export const FloatingValidateBtn = ({
       bottom: 20,
       alignSelf: "center",
     }}
-    variant="secondary"
     disabled={disabled}
   />
 );

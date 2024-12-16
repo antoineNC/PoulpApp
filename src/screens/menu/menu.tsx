@@ -2,7 +2,7 @@ import { PreferencesContext } from "@context/themeContext";
 import { signoutUser } from "@fb/service/auth.service";
 import { MenuProps } from "@navigation/navigationTypes";
 import { ContainerScroll, Row, Text } from "@styledComponents";
-import React from "react";
+import React, { useContext } from "react";
 import { TouchableOpacity } from "react-native";
 import { Divider, Icon, Switch } from "react-native-paper";
 import { useRight } from "utils/rights";
@@ -25,7 +25,7 @@ const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
 
 export default function MenuScreen({ navigation }: MenuProps) {
   const { isStudent, isOffice } = useRight();
-  const { toggleTheme, isThemeLight } = React.useContext(PreferencesContext);
+  const { toggleTheme, isThemeLight } = useContext(PreferencesContext);
   return (
     <ContainerScroll>
       {isStudent && (
