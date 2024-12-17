@@ -12,7 +12,7 @@ import { postTags } from "data";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PostFormFields } from "types/post.type";
 import { createPost } from "@fb/service/post.service";
-import { FormFieldValues } from "types/form.type";
+import { FieldParams } from "types/form.type";
 import React from "react";
 import { useTheme } from "react-native-paper";
 
@@ -28,7 +28,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const tagsChoices = postTags
     .sort()
     .map((tag) => ({ value: tag, label: tag }));
-  const values: FormFieldValues<PostFormFields> = [
+  const values: FieldParams<PostFormFields>[] = [
     {
       name: "editor",
       label: "Bureau",

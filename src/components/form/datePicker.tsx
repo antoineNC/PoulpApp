@@ -5,13 +5,13 @@ import { HelperText, useTheme } from "react-native-paper";
 import { formatDay } from "utils/dateUtils";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { BodyText, LabelText } from "../customText";
-import { FieldInputProps } from "types/form.type";
+import { InputProps } from "types/form.type";
 
 export function DatePicker<T extends FieldValues>({
   field: { value, onChange },
   fieldState: { error },
   label,
-}: FieldInputProps<T>) {
+}: InputProps<T>) {
   const { colors, roundness } = useTheme();
   const [show, setShow] = useState(false);
   return (

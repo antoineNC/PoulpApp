@@ -5,7 +5,7 @@ import { TextInputForm } from "components/form/textInput";
 import { ChipInputForm } from "components/form/chipInput";
 import { SelectInputForm } from "components/form/selectInput";
 import { ImagePickerForm } from "components/form/imagePicker";
-import { FieldInputProps, FormFieldType, Params } from "types/form.type";
+import { SelectInputProps, FormFieldType } from "types/form.type";
 import React from "react";
 
 // TODO remplacer par un tooltip pour expliquer
@@ -23,13 +23,13 @@ const errorTxt = {
   dateOrder: "La date de fin doit être APRES la date de début",
 };
 
-export function getFieldProps<T extends FieldValues>(
+export function getRulesAndLabel<T extends FieldValues>(
   label: string,
   type?: FormFieldType,
   required?: boolean,
   repeat?: string,
   optionRules?: string[]
-): Params<T> {
+) {
   const newLabel = label.concat(required ? " *" : "");
   let rules: Omit<ResolverOptions<T>, keyof FieldValues> = {};
   if (required)
@@ -74,8 +74,8 @@ export function getFieldProps<T extends FieldValues>(
   return { rules, newLabel };
 }
 
-export function getFieldInput<T extends FieldValues>(
-  props: FieldInputProps<T>
+export function SelectInput<T extends FieldValues>(
+  props: SelectInputProps<T>
 ): ReactElement {
   switch (props.type) {
     case "text":

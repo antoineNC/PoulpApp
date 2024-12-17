@@ -2,7 +2,7 @@ import { View, StyleSheet } from "react-native";
 import { FieldValues } from "react-hook-form";
 import { HelperText, useTheme } from "react-native-paper";
 import { Dropdown } from "react-native-element-dropdown";
-import { FieldInputProps } from "types/form.type";
+import { InputProps } from "types/form.type";
 import React from "react";
 import { LabelText } from "components/customText";
 
@@ -11,7 +11,7 @@ export function SelectInputForm<T extends FieldValues>({
   fieldState: { error },
   label,
   options,
-}: FieldInputProps<T>) {
+}: InputProps<T>) {
   const { colors, roundness } = useTheme();
   return (
     <View>

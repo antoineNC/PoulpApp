@@ -1,26 +1,11 @@
 import React from "react";
 import { Controller, FieldValues } from "react-hook-form";
-import { ControlFieldProps, FormFieldProps } from "types/form.type";
-import { getFieldInput, getFieldProps } from "utils/formUtils";
+import { CustomFieldProps } from "types/form.type";
+import { SelectInput, getRulesAndLabel } from "utils/formUtils";
 
-type FormFieldType<T extends FieldValues> = FormFieldProps &
-  ControlFieldProps<T>;
-
-function CustomField<T extends FieldValues>(props: FormFieldType<T>) {
-  const {
-    control,
-    name,
-    label,
-    type,
-    required,
-    repeat,
-    options,
-    index,
-    lastInput,
-    setFocus,
-    submit,
-  } = props;
-  const { newLabel, rules } = getFieldProps<T>(
+function CustomField<T extends FieldValues>(props: CustomFieldProps<T>) {
+  const { control, name, label, type, required, repeat, options } = props;
+  const { newLabel, rules } = getRulesAndLabel<T>(
     label,
     type,
     required,
@@ -32,19 +17,14 @@ function CustomField<T extends FieldValues>(props: FormFieldType<T>) {
       control={control}
       name={name}
       rules={rules}
-      render={({ field, fieldState }) =>
-        getFieldInput<T>({
-          label: newLabel,
-          type,
-          options,
-          index,
-          lastInput,
-          setFocus,
-          submit,
-          field,
-          fieldState,
-        })
-      }
+      render={({ field, fieldState }) => (
+        <SelectInput
+          {...props}
+          field={field}
+          fieldState={fieldState}
+          label={newLabel}
+        />
+      )}
     />
   );
 }

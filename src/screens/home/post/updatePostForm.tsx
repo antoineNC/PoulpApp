@@ -9,7 +9,7 @@ import { ContainerScroll } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
 import { postTags } from "data";
 import { Post, PostFormFields } from "types/post.type";
-import { FormFieldValues } from "types/form.type";
+import { FieldParams } from "types/form.type";
 import React from "react";
 import { useTheme } from "react-native-paper";
 
@@ -47,7 +47,7 @@ export const UpdatePostForm = ({
   const tagsChoices = postTags
     .sort()
     .map((tag) => ({ value: tag, label: tag }));
-  const values: FormFieldValues<PostFormFields> = [
+  const values: FieldParams<PostFormFields>[] = [
     {
       name: "editor",
       label: "Bureau",

@@ -11,7 +11,7 @@ import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { registerUser } from "@fb/service/auth.service";
 import { actionSession } from "@context/sessionStore";
-import { FormFieldValues } from "types/form.type";
+import { FieldParams } from "types/form.type";
 
 type FieldNames = {
   firstName: string;
@@ -28,7 +28,7 @@ export default function SignupScreen({
   const [loading, setLoading] = useState(false);
   const { control, handleSubmit, setFocus } = useForm<FieldNames>();
 
-  const values: FormFieldValues<FieldNames> = [
+  const values: FieldParams<FieldNames>[] = [
     {
       name: "firstName",
       label: "Prénom",

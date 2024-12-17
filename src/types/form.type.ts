@@ -4,7 +4,6 @@ import {
   ControllerRenderProps,
   FieldValues,
   Path,
-  ResolverOptions,
 } from "react-hook-form";
 import { InputModeOptions } from "react-native";
 
@@ -30,37 +29,39 @@ export type FormFieldOptions = {
   add?: boolean; // text, select, double-select
 };
 
-export type FormFieldValues<T> = {
+export type FieldParams<T> = {
   name: keyof T;
   label: string;
   type: FormFieldType;
   required?: boolean;
   options?: FormFieldOptions;
-}[];
-
-export type ControlFieldProps<T extends FieldValues> = {
-  control: Control<T>;
-  name: Path<T>;
-  required?: boolean;
-  repeat?: string;
-  type: FormFieldType;
 };
-export type FormFieldProps = {
+
+export type InputProps<T extends FieldValues> = {
+  field: ControllerRenderProps<T, Path<T>>;
+  fieldState: ControllerFieldState;
   label: string;
-  options?: FormFieldOptions;
   index: number;
   lastInput: boolean;
   setFocus: (state: number) => void;
   submit: (e?: React.BaseSyntheticEvent) => Promise<void>;
+  options?: FormFieldOptions;
 };
 
-export type FieldInputProps<T extends FieldValues> = FormFieldProps & {
-  field: ControllerRenderProps<T, Path<T>>;
-  fieldState: ControllerFieldState;
-  type?: FormFieldType;
+export type SelectInputProps<T extends FieldValues> = InputProps<T> & {
+  type: FormFieldType;
 };
 
-export type Params<T extends FieldValues> = {
-  newLabel: string;
-  rules?: Omit<ResolverOptions<T>, keyof FieldValues>;
+export type CustomFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: Path<T>;
+  type: FormFieldType;
+  label: string;
+  index: number;
+  lastInput: boolean;
+  setFocus: (state: number) => void;
+  submit: (e?: React.BaseSyntheticEvent) => Promise<void>;
+  options?: FormFieldOptions;
+  required?: boolean;
+  repeat?: string;
 };

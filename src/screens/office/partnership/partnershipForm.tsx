@@ -12,7 +12,7 @@ import {
 } from "react-hook-form";
 import { FloatingValidateBtn } from "components/validateButton";
 import { PartnershipFormFields } from "types/partnership.type";
-import { FormFieldValues } from "types/form.type";
+import { FieldParams } from "types/form.type";
 import { BodyText } from "components/customText";
 
 const PartnershipForm = ({
@@ -24,7 +24,7 @@ const PartnershipForm = ({
 }: {
   create: boolean;
   loading: boolean;
-  fieldItems: FormFieldValues<PartnershipFormFields>;
+  fieldItems: FieldParams<PartnershipFormFields>[];
   defaultValues: DefaultValues<PartnershipFormFields>;
   onSubmit: SubmitHandler<PartnershipFormFields>;
 }) => {

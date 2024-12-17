@@ -7,7 +7,7 @@ import PartnershipForm from "./partnershipForm";
 import { useRight } from "utils/rights";
 import { PartnershipFormFields } from "types/partnership.type";
 import { updatePartnership } from "@fb/service/partnership.service";
-import { FormFieldValues } from "types/form.type";
+import { FieldParams } from "types/form.type";
 
 export default function UpdatePartnershipScreen({
   navigation,
@@ -50,7 +50,7 @@ export default function UpdatePartnershipScreen({
     })),
   };
 
-  const fields: FormFieldValues<PartnershipFormFields> = [
+  const fields: FieldParams<PartnershipFormFields>[] = [
     {
       name: "name",
       label: "Nom",
