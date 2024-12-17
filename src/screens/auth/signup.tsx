@@ -62,6 +62,7 @@ export default function SignupScreen({
       label: "Code ENSC",
       type: "text",
       required: true,
+      options: { tooltip: "Ce code vous est transmis à la rentrée par le BDE" },
     },
   ];
 

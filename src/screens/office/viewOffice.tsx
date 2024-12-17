@@ -3,10 +3,10 @@ import { useStoreMap } from "effector-react";
 import { ViewOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import { $studentStore } from "@context/studentStore";
-import { Row, Image, ContainerScroll } from "@styledComponents";
-import { officeStyles } from "@styles";
+import { Row, ContainerScroll } from "@styledComponents";
 import React from "react";
 import { BodyText, LinkText, Title2Text } from "components/customText";
+import { SmallCardItem } from "components/smallCardItem";
 
 export default function ViewOfficeScreen({
   navigation,
@@ -67,56 +67,54 @@ export default function ViewOfficeScreen({
     }
   };
   return (
-    <ContainerScroll style={officeStyles.container}>
-      <Row $padding="10px 0">
-        <Title2Text>Contact : </Title2Text>
-        <TouchableOpacity onPress={() => handlePress(office.mail)}>
-          <LinkText>{office.mail}</LinkText>
-        </TouchableOpacity>
-      </Row>
-      <View style={{ paddingVertical: 10 }}>
-        <Title2Text>Description</Title2Text>
-        <BodyText>{office.description}</BodyText>
-      </View>
-      {members.length > 0 && (
+    <ContainerScroll style={{ paddingTop: 5 }}>
+      <View style={{ paddingHorizontal: 15 }}>
+        <Row $padding="10px 0">
+          <Title2Text>Contact : </Title2Text>
+          <TouchableOpacity onPress={() => handlePress(office.mail)}>
+            <LinkText>{office.mail}</LinkText>
+          </TouchableOpacity>
+        </Row>
         <View style={{ paddingVertical: 10 }}>
-          <Title2Text>Liste des membres</Title2Text>
-          {members.map((member, index) => (
-            <Row key={index} style={{ marginVertical: 5 }}>
-              <BodyText style={{ flex: 1 }}>{member.role} :</BodyText>
-              <BodyText style={{ flex: 2 }}>{member.student}</BodyText>
-            </Row>
-          ))}
+          <Title2Text>Description</Title2Text>
+          <BodyText>{office.description}</BodyText>
         </View>
-      )}
+        {members.length > 0 && (
+          <View style={{ paddingVertical: 10 }}>
+            <Title2Text>Liste des membres</Title2Text>
+            {members.map((member, index) => (
+              <Row key={index} style={{ marginVertical: 5 }}>
+                <BodyText style={{ flex: 1 }}>{member.role} :</BodyText>
+                <BodyText style={{ flex: 2 }}>{member.student}</BodyText>
+              </Row>
+            ))}
+          </View>
+        )}
+      </View>
       {clubs && clubs.length > 0 && (
         <View style={{ paddingVertical: 10 }}>
-          <Title2Text>Liste des clubs</Title2Text>
+          <Title2Text style={{ paddingHorizontal: 15 }}>
+            Liste des clubs
+          </Title2Text>
           <FlatList
             horizontal
-            showsHorizontalScrollIndicator={false}
             data={clubs}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              columnGap: 10,
+              padding: 10,
+            }}
             renderItem={({ item }) => (
               <TouchableOpacity
-                style={{ margin: 10, alignItems: "center" }}
                 onPress={() =>
                   navigation.navigate("viewClub", { clubId: item.id })
                 }
               >
-                <Image
-                  source={
-                    item.logoUrl
-                      ? { uri: item.logoUrl }
-                      : require("@assets/no_image_available.png")
-                  }
-                  $size={100}
-                  style={{
-                    borderRadius: 5,
-                    width: 100,
-                    height: 100,
-                  }}
+                <SmallCardItem
+                  key={item.id}
+                  title={item.name}
+                  logo={item.logoUrl}
                 />
-                <BodyText>{item.name}</BodyText>
               </TouchableOpacity>
             )}
           />
@@ -124,34 +122,27 @@ export default function ViewOfficeScreen({
       )}
       {partnerships && partnerships.length > 0 && (
         <View style={{ paddingVertical: 10 }}>
-          <Title2Text>Liste des partenariats</Title2Text>
+          <Title2Text style={{ paddingHorizontal: 15 }}>
+            Liste des partenariats
+          </Title2Text>
           <FlatList
             horizontal
-            showsHorizontalScrollIndicator={false}
             data={partnerships}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ columnGap: 10, padding: 10 }}
             renderItem={({ item }) => (
               <TouchableOpacity
-                style={{ margin: 10, alignItems: "center" }}
                 onPress={() =>
                   navigation.navigate("viewPartnership", {
                     partnershipId: item.id,
                   })
                 }
               >
-                <Image
-                  source={
-                    item.logoUrl
-                      ? { uri: item.logoUrl }
-                      : require("@assets/no_image_available.png")
-                  }
-                  $size={100}
-                  style={{
-                    borderRadius: 5,
-                    width: 100,
-                    height: 100,
-                  }}
+                <SmallCardItem
+                  key={item.id}
+                  title={item.name}
+                  logo={item.logoUrl}
                 />
-                <BodyText>{item.name}</BodyText>
               </TouchableOpacity>
             )}
           />

@@ -5,13 +5,13 @@ import { FieldValues } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import ImageView from "react-native-image-viewing";
 import { Container, Row } from "@styledComponents";
-import { SelectInputProps } from "types/form.type";
+import { InputProps } from "types/form.type";
 import { BodyText } from "components/customText";
 
 export function ImagePickerForm<T extends FieldValues>({
   field: { value, onChange },
   label,
-}: SelectInputProps<T>) {
+}: InputProps<T>) {
   const image = value;
   const { colors } = useTheme();
   const [showImage, setShowImage] = useState(false);

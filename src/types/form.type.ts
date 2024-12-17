@@ -27,6 +27,7 @@ export type FormFieldOptions = {
   allDay?: boolean; // date
   choices?: { value: string; label: string }[];
   add?: boolean; // text, select, double-select
+  tooltip?: string; //text
 };
 
 export type FieldParams<T> = {

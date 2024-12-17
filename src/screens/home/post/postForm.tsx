@@ -1,6 +1,6 @@
 import { View } from "react-native";
-import { useStoreMap, useUnit } from "effector-react";
-import { useForm } from "react-hook-form";
+import { useUnit } from "effector-react";
+import { UseFormReturn } from "react-hook-form";
 import Spinner from "react-native-loading-spinner-overlay";
 import { $officeStore } from "@context/officeStore";
 import CustomField from "components/form/formField";
@@ -8,38 +8,25 @@ import { FloatingValidateBtn } from "components/validateButton";
 import { ContainerScroll } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
 import { postTags } from "data";
-import { Post, PostFormFields } from "types/post.type";
+import { PostFormFields } from "types/post.type";
 import { FieldParams } from "types/form.type";
 import React from "react";
 import { useTheme } from "react-native-paper";
 
-export const UpdatePostForm = ({
-  post,
+export const PostForm = ({
+  formParams,
   loading,
   onSubmit,
+  create,
 }: {
-  post: Post;
+  formParams: UseFormReturn<PostFormFields>;
   loading: boolean;
   onSubmit: (data: PostFormFields) => void;
+  create?: boolean;
 }) => {
   const { colors } = useTheme();
   const { officeList } = useUnit($officeStore);
-  const editor = useStoreMap({
-    store: $officeStore,
-    keys: [post.id],
-    fn: (officeStore) =>
-      officeStore.officeList.find((office) => office.id === post.editorId),
-  });
-  const { control, handleSubmit, setFocus } = useForm<PostFormFields>({
-    defaultValues: {
-      title: post.title,
-      description: post.description,
-      editor: { value: post.editorId, label: editor?.name },
-      tags: post.tags,
-      date: post.date,
-      imageFile: post.imageUrl,
-    },
-  });
+  const { control, handleSubmit, setFocus } = formParams;
   const officeChoices = officeList.map((office) => ({
     value: office.id,
     label: office.name,
@@ -91,7 +78,7 @@ export const UpdatePostForm = ({
         {loading && (
           <Spinner
             visible={loading}
-            textContent={"Modification..."}
+            textContent={create ? "Création..." : "Modification..."}
             textStyle={{ color: colors.onBackground }}
           />
         )}
@@ -114,7 +101,7 @@ export const UpdatePostForm = ({
       </ContainerScroll>
       <FloatingValidateBtn
         disabled={loading}
-        label="Valider les modifications"
+        label={create ? "Publier le post" : "Valider les modifications"}
         onPress={handleSubmit(onSubmit)}
       />
     </>

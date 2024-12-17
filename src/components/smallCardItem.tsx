@@ -1,4 +1,4 @@
-import { Card, IconButton, useTheme } from "react-native-paper";
+import { Card, IconButton } from "react-native-paper";
 
 export const SmallCardItem = ({
   title,
@@ -11,7 +11,6 @@ export const SmallCardItem = ({
   onEdit?: () => void;
   onDelete?: () => void;
 }) => {
-  const { colors } = useTheme();
   return (
     <Card>
       <Card.Cover
@@ -28,13 +27,13 @@ export const SmallCardItem = ({
           alignSelf: "center",
           height: 150,
           width: 150,
-          backgroundColor: colors.background,
+          backgroundColor: "transparent",
         }}
       />
       <Card.Title title={title} />
       <Card.Actions>
-        <IconButton icon="pencil" onPress={onEdit} />
-        <IconButton icon="delete" onPress={onDelete} />
+        {onEdit && <IconButton icon="pencil" onPress={onEdit} />}
+        {onDelete && <IconButton icon="delete" onPress={onDelete} />}
       </Card.Actions>
     </Card>
   );
