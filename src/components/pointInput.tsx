@@ -1,8 +1,8 @@
 import { View } from "react-native";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { HelperText, TextInput } from "react-native-paper";
-import { Row, Text } from "@styledComponents";
-import { colors } from "@theme";
+import { Row } from "@styledComponents";
+import { BodyText } from "./customText";
 
 export function PointInputController<T extends FieldValues>({
   control,
@@ -30,9 +30,7 @@ export function PointInputController<T extends FieldValues>({
       }) => (
         <View style={{ alignItems: "flex-end" }}>
           <Row $justify="space-between">
-            <Text $dark style={{ flex: 1 }}>
-              {label} :
-            </Text>
+            <BodyText style={{ flex: 1 }}>{label} :</BodyText>
             <TextInput
               mode="outlined"
               label={"Points *"}
@@ -41,7 +39,7 @@ export function PointInputController<T extends FieldValues>({
               value={value.toLocaleString()}
               error={invalid}
               inputMode={"numeric"}
-              style={{ backgroundColor: colors.secondary, flex: 2 }}
+              style={{ flex: 2 }}
             />
           </Row>
           {error && <HelperText type="error">{error.message}</HelperText>}

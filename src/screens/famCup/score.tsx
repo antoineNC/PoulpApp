@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { useUnit } from "effector-react";
-import { AnimatedFAB, Button, Divider } from "react-native-paper";
+import { AnimatedFAB, Button, Divider, useTheme } from "react-native-paper";
 import { CartesianChart, Bar } from "victory-native";
 import { useFont } from "@shopify/react-native-skia";
 import { ScoreProps } from "@navigation/navigationTypes";
@@ -16,12 +16,13 @@ import { $pointStore } from "@context/pointStore";
 import { formatDay } from "utils/dateUtils";
 import { useRight } from "utils/rights";
 import inter from "@assets/fonts/inter-variable.ttf";
-import { colors } from "@theme";
-import { Container, Row, Title2, Text } from "@styledComponents";
+import { Container, Row } from "@styledComponents";
 import { deletePoint } from "@fb/service/point.service";
+import { BodyText, TitleText } from "components/customText";
 
 export default function ScoreScreen({ navigation }: ScoreProps) {
   const listPoint = useUnit($pointStore);
+  const { colors } = useTheme();
   const { hasRight } = useRight();
   const font = useFont(inter, 12);
   const [isExtended, setIsExtended] = useState(true);
@@ -107,7 +108,11 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
           data={score}
           xKey="family"
           yKeys={["score"]}
-          xAxis={{ font, lineWidth: 0, labelColor: colors.white }}
+          xAxis={{
+            font,
+            lineWidth: 0,
+            labelColor: colors.onBackground,
+          }}
           yAxis={[{ lineWidth: 0 }]}
           padding={10}
           domainPadding={{ left: 40, right: 40 }}
@@ -125,7 +130,7 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
                 labels={{
                   font,
                   position: "top",
-                  color: colors.white,
+                  color: colors.onBackground,
                 }}
               />
             ));
@@ -136,35 +141,39 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
       <FlatList
         onScroll={onScroll}
         data={listPoint}
-        contentContainerStyle={{ rowGap: 10, marginHorizontal: 10 }}
+        contentContainerStyle={{
+          rowGap: 10,
+          marginHorizontal: 10,
+          paddingTop: 10,
+        }}
         ItemSeparatorComponent={() => <Divider />}
         ListFooterComponent={<View style={{ marginVertical: 40 }} />}
         renderItem={({ item, index }) => {
           const date = formatDay(item.date.toDate());
           return (
             <View key={index} style={{ paddingHorizontal: 15 }}>
-              <Title2>{item.title}</Title2>
-              <Text>{date}</Text>
+              <TitleText>{item.title}</TitleText>
+              <BodyText>{date}</BodyText>
               <Row $justify="space-between" $padding="10px 0">
                 <View style={{ alignItems: "center" }}>
-                  <Text>Bleu</Text>
-                  <Text>{item.blue}</Text>
+                  <BodyText>Bleu</BodyText>
+                  <BodyText>{item.blue}</BodyText>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text>Jaune</Text>
-                  <Text>{item.yellow}</Text>
+                  <BodyText>Jaune</BodyText>
+                  <BodyText>{item.yellow}</BodyText>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text>Orange</Text>
-                  <Text>{item.orange}</Text>
+                  <BodyText>Orange</BodyText>
+                  <BodyText>{item.orange}</BodyText>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text>Rouge</Text>
-                  <Text>{item.red}</Text>
+                  <BodyText>Rouge</BodyText>
+                  <BodyText>{item.red}</BodyText>
                 </View>
                 <View style={{ alignItems: "center" }}>
-                  <Text>Vert</Text>
-                  <Text>{item.green}</Text>
+                  <BodyText>Vert</BodyText>
+                  <BodyText>{item.green}</BodyText>
                 </View>
               </Row>
               <Row $justify="space-around" style={{ marginBottom: 10 }}>
@@ -175,7 +184,6 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
                     onPress={() =>
                       navigation.navigate("updateScore", { idPoint: item.id })
                     }
-                    style={{ borderRadius: 10 }}
                   >
                     Modifier
                   </Button>
@@ -197,7 +205,6 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
                         ]
                       )
                     }
-                    style={{ borderRadius: 10 }}
                   >
                     Supprimer
                   </Button>
@@ -215,7 +222,6 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
           onPress={() => navigation.navigate("createScore")}
           visible={true}
           style={styles.fabStyle}
-          variant="secondary"
         />
       )}
     </Container>

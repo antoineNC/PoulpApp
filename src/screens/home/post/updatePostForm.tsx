@@ -7,11 +7,11 @@ import CustomField from "components/form/formField";
 import { FloatingValidateBtn } from "components/validateButton";
 import { ContainerScroll } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
-import { colors } from "@theme";
 import { postTags } from "data";
 import { Post, PostFormFields } from "types/post.type";
 import { FormFieldValues } from "types/form.type";
 import React from "react";
+import { useTheme } from "react-native-paper";
 
 export const UpdatePostForm = ({
   post,
@@ -22,6 +22,7 @@ export const UpdatePostForm = ({
   loading: boolean;
   onSubmit: (data: PostFormFields) => void;
 }) => {
+  const { colors } = useTheme();
   const { officeList } = useUnit($officeStore);
   const editor = useStoreMap({
     store: $officeStore,
@@ -79,7 +80,7 @@ export const UpdatePostForm = ({
     },
     {
       name: "imageFile",
-      label: "Image :",
+      label: "Image",
       type: "image",
     },
   ];
@@ -91,7 +92,7 @@ export const UpdatePostForm = ({
           <Spinner
             visible={loading}
             textContent={"Modification..."}
-            textStyle={{ color: colors.white }}
+            textStyle={{ color: colors.onBackground }}
           />
         )}
         <View style={authStyles.formList}>

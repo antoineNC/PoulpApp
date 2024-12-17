@@ -33,7 +33,7 @@ const ClubForm = ({
           <Spinner
             visible={loading}
             textContent={loaderTxt}
-            textStyle={{ color: colors.white }}
+            // textStyle={{ color: colors.white }}
           />
         )}
         <View style={authStyles.formList}>

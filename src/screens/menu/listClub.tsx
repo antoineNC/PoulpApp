@@ -5,7 +5,6 @@ import { Card, Chip, Searchbar } from "react-native-paper";
 import { ListClubProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import { Container, Image, Row } from "@styledComponents";
-import { colors } from "@theme";
 
 export default function ListClubScreen({ navigation }: ListClubProps) {
   const { clubList } = useUnit($officeStore);
@@ -48,7 +47,7 @@ export default function ListClubScreen({ navigation }: ListClubProps) {
         placeholder="Sélectionner un club"
         onChangeText={setQuery}
         value={query}
-        style={{ borderRadius: 5, marginHorizontal: 10 }}
+        style={{ marginHorizontal: 10 }}
       />
       <Row style={{ columnGap: 20, margin: 10, marginLeft: 30 }}>
         {officeList.map((office) => (
@@ -75,6 +74,7 @@ export default function ListClubScreen({ navigation }: ListClubProps) {
               <Card.Title
                 title={item.name}
                 subtitle={item.description}
+                style={{ flex: 1 }}
                 left={(props) => (
                   <View style={{ borderRadius: 5, overflow: "hidden" }}>
                     <Image
@@ -87,12 +87,10 @@ export default function ListClubScreen({ navigation }: ListClubProps) {
                       style={{
                         width: props.size,
                         height: props.size,
-                        backgroundColor: colors.secondary,
                       }}
                     />
                   </View>
                 )}
-                style={{ flex: 1 }}
               />
             </Card>
           </TouchableOpacity>

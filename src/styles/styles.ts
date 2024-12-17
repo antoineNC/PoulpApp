@@ -1,4 +1,3 @@
-import { colors } from "@theme";
 import { StyleSheet } from "react-native";
 
 export const authStyles = StyleSheet.create({
@@ -18,10 +17,10 @@ export const authStyles = StyleSheet.create({
 export const officeStyles = StyleSheet.create({
   container: {
     paddingHorizontal: 15,
+    paddingTop: 5,
   },
   borderRounded: {
     borderWidth: 0.5,
-    borderColor: colors.secondary,
     borderRadius: 5,
     padding: 5,
     marginVertical: 10,

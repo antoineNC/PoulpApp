@@ -1,9 +1,9 @@
 import { $officeStore } from "@context/officeStore";
 import { $sessionStore } from "@context/sessionStore";
 import { $studentStore } from "@context/studentStore";
-import { Container } from "@styledComponents";
+import { Container, Image } from "@styledComponents";
 import { useStoreMap, useUnit } from "effector-react";
-import { FlatList } from "react-native";
+import { FlatList, View } from "react-native";
 import { Card } from "react-native-paper";
 
 export default function ListAdhesion() {
@@ -29,10 +29,33 @@ export default function ListAdhesion() {
     <Container>
       <FlatList
         data={listOffice}
-        contentContainerStyle={{ paddingHorizontal: 20, rowGap: 30 }}
+        contentContainerStyle={{
+          rowGap: 10,
+          padding: 10,
+        }}
         renderItem={({ item }) => (
-          <Card>
-            <Card.Title title={item.name} />
+          <Card contentStyle={{ flexDirection: "row" }}>
+            <Card.Title
+              title={item.name}
+              subtitle={item.description}
+              style={{ flex: 1 }}
+              left={(props) => (
+                <View style={{ overflow: "hidden" }}>
+                  <Image
+                    source={
+                      item.logoUrl
+                        ? { uri: item.logoUrl }
+                        : require("@assets/no_image_available.png")
+                    }
+                    $size={props.size}
+                    style={{
+                      width: props.size,
+                      height: props.size,
+                    }}
+                  />
+                </View>
+              )}
+            />
           </Card>
         )}
       />

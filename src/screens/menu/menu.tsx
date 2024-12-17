@@ -1,6 +1,7 @@
 import { signoutUser } from "@fb/service/auth.service";
 import { MenuProps } from "@navigation/navigationTypes";
-import { ContainerScroll, Row, Text } from "@styledComponents";
+import { ContainerScroll, Row } from "@styledComponents";
+import { TitleText } from "components/customText";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Divider, Icon } from "react-native-paper";
@@ -16,8 +17,8 @@ const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
         marginVertical: 20,
       }}
     >
-      <Text $size="l">{text}</Text>
-      <Icon size={20} source={"chevron-right"} color="white" />
+      <TitleText>{text}</TitleText>
+      <Icon size={20} source={"chevron-right"} />
     </Row>
   </TouchableOpacity>
 );

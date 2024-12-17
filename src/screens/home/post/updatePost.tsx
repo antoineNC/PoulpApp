@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
 import { UpdatePostProps } from "@navigation/navigationTypes";
 import { UpdatePostForm } from "./updatePostForm";
-import { colors } from "@theme";
 import { Post, PostFormFields } from "types/post.type";
 import { getPost, updatePost } from "@fb/service/post.service";
 
@@ -26,7 +25,7 @@ export default function UpdatePostScreen({
       <Spinner
         visible={true}
         textContent={"Chargement..."}
-        textStyle={{ color: colors.white }}
+        // textStyle={{ color: colors.white }}
       />
     );
   }

@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { Alert, Image, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Button, IconButton, MD3Colors } from "react-native-paper";
+import { Button, useTheme } from "react-native-paper";
 import { FieldValues } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import ImageView from "react-native-image-viewing";
-import { Container, Row, Text } from "@styledComponents";
+import { Container, Row } from "@styledComponents";
 import { FieldInputProps } from "types/form.type";
-import { colors } from "@theme";
+import { BodyText } from "components/customText";
 
 export function ImagePickerForm<T extends FieldValues>({
   field: { value, onChange },
   label,
 }: FieldInputProps<T>) {
   const image = value;
+  const { colors } = useTheme();
   const [showImage, setShowImage] = useState(false);
   const pickImageFromLibrary = async () => {
     // No permissions request is necessary for launching the image library
@@ -56,21 +57,37 @@ export function ImagePickerForm<T extends FieldValues>({
 
   return (
     <Container style={styles.container}>
-      <Text $dark $bold>
-        {label}
-      </Text>
+      <BodyText>{label}</BodyText>
+      <Row style={styles.btnContainer}>
+        <Button
+          mode="contained-tonal"
+          onPress={pickImageFromLibrary}
+          icon={"folder-image"}
+        >
+          Choisir dans la galerie
+        </Button>
+        <Button
+          mode="contained-tonal"
+          onPress={pickImageFromCamera}
+          icon={"camera"}
+        >
+          Prendre photo
+        </Button>
+      </Row>
       {image && (
-        <View>
-          <IconButton
-            icon="delete-circle"
-            size={40}
-            iconColor={MD3Colors.error50}
-            style={{ position: "absolute", right: 0, zIndex: 10 }}
-            onPress={deletePickChoice}
-          />
+        <View style={{ marginTop: 10 }}>
           <TouchableOpacity onPress={() => setShowImage(true)}>
             <Image source={{ uri: image }} style={styles.image} />
           </TouchableOpacity>
+          <Button
+            icon="delete-circle"
+            onPress={deletePickChoice}
+            style={{ marginVertical: 10 }}
+            buttonColor={colors.errorContainer}
+            textColor={colors.onBackground}
+          >
+            Supprimer l'image
+          </Button>
           <ImageView
             images={[{ uri: image }]}
             imageIndex={0}
@@ -79,26 +96,6 @@ export function ImagePickerForm<T extends FieldValues>({
           />
         </View>
       )}
-      <Row style={styles.btnContainer}>
-        <Button
-          mode="outlined"
-          textColor={colors.primary}
-          onPress={pickImageFromLibrary}
-          icon={"folder-image"}
-          style={{ borderRadius: 5 }}
-        >
-          Choisir dans la galerie
-        </Button>
-        <Button
-          mode="outlined"
-          textColor={colors.primary}
-          onPress={pickImageFromCamera}
-          icon={"camera"}
-          style={{ borderRadius: 5 }}
-        >
-          Prendre photo
-        </Button>
-      </Row>
     </Container>
   );
 }

@@ -1,11 +1,11 @@
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { FieldValues } from "react-hook-form";
-import { HelperText } from "react-native-paper";
+import { HelperText, useTheme } from "react-native-paper";
 import { MultiSelect } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { Text } from "@styledComponents";
-import { colors } from "@theme";
 import { FieldInputProps } from "types/form.type";
+import { BodyText, LabelText } from "components/customText";
+import { Container } from "@styledComponents";
 
 export function ChipInputForm<T extends FieldValues>({
   field: { onBlur, onChange, value },
@@ -13,77 +13,77 @@ export function ChipInputForm<T extends FieldValues>({
   label,
   options,
 }: FieldInputProps<T>) {
-  if (options?.choices)
-    return (
-      <View>
-        <Text $dark $size="s" style={styles.label}>
-          {label}
-        </Text>
-        <MultiSelect
-          data={options.choices}
-          value={value || []}
-          valueField="value"
-          labelField="label"
-          onChange={onChange}
-          onBlur={onBlur}
-          mode="modal"
-          search
-          placeholder="Sélectionner des tags"
-          searchPlaceholder="Chercher..."
-          style={styles.dropdown}
-          containerStyle={styles.container}
-          inputSearchStyle={styles.inputSearch}
-          activeColor={colors.secondary}
-          renderItem={(item) => (
-            <View key={item.value} style={styles.item}>
-              <Text $dark>{item.label}</Text>
-            </View>
-          )}
-          renderSelectedItem={(item, unSelect) => (
-            <TouchableOpacity
-              key={item.value}
-              onPress={() => unSelect && unSelect(item)}
+  const { colors, roundness } = useTheme();
+  return (
+    <Container style={styles.container}>
+      <LabelText style={[styles.label, { backgroundColor: colors.background }]}>
+        {label}
+      </LabelText>
+      <MultiSelect
+        data={options?.choices || []}
+        value={value || []}
+        valueField="value"
+        labelField="label"
+        onChange={onChange}
+        onBlur={onBlur}
+        search
+        placeholder="Sélectionner des tags"
+        searchPlaceholder="Chercher..."
+        placeholderStyle={{ color: colors.onSurfaceVariant }}
+        style={[
+          styles.dropdown,
+          { borderRadius: roundness, borderColor: colors.onSurfaceVariant },
+        ]}
+        itemTextStyle={{ color: colors.primary }}
+        inputSearchStyle={{ color: colors.onSurfaceVariant }}
+        activeColor={colors.background}
+        containerStyle={{
+          backgroundColor: colors.surfaceVariant,
+          borderColor: colors.surfaceVariant,
+          borderRadius: roundness,
+        }}
+        renderSelectedItem={(item, unSelect) => (
+          <TouchableOpacity
+            key={item.value}
+            onPress={() => unSelect && unSelect(item)}
+          >
+            <View
+              style={[
+                styles.selectedStyle,
+                { backgroundColor: colors.primary },
+              ]}
             >
-              <View style={styles.selectedStyle}>
-                <Text $size="m" style={styles.textSelectedStyle}>
-                  {item.label}
-                </Text>
-                <AntDesign color="white" name="delete" />
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-        {error && <HelperText type="error">{error.message}</HelperText>}
-      </View>
-    );
+              <BodyText
+                style={[styles.textSelectedStyle, { color: colors.background }]}
+              >
+                {item.label}
+              </BodyText>
+              <AntDesign color={colors.background} name="delete" />
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+      {error && <HelperText type="error">{error.message}</HelperText>}
+    </Container>
+  );
 }
 
 const styles = StyleSheet.create({
-  // select input
-  dropdown: {
-    height: 50,
-    borderWidth: 0.7,
-    borderRadius: 5,
-    paddingHorizontal: 10,
+  container: {
+    marginTop: 20,
   },
+  // select input
   label: {
-    alignSelf: "flex-start",
-    backgroundColor: colors.secondary,
+    position: "absolute",
     zIndex: 2,
     left: 15,
-    top: 8,
+    top: -10,
     paddingHorizontal: 5,
   },
-  //list of choices
-  container: {
-    borderColor: colors.black,
-    borderWidth: 1,
-    borderRadius: 5,
-    overflow: "hidden",
-  },
-  inputSearch: { borderRadius: 5, height: 50 },
-  item: {
-    padding: 20,
+  dropdown: {
+    height: 50,
+    borderWidth: 0.5,
+    paddingHorizontal: 10,
   },
   // chips
   selectedStyle: {
@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
-    backgroundColor: colors.primary,
     shadowColor: "#000",
     marginTop: 8,
     marginRight: 12,

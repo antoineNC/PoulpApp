@@ -3,10 +3,10 @@ import { Button, Card } from "react-native-paper";
 import { useUnit } from "effector-react";
 
 import { $officeStore } from "@context/officeStore";
-import { Container, Image, Text, Title2 } from "@styledComponents";
-import { colors } from "@theme";
+import { Container, Image } from "@styledComponents";
 import { ListOfficeProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
+import { BodyText, HeaderText } from "components/customText";
 
 export default function ListOfficeScreen({ navigation }: ListOfficeProps) {
   const { officeList } = useUnit($officeStore);
@@ -19,6 +19,7 @@ export default function ListOfficeScreen({ navigation }: ListOfficeProps) {
         contentContainerStyle={{
           rowGap: 20,
           paddingHorizontal: 20,
+          paddingTop: 5,
           paddingBottom: 100,
         }}
         showsVerticalScrollIndicator={false}
@@ -29,27 +30,20 @@ export default function ListOfficeScreen({ navigation }: ListOfficeProps) {
               navigation.navigate("viewOffice", { officeId: item.id });
             }}
           >
-            <Card
-              style={{
-                backgroundColor: colors.primary,
-                borderWidth: 0.5,
-                borderColor: colors.secondary,
-                paddingBottom: 15,
-              }}
-            >
+            <Card style={{ paddingVertical: 20 }}>
               <Card.Title
                 title={
-                  <Title2>
+                  <HeaderText>
                     {item.name} ({item.acronym})
-                  </Title2>
+                  </HeaderText>
                 }
-                subtitle={<Text>{item.mail}</Text>}
+                subtitle={<BodyText>{item.mail}</BodyText>}
                 left={() => <Image source={{ uri: item.logoUrl }} $size={80} />}
-                leftStyle={{ width: 80, aspectRatio: 1 }}
-                style={{ height: 100 }}
+                leftStyle={{ width: 80 }}
+                titleNumberOfLines={2}
               />
-              <Card.Content>
-                <Text>{item.description}</Text>
+              <Card.Content style={{ marginVertical: 20 }}>
+                <BodyText>{item.description}</BodyText>
               </Card.Content>
               {hasRight("OFFICE", "UPDATE", item.id) && (
                 <Card.Actions>

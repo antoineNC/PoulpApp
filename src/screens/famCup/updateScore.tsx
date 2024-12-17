@@ -83,7 +83,7 @@ export default function UpdateScoreScreen({
               autoFocus={true}
               enterKeyHint={"next"}
               inputMode={"text"}
-              style={{ backgroundColor: colors.secondary }}
+              // style={{ backgroundColor: colors.secondary }}
             />
             {error && <HelperText type="error">{error.message}</HelperText>}
           </>

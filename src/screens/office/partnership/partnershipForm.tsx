@@ -1,13 +1,7 @@
 import { KeyboardAvoidingView, Platform, View } from "react-native";
-import {
-  HelperText,
-  IconButton,
-  MD3Colors,
-  TextInput,
-} from "react-native-paper";
-import { ContainerScroll, Text } from "@styledComponents";
+import { IconButton, TextInput, useTheme } from "react-native-paper";
+import { ContainerScroll } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
-import { colors } from "@theme";
 import CustomField from "components/form/formField";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
@@ -19,6 +13,7 @@ import {
 import { FloatingValidateBtn } from "components/validateButton";
 import { PartnershipFormFields } from "types/partnership.type";
 import { FormFieldValues } from "types/form.type";
+import { BodyText } from "components/customText";
 
 const PartnershipForm = ({
   create,
@@ -34,6 +29,7 @@ const PartnershipForm = ({
   onSubmit: SubmitHandler<PartnershipFormFields>;
 }) => {
   const loaderTxt = create ? "Création..." : "Modification...";
+  const { colors } = useTheme();
   const {
     control,
     handleSubmit,
@@ -58,7 +54,7 @@ const PartnershipForm = ({
           <Spinner
             visible={loading}
             textContent={loaderTxt}
-            textStyle={{ color: colors.white }}
+            textStyle={{ color: colors.onBackground }}
           />
         )}
         <View style={authStyles.formList}>
@@ -75,17 +71,17 @@ const PartnershipForm = ({
               submit={handleSubmit(onSubmit)}
             />
           ))}
-          <View style={{ paddingVertical: 20 }}>
-            <Text $bold $dark>
-              Les avantages :
-            </Text>
+          <View style={{ paddingVertical: 10 }}>
+            <BodyText>Les avantages :</BodyText>
           </View>
           {fields.map((benefit, index) => (
             <View key={benefit.id}>
               <View style={{ flexDirection: "row" }}>
                 <TextInput
                   mode="outlined"
-                  style={{ flex: 1, backgroundColor: colors.secondary }}
+                  style={{
+                    flex: 1,
+                  }}
                   error={
                     errors?.benefits?.[index]?.value?.message !== undefined
                   }
@@ -100,22 +96,17 @@ const PartnershipForm = ({
                 />
                 <IconButton
                   icon={"window-close"}
-                  mode="outlined"
-                  iconColor={MD3Colors.error50}
+                  mode="contained"
+                  iconColor={colors.error}
                   onPress={() => remove(index)}
                 />
               </View>
-              {errors && (
-                <HelperText type="error">
-                  {errors?.benefits?.[index]?.value?.message}
-                </HelperText>
-              )}
             </View>
           ))}
           <IconButton
             icon={"plus"}
             mode="outlined"
-            style={{ width: "auto", borderRadius: 5 }}
+            style={{ width: "auto" }}
             onPress={() => append({ value: "" })}
           />
         </View>

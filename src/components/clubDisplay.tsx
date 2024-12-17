@@ -1,19 +1,11 @@
 import { Alert, Linking, TouchableOpacity, View } from "react-native";
-import {
-  Body,
-  BodyTitle,
-  Container,
-  Image,
-  Link,
-  Row,
-  Text,
-  Title1,
-} from "@styledComponents";
+import { Body, Container, Image, Row } from "@styledComponents";
 import ImageView from "react-native-image-viewing";
 import { useStoreMap } from "effector-react";
 import { $officeStore } from "@context/officeStore";
 import { useState } from "react";
 import React from "react";
+import { BodyText, HeaderText, LinkText } from "./customText";
 
 export default function ClubDisplay({
   id,
@@ -47,7 +39,7 @@ export default function ClubDisplay({
       // by some browser in the mobile
       await Linking.openURL(url);
     } else {
-      Alert.alert(`Don't know how to open this URL: ${url}`);
+      Alert.alert(`Nous ne parvenons pas à ouvrir ce lien: ${url}`);
     }
   };
   return (
@@ -75,21 +67,23 @@ export default function ClubDisplay({
             />
           </>
         )}
-        <Title1>{club.name}</Title1>
+        <HeaderText>{club.name}</HeaderText>
       </View>
       <Body>
-        <Text>{club.description}</Text>
+        <BodyText>{club.description}</BodyText>
         {club.contact && (
           <Row style={{ flexWrap: "wrap" }}>
-            <BodyTitle>Contact : </BodyTitle>
-            <Link onPress={() => club.contact && handlePress(club.contact)}>
-              {club.contact}
-            </Link>
+            <BodyText>Contact : </BodyText>
+            <TouchableOpacity
+              onPress={() => club.contact && handlePress(club.contact)}
+            >
+              <LinkText>{club.contact}</LinkText>
+            </TouchableOpacity>
           </Row>
         )}
         {office && (
           <Row>
-            <Text>Club géré par : </Text>
+            <BodyText>Club géré par : </BodyText>
             <TouchableOpacity onPress={() => onPress(office.id)}>
               <Row>
                 <Image
@@ -97,7 +91,7 @@ export default function ClubDisplay({
                   source={{ uri: office?.logoUrl }}
                   style={{ marginHorizontal: 5 }}
                 />
-                <Text $bold>{office?.name}</Text>
+                <BodyText>{office?.name}</BodyText>
               </Row>
             </TouchableOpacity>
           </Row>

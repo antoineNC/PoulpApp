@@ -1,5 +1,8 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { IconButton } from "react-native-paper";
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationOptions,
+} from "@react-navigation/native-stack";
+import { IconButton, useTheme } from "react-native-paper";
 import { useStoreMap } from "effector-react";
 
 import {
@@ -34,26 +37,24 @@ import ViewClubMenuScreen from "@screens/menu/viewClub";
 import ListPartnershipScreen from "@screens/menu/listPartnership";
 import ViewPartnershipMenuScreen from "@screens/menu/viewPartnership";
 import NotificationScreen from "@screens/menu/notification";
-import { colors } from "@theme";
-import { Image, Row, Title2 } from "@styledComponents";
+import { Image, Row } from "@styledComponents";
 import { $officeStore } from "@context/officeStore";
 import { getCalendarItems } from "@fb/service/post.service";
 import { actionCalendar } from "@context/calendar.store";
+import { TitleText } from "components/customText";
+import { useContext } from "react";
+import { PreferencesContext } from "@context/themeContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
 const FamCupStack = createNativeStackNavigator<FamCupTabParamList>();
 const MenuStack = createNativeStackNavigator<MenuTabParamList>();
 
-const screenOptions = {
+const screenOptions: NativeStackNavigationOptions = {
   statusBarTranslucent: true,
-  headerTintColor: colors.white,
-  headerStyle: { backgroundColor: colors.primary },
   headerShadowVisible: false,
   headerBackTitleVisible: false,
-  contentStyle: {
-    backgroundColor: colors.primary,
-  },
 };
 
 const TitleComponent = ({
@@ -63,11 +64,11 @@ const TitleComponent = ({
   name: string;
   logoUrl?: string;
 }) => (
-  <Row>
+  <Row style={{ columnGap: 10 }}>
     {logoUrl && (
       <Image style={{ borderRadius: 5 }} $size={45} source={{ uri: logoUrl }} />
     )}
-    <Title2>{name}</Title2>
+    <TitleText>{name}</TitleText>
   </Row>
 );
 
@@ -108,18 +109,25 @@ const PartnerHeaderTitle = ({ partnerId }: { partnerId: string }) => {
 export function HomeNavigator({
   navigation,
 }: TabBarScreenProps<"homeContainer">) {
+  const { colors } = useTheme();
   return (
-    <HomeStack.Navigator screenOptions={screenOptions} initialRouteName="feed">
+    <HomeStack.Navigator
+      screenOptions={{
+        ...screenOptions,
+        headerStyle: { backgroundColor: colors.background },
+      }}
+      initialRouteName="feed"
+    >
       <HomeStack.Screen
         name="feed"
         component={FeedScreen}
         options={() => ({
           title: "Fil d'actualité",
-          headerRight: () => (
+          headerRight: ({ tintColor }) => (
             <IconButton
               icon="calendar-month-outline"
               size={30}
-              iconColor={colors.white}
+              iconColor={tintColor}
               onPress={() =>
                 navigation.navigate("homeContainer", {
                   screen: "calendar",
@@ -135,11 +143,11 @@ export function HomeNavigator({
         component={CalendarScreen}
         options={{
           title: "Calendrier",
-          headerRight: () => (
+          headerRight: ({ tintColor }) => (
             <IconButton
               icon={"sync"}
               size={30}
-              iconColor={colors.white}
+              iconColor={tintColor}
               onPress={async () => {
                 const items = await getCalendarItems();
                 actionCalendar.setItems(items);
@@ -151,40 +159,26 @@ export function HomeNavigator({
       <HomeStack.Screen
         name="createPost"
         component={CreatePostScreen}
-        options={() => ({
-          contentStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitle: () => (
-            <Row>
-              <Title2>Création d'un post</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Création d'un post" }}
       />
       <HomeStack.Screen
         name="updatePost"
         component={UpdatePostScreen}
-        options={() => ({
-          contentStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitle: () => (
-            <Row>
-              <Title2>Modification du post</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Modification du post" }}
       />
     </HomeStack.Navigator>
   );
 }
 
 export function OfficeNavigator() {
+  const { colors } = useTheme();
   return (
-    <OfficeStack.Navigator screenOptions={screenOptions}>
+    <OfficeStack.Navigator
+      screenOptions={{
+        ...screenOptions,
+        headerStyle: { backgroundColor: colors.background },
+      }}
+    >
       <OfficeStack.Screen
         name="listOffice"
         component={ListOfficeScreen}
@@ -202,17 +196,7 @@ export function OfficeNavigator() {
       <OfficeStack.Screen
         name="updateOffice"
         component={UpdateOfficeScreen}
-        options={() => ({
-          contentStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitle: () => (
-            <Row>
-              <Title2>Modification du bureau</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Modification du bureau" }}
       />
       <OfficeStack.Screen
         name="viewClub"
@@ -224,32 +208,12 @@ export function OfficeNavigator() {
       <OfficeStack.Screen
         name="createClub"
         component={CreateClubScreen}
-        options={() => ({
-          contentStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitle: () => (
-            <Row>
-              <Title2>Création d'un club</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Création d'un club" }}
       />
       <OfficeStack.Screen
         name="updateClub"
         component={UpdateClubScreen}
-        options={() => ({
-          contentStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitle: () => (
-            <Row>
-              <Title2>Modification du club</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Modification du club" }}
       />
       <OfficeStack.Screen
         name="viewPartnership"
@@ -263,40 +227,26 @@ export function OfficeNavigator() {
       <OfficeStack.Screen
         name="createPartnership"
         component={CreatePartnershipScreen}
-        options={() => ({
-          contentStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitle: () => (
-            <Row>
-              <Title2>Création d'un partenariat</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Création d'un partenariat" }}
       />
       <OfficeStack.Screen
         name="updatePartnership"
         component={UpdatePartnershipScreen}
-        options={() => ({
-          contentStyle: {
-            backgroundColor: colors.secondary,
-          },
-          headerTitle: () => (
-            <Row>
-              <Title2>Modification du partenariat</Title2>
-              <IconButton icon="pencil" iconColor={colors.white} size={25} />
-            </Row>
-          ),
-        })}
+        options={{ title: "Modification du partenariat" }}
       />
     </OfficeStack.Navigator>
   );
 }
 
 export function FamCupNavigator() {
+  const { colors } = useTheme();
   return (
-    <FamCupStack.Navigator screenOptions={screenOptions}>
+    <FamCupStack.Navigator
+      screenOptions={{
+        ...screenOptions,
+        headerStyle: { backgroundColor: colors.background },
+      }}
+    >
       <FamCupStack.Screen
         name="score"
         component={ScoreScreen}
@@ -305,34 +255,41 @@ export function FamCupNavigator() {
       <FamCupStack.Screen
         name="createScore"
         component={CreateScoreScreen}
-        options={{
-          contentStyle: {
-            backgroundColor: colors.secondary,
-          },
-          title: "Ajouter des points",
-        }}
+        options={{ title: "Ajouter des points" }}
       />
       <FamCupStack.Screen
         name="updateScore"
         component={UpdateScoreScreen}
-        options={{
-          contentStyle: {
-            backgroundColor: colors.secondary,
-          },
-          title: "Modifier les points",
-        }}
+        options={{ title: "Modifier les points" }}
       />
     </FamCupStack.Navigator>
   );
 }
 
 export function MenuNavigator() {
+  const { colors } = useTheme();
+  const { toggleTheme, isThemeDark } = useContext(PreferencesContext);
+  async function toggle() {
+    const newValue = JSON.stringify(!isThemeDark);
+    await AsyncStorage.setItem("isDarkMode", newValue);
+    toggleTheme((prev) => !prev);
+  }
   return (
-    <MenuStack.Navigator screenOptions={screenOptions}>
+    <MenuStack.Navigator
+      screenOptions={{
+        ...screenOptions,
+        headerStyle: { backgroundColor: colors.background },
+      }}
+    >
       <MenuStack.Screen
         name="menu"
         component={MenuScreen}
-        options={{ title: "Menu" }}
+        options={{
+          title: "Menu",
+          headerRight: () => (
+            <IconButton icon={"brightness-6"} onPress={toggle} />
+          ),
+        }}
       />
       <MenuStack.Screen
         name="listAdhesion"
