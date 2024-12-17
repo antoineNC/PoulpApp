@@ -1,13 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { FieldValues } from "react-hook-form";
-import {
-  HelperText,
-  Icon,
-  IconButton,
-  TextInput,
-  Tooltip,
-} from "react-native-paper";
+import { HelperText, IconButton, TextInput, Tooltip } from "react-native-paper";
 import { InputProps } from "types/form.type";
 import { Row } from "@styledComponents";
 
