@@ -12,7 +12,7 @@ import { ContainerScroll } from "@styledComponents";
 import { TextInputForm } from "components/form/textInput";
 import { ImagePickerForm } from "components/form/imagePicker";
 import { SmallCardItem } from "components/smallCardItem";
-import ListMemberForm from "../../components/listMemberForm";
+import ListMemberForm from "../../components/form/listMemberForm";
 import { FloatingValidateBtn } from "components/validateButton";
 import { OfficeFormFields } from "types/office.type";
 import { updateOffice } from "@fb/service/office.service";

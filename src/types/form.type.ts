@@ -43,10 +43,10 @@ export type ControlFieldProps<T extends FieldValues> = {
   name: Path<T>;
   required?: boolean;
   repeat?: string;
+  type: FormFieldType;
 };
 export type FormFieldProps = {
   label: string;
-  type: FormFieldType;
   options?: FormFieldOptions;
   index: number;
   lastInput: boolean;
@@ -57,6 +57,7 @@ export type FormFieldProps = {
 export type FieldInputProps<T extends FieldValues> = FormFieldProps & {
   field: ControllerRenderProps<T, Path<T>>;
   fieldState: ControllerFieldState;
+  type?: FormFieldType;
 };
 
 export type Params<T extends FieldValues> = {

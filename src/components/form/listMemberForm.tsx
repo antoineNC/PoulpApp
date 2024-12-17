@@ -15,7 +15,7 @@ import { $studentStore } from "@context/studentStore";
 import { Container } from "@styledComponents";
 import { OfficeFormFields, RoleOffice } from "types/office.type";
 import { Student } from "types/student.type";
-import { BodyText } from "./customText";
+import { BodyText } from "../customText";
 
 export default function ListMemberForm({
   control,

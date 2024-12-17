@@ -1,23 +1,16 @@
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { CreateScoreProps } from "@navigation/navigationTypes";
-import { Container } from "@styledComponents";
-import { HelperText, TextInput } from "react-native-paper";
-import { Timestamp } from "firebase/firestore";
-import { View } from "react-native";
-import { officeStyles } from "@styles";
-import { FloatingValidateBtn } from "components/validateButton";
-import { PointInputController } from "components/pointInput";
-import { DateComponent } from "components/dateScoreInput";
 import { PointsFormFields } from "types/point.type";
 import { createPoint } from "@fb/service/point.service";
 import React from "react";
+import { ScoreForm } from "./scoreForm";
 
 export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
   const [loading, setLoading] = useState(false);
-  const { control, handleSubmit } = useForm<PointsFormFields>({
+  const formParams = useForm<PointsFormFields>({
     defaultValues: {
-      date: Timestamp.now(),
+      date: new Date(),
       title: "",
       blue: 0,
       yellow: 0,
@@ -26,14 +19,6 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
       green: 0,
     },
   });
-
-  const pointsFieldValues: { name: keyof PointsFormFields; label: string }[] = [
-    { name: "blue", label: "Bleu" },
-    { name: "yellow", label: "Jaune" },
-    { name: "orange", label: "Orange" },
-    { name: "red", label: "Rouge" },
-    { name: "green", label: "Vert" },
-  ];
 
   const onSubmit = async (data: PointsFormFields) => {
     try {
@@ -57,62 +42,6 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
   };
 
   return (
-    <Container style={officeStyles.container}>
-      <Controller
-        control={control}
-        name="title"
-        rules={{ required: "Champs obligatoire" }}
-        render={({
-          field: { value, onChange, onBlur },
-          fieldState: { invalid, error },
-        }) => (
-          <>
-            <TextInput
-              mode="outlined"
-              numberOfLines={5}
-              label={"Titre *"}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              value={value}
-              error={invalid}
-              autoFocus={true}
-              enterKeyHint={"next"}
-              inputMode={"text"}
-            />
-            {error && <HelperText type="error">{error.message}</HelperText>}
-          </>
-        )}
-      />
-      <Controller
-        control={control}
-        name="date"
-        rules={{ required: true }}
-        render={({ field: { value, onChange }, fieldState: { error } }) => (
-          <DateComponent value={value} onChange={onChange} error={error} />
-        )}
-      />
-      <View
-        style={{
-          justifyContent: "center",
-          padding: 5,
-          marginTop: 20,
-          rowGap: 10,
-        }}
-      >
-        {pointsFieldValues.map(({ label, name }, index) => (
-          <PointInputController
-            key={index}
-            control={control}
-            name={name}
-            label={label}
-          />
-        ))}
-      </View>
-      <FloatingValidateBtn
-        disabled={loading}
-        label="Ajouter les points"
-        onPress={handleSubmit(onSubmit)}
-      />
-    </Container>
+    <ScoreForm formParams={formParams} loading={loading} onSubmit={onSubmit} />
   );
 }

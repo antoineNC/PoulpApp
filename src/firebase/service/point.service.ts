@@ -9,9 +9,10 @@ import {
   onSnapshot,
   orderBy,
   query,
+  Timestamp,
   updateDoc,
 } from "firebase/firestore";
-import { Point, PointsFormFields } from "types/point.type";
+import { FirestorePoint, PointsFormFields, Point } from "types/point.type";
 
 const app = getApp();
 const db = getFirestore(app);
@@ -26,11 +27,11 @@ function subscribeAllPoint(setState: (officeList: Point[]) => void) {
     );
     return onSnapshot(q, async (snapshot) => {
       const allPoint = snapshot.docs.map(async (doc) => {
-        const pointData = doc.data();
+        const pointData = doc.data() as FirestorePoint;
         const office: Point = {
           id: doc.id,
           title: pointData.title,
-          date: pointData.date,
+          date: pointData.date.toDate(),
           blue: pointData.blue,
           green: pointData.green,
           orange: pointData.orange,
@@ -50,7 +51,7 @@ function subscribeAllPoint(setState: (officeList: Point[]) => void) {
 async function createPoint(props: PointsFormFields) {
   const pointFields = {
     title: props.title,
-    date: props.date,
+    date: Timestamp.fromDate(props.date),
     blue: props.blue,
     red: props.red,
     yellow: props.yellow,
@@ -73,7 +74,7 @@ async function updatePoint(props: PointsFormFields, id: string) {
     }
     const updatedFields = {
       title: props.title,
-      date: props.date,
+      date: Timestamp.fromDate(props.date),
       blue: props.blue,
       red: props.red,
       yellow: props.yellow,
