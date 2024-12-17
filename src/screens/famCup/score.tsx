@@ -149,7 +149,7 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
         ItemSeparatorComponent={() => <Divider />}
         ListFooterComponent={<View style={{ marginVertical: 40 }} />}
         renderItem={({ item, index }) => {
-          const date = formatDay(item.date.toDate());
+          const date = formatDay(item.date);
           return (
             <View key={index} style={{ paddingHorizontal: 15 }}>
               <TitleText>{item.title}</TitleText>

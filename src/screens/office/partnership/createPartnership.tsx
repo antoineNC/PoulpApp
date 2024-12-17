@@ -7,7 +7,7 @@ import PartnershipForm from "./partnershipForm";
 import { useRight } from "utils/rights";
 import { PartnershipFormFields } from "types/partnership.type";
 import { createPartnership } from "@fb/service/partnership.service";
-import { FormFieldValues } from "types/form.type";
+import { FieldParams } from "types/form.type";
 
 export default function CreatePartnershipScreen({
   navigation,
@@ -32,7 +32,7 @@ export default function CreatePartnershipScreen({
     office: { label: office?.name, value: office?.id },
   };
 
-  const fields: FormFieldValues<PartnershipFormFields> = [
+  const fields: FieldParams<PartnershipFormFields>[] = [
     {
       name: "name",
       label: "Nom",

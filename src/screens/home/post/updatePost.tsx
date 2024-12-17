@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import Spinner from "react-native-loading-spinner-overlay";
 import { UpdatePostProps } from "@navigation/navigationTypes";
-import { UpdatePostForm } from "./updatePostForm";
+import { PostForm } from "./postForm";
 import { Post, PostFormFields } from "types/post.type";
 import { getPost, updatePost } from "@fb/service/post.service";
+import { useForm } from "react-hook-form";
+import { useStoreMap } from "effector-react";
+import { $officeStore } from "@context/officeStore";
 
 export default function UpdatePostScreen({
   navigation,
@@ -20,20 +22,30 @@ export default function UpdatePostScreen({
     func();
   }, [postId]);
 
-  if (!post) {
-    return (
-      <Spinner
-        visible={true}
-        textContent={"Chargement..."}
-        // textStyle={{ color: colors.white }}
-      />
-    );
-  }
+  const editor = useStoreMap({
+    store: $officeStore,
+    keys: [post?.id],
+    fn: (officeStore) =>
+      officeStore.officeList.find((office) => office.id === post?.editorId),
+  });
+  const formParams = useForm<PostFormFields>({
+    defaultValues: {
+      title: post?.title,
+      description: post?.description,
+      editor: { value: post?.editorId, label: editor?.name },
+      tags: post?.tags,
+      date: post?.date,
+      imageFile: post?.imageUrl,
+    },
+  });
 
   const onSubmit = async (data: PostFormFields) => {
     try {
       setLoading(true);
-      await updatePost(data, post.id);
+      if (!post) {
+        throw "Le post n'a pas bien été chargé";
+      }
+      await updatePost(data, post?.id);
     } catch (e) {
       throw new Error("[submit updatepost]: " + e);
     } finally {
@@ -42,5 +54,7 @@ export default function UpdatePostScreen({
     }
   };
 
-  return <UpdatePostForm post={post} loading={loading} onSubmit={onSubmit} />;
+  return (
+    <PostForm formParams={formParams} loading={loading} onSubmit={onSubmit} />
+  );
 }

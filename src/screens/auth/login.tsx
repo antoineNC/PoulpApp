@@ -11,7 +11,7 @@ import { ContainerScroll as Container } from "@styledComponents";
 import { authStyles } from "@styles";
 import { loginUser } from "firebase/service/auth.service";
 import { actionSession } from "@context/sessionStore";
-import { FormFieldValues } from "types/form.type";
+import { FieldParams } from "types/form.type";
 import React from "react";
 
 type FieldNames = {
@@ -26,7 +26,7 @@ export default function LoginScreen({
   const [loading, setLoading] = useState(false);
   const { control, handleSubmit, setFocus } = useForm<FieldNames>();
 
-  const values: FormFieldValues<FieldNames> = [
+  const values: FieldParams<FieldNames>[] = [
     {
       name: "email",
       label: "Email",

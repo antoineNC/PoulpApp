@@ -12,7 +12,7 @@ import { ContainerScroll } from "@styledComponents";
 import { TextInputForm } from "components/form/textInput";
 import { ImagePickerForm } from "components/form/imagePicker";
 import { SmallCardItem } from "components/smallCardItem";
-import ListMemberForm from "../../components/listMemberForm";
+import ListMemberForm from "../../components/form/listMemberForm";
 import { FloatingValidateBtn } from "components/validateButton";
 import { OfficeFormFields } from "types/office.type";
 import { updateOffice } from "@fb/service/office.service";
@@ -75,9 +75,33 @@ export default function UpdateOfficeScreen({
     }
   };
 
-  const onDeleteClub = async (id: string) => await deleteClub(id);
+  const onDeleteClub = async (id: string) => {
+    Alert.alert(
+      "Supprimer un club",
+      "Voulez-vous vraiment supprimer définitivement ce club ?",
+      [
+        {
+          text: "OUI",
+          onPress: async () => await deleteClub(id),
+        },
+        { text: "NON" },
+      ]
+    );
+  };
 
-  const onDeletePartnership = async (id: string) => await deletePartnership(id);
+  const onDeletePartnership = async (id: string) => {
+    Alert.alert(
+      "Supprimer un partenariat",
+      "Voulez-vous vraiment supprimer définitivement ce partenariat ?",
+      [
+        {
+          text: "OUI",
+          onPress: async () => await deletePartnership(id),
+        },
+        { text: "NON" },
+      ]
+    );
+  };
   return (
     <>
       <ContainerScroll>
@@ -101,7 +125,6 @@ export default function UpdateOfficeScreen({
                 index={0}
                 lastInput={false}
                 setFocus={() => setFocus("name")}
-                type="text"
                 submit={handleSubmit(onSubmit)}
               />
             )}
@@ -118,7 +141,6 @@ export default function UpdateOfficeScreen({
                 index={1}
                 lastInput={false}
                 setFocus={() => setFocus("description")}
-                type="text"
                 submit={handleSubmit(onSubmit)}
               />
             )}
@@ -135,7 +157,6 @@ export default function UpdateOfficeScreen({
                 index={2}
                 lastInput={false}
                 setFocus={() => setFocus("description")}
-                type="text"
                 submit={handleSubmit(onSubmit)}
               />
             )}
@@ -147,7 +168,6 @@ export default function UpdateOfficeScreen({
               <TextInputForm
                 field={field}
                 fieldState={fieldState}
-                type="text"
                 label="Description"
                 index={3}
                 lastInput={false}
@@ -168,7 +188,6 @@ export default function UpdateOfficeScreen({
                 index={4}
                 lastInput={false}
                 setFocus={() => setFocus("members")}
-                type="image"
                 submit={handleSubmit(onSubmit)}
               />
             )}
@@ -204,19 +223,7 @@ export default function UpdateOfficeScreen({
                         onEdit={() =>
                           navigation.navigate("updateClub", { clubId: item.id })
                         }
-                        onDelete={() =>
-                          Alert.alert(
-                            "Supprimer un club",
-                            "Voulez-vous vraiment supprimer définitivement ce club ?",
-                            [
-                              {
-                                text: "OUI",
-                                onPress: () => onDeleteClub(item.id),
-                              },
-                              { text: "NON" },
-                            ]
-                          )
-                        }
+                        onDelete={() => onDeleteClub(item.id)}
                       />
                     );
                   }}
@@ -253,19 +260,7 @@ export default function UpdateOfficeScreen({
                           partnershipId: item.id,
                         })
                       }
-                      onDelete={() =>
-                        Alert.alert(
-                          "Supprimer un partenariat",
-                          "Voulez-vous vraiment supprimer définitivement ce partenariat ?",
-                          [
-                            {
-                              text: "OUI",
-                              onPress: () => onDeletePartnership(item.id),
-                            },
-                            { text: "NON" },
-                          ]
-                        )
-                      }
+                      onDelete={() => onDeletePartnership(item.id)}
                     />
                   );
                 }}

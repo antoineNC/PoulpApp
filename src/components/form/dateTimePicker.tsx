@@ -5,7 +5,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Container, Row } from "@styledComponents";
 import { formatDay, formatHour } from "utils/dateUtils";
 import { FieldValues } from "react-hook-form";
-import { FieldInputProps } from "types/form.type";
+import { InputProps } from "types/form.type";
 import React from "react";
 import { setHours, setMinutes, setSeconds } from "date-fns";
 import { BodyText, LabelText } from "components/customText";
@@ -15,7 +15,7 @@ export function DateTimeFormPicker<T extends FieldValues>({
   fieldState: { error },
   label,
   options,
-}: FieldInputProps<T>) {
+}: InputProps<T>) {
   // FIXME : composant avec validation pour éviter de rerender a cause de la valeur qui change
   const startDate: Date = value?.start || new Date();
   const endDate: Date = value?.end || startDate;

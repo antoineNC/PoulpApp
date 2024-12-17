@@ -8,7 +8,7 @@ import ClubForm from "./clubForm";
 import { useRight } from "utils/rights";
 import { ClubFormFields } from "types/club.type";
 import { createClub } from "@fb/service/club.service";
-import { FormFieldValues } from "types/form.type";
+import { FieldParams } from "types/form.type";
 
 export default function CreateClubScreen({
   navigation,
@@ -35,7 +35,7 @@ export default function CreateClubScreen({
     },
   });
 
-  const values: FormFieldValues<ClubFormFields> = [
+  const values: FieldParams<ClubFormFields>[] = [
     {
       name: "name",
       label: "Nom",

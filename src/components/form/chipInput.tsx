@@ -3,7 +3,7 @@ import { FieldValues } from "react-hook-form";
 import { HelperText, useTheme } from "react-native-paper";
 import { MultiSelect } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { FieldInputProps } from "types/form.type";
+import { InputProps } from "types/form.type";
 import { BodyText, LabelText } from "components/customText";
 import { Container } from "@styledComponents";
 
@@ -12,7 +12,7 @@ export function ChipInputForm<T extends FieldValues>({
   fieldState: { error },
   label,
   options,
-}: FieldInputProps<T>) {
+}: InputProps<T>) {
   const { colors, roundness } = useTheme();
   return (
     <Container style={styles.container}>
