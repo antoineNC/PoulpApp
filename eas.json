@@ -12,10 +12,12 @@
     },
     "preview": {
       "distribution": "internal",
+      "environment": "preview",
       "autoIncrement": true
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "environment": "production"
     }
   },
   "submit": {
