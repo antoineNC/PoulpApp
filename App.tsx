@@ -6,6 +6,7 @@ import {
   MD3DarkTheme,
   PaperProvider,
   adaptNavigationTheme,
+  ActivityIndicator,
 } from "react-native-paper";
 import {
   DarkTheme as NavigationDarkTheme,
@@ -18,6 +19,8 @@ import RootContainer from "navigation/rootContainer";
 import { useAuthState } from "hooks/authentication";
 import { PreferencesContext } from "@context/themeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Toasts } from "@backpackapp-io/react-native-toast";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -58,7 +61,8 @@ export default function App() {
     };
     loadTheme();
   }, []);
-  let theme = isThemeDark ? CombinedDarkTheme : CombinedLightTheme;
+
+  const theme = isThemeDark ? CombinedDarkTheme : CombinedLightTheme;
 
   const preferences = useMemo(
     () => ({
@@ -75,14 +79,17 @@ export default function App() {
   }, [authIsDone]);
 
   if (!authIsDone) {
-    return null;
+    return <ActivityIndicator animating={true} />;
   }
 
   return (
     <PreferencesContext.Provider value={preferences}>
       <PaperProvider theme={theme}>
         <SafeAreaProvider onLayout={onLayoutRootView}>
-          <RootContainer theme={theme} />
+          <GestureHandlerRootView>
+            <RootContainer theme={theme} />
+            <Toasts overrideDarkMode={isThemeDark} />
+          </GestureHandlerRootView>
         </SafeAreaProvider>
       </PaperProvider>
     </PreferencesContext.Provider>

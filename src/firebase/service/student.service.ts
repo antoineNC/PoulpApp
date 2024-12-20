@@ -75,7 +75,7 @@ async function createStudent(props: CreateStudentArgs, userId: string) {
       adhesion: [],
     });
   } catch (e) {
-    throw new Error("[Create student] " + e);
+    throw e;
   }
 }
 

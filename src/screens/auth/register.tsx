@@ -12,6 +12,8 @@ import { authStyles } from "@styles";
 import { registerUser } from "@fb/service/auth.service";
 import { actionSession } from "@context/sessionStore";
 import { FieldParams } from "types/form.type";
+import { toast } from "@backpackapp-io/react-native-toast";
+import { getAuthErrMessage } from "utils/authUtils";
 
 type FieldNames = {
   firstName: string;
@@ -21,7 +23,7 @@ type FieldNames = {
   code: string;
 };
 
-export default function SignupScreen({
+export default function RegisterScreen({
   navigation,
 }: NativeStackScreenProps<AuthParamList>) {
   const { colors } = useTheme();
@@ -48,7 +50,7 @@ export default function SignupScreen({
       label: "Email",
       type: "text",
       required: true,
-      options: { inputMode: "email", autoCap: "none" },
+      options: { inputMode: "email", autoCap: "none", rules: ["mail"] },
     },
     {
       name: "password",
@@ -71,8 +73,10 @@ export default function SignupScreen({
     try {
       const sessionCredential = await registerUser(data);
       actionSession.login(sessionCredential);
-    } catch (e: any) {
-      throw new Error("signup Error :", e);
+      toast.success("Votre compte a bien été créé.", { position: 2 });
+    } catch (e) {
+      const msg = getAuthErrMessage(e);
+      toast.error(msg, { position: 2 });
     } finally {
       setLoading(false);
     }
@@ -83,7 +87,7 @@ export default function SignupScreen({
       {loading && (
         <Spinner
           visible={loading}
-          textContent={"Connexion..."}
+          textContent={"Création du compte..."}
           textStyle={{ color: colors.onBackground }}
         />
       )}

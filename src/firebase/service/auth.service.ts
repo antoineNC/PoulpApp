@@ -8,9 +8,6 @@ import {
 } from "firebase/auth";
 import { getCurrentUser } from "./user.service";
 import { createStudent } from "./student.service";
-import { actionPost } from "@context/postStore";
-import { actionStudent } from "@context/studentStore";
-import { actionCalendar } from "@context/calendar.store";
 import Constants from "expo-constants";
 
 function subscribeUserState(observer: (user: User | null) => void) {
@@ -30,9 +27,9 @@ async function loginUser({
       email,
       password
     );
-    return getCurrentUser(userCredential.user.uid);
-  } catch (e: any) {
-    throw new Error(`[login] ${e}`);
+    return await getCurrentUser(userCredential.user.uid);
+  } catch (e) {
+    throw e;
   }
 }
 
@@ -51,7 +48,7 @@ async function registerUser({
 }) {
   try {
     if (code !== Constants.expoConfig?.extra?.codeENSC) {
-      throw new Error("Code incorrect");
+      throw new Error("register/invalid-code");
     }
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -59,24 +56,22 @@ async function registerUser({
       password
     );
     await createStudent(
-      {
-        firstName,
-        lastName,
-        mail: email,
-      },
+      { firstName, lastName, mail: email },
       userCredential.user.uid
     );
-    return getCurrentUser(userCredential.user.uid);
-  } catch (e: any) {
-    throw new Error(`[signup] ${e}`);
+    return await getCurrentUser(userCredential.user.uid);
+  } catch (e) {
+    throw e;
   }
 }
 
-async function signoutUser() {
-  actionPost.logout();
-  actionStudent.logout();
-  actionCalendar.logout();
-  await signOut(auth);
+async function signOutUser() {
+  try {
+    if (auth) await signOut(auth);
+  } catch (e) {
+    console.error("Error signing out: ", e);
+    throw e;
+  }
 }
 
-export { subscribeUserState, loginUser, registerUser, signoutUser };
+export { subscribeUserState, loginUser, registerUser, signOutUser };

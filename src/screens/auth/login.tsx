@@ -13,6 +13,8 @@ import { loginUser } from "firebase/service/auth.service";
 import { actionSession } from "@context/sessionStore";
 import { FieldParams } from "types/form.type";
 import React from "react";
+import { toast } from "@backpackapp-io/react-native-toast";
+import { getAuthErrMessage } from "utils/authUtils";
 
 type FieldNames = {
   email: string;
@@ -48,8 +50,9 @@ export default function LoginScreen({
     try {
       const sessionCredential = await loginUser(data);
       actionSession.login(sessionCredential);
-    } catch (e: any) {
-      throw new Error("[onsubmit login] :", e);
+    } catch (e) {
+      const msg = getAuthErrMessage(e);
+      toast.error(msg, { position: 2 });
     } finally {
       setLoading(false);
     }
