@@ -8,13 +8,11 @@ import { ImagePickerForm } from "components/form/imagePicker";
 import { SelectInputProps, FormFieldType } from "types/form.type";
 import React from "react";
 
-// TODO remplacer par un tooltip pour expliquer
-// const regEx_mail = /^[\w\-\.]+@ensc\.fr$/gm;
-
+const regEx_mail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const regEx_name = /^[a-z '-]+$/i;
 const errorTxt = {
   required: "Ce champs est obligatoire",
-  invalidMail: "L'email est invalide",
+  invalidMail: "L'email est invalide.",
   invalidName: "Certains caractères ne sont pas autorisés",
   invalidLastName: "Nom invalide, certains caractères ne sont pas traités",
   minLenghtPwd: "La longueur minimum est de 4 caractères",
@@ -57,7 +55,7 @@ export function getRulesAndLabel<T extends FieldValues>(
         case "password":
           rules = {
             ...rules,
-            minLength: { value: 4, message: errorTxt.minLenghtPwd },
+            minLength: { value: 6, message: errorTxt.minLenghtPwd },
           };
           break;
         case "name":
@@ -68,6 +66,17 @@ export function getRulesAndLabel<T extends FieldValues>(
               message: errorTxt.invalidName,
             },
           };
+          break;
+        case "mail":
+          rules = {
+            ...rules,
+            pattern: {
+              value: regEx_mail,
+              message: errorTxt.invalidMail,
+            },
+          };
+          break;
+        default:
           break;
       }
     });

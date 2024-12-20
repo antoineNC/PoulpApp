@@ -1,10 +1,11 @@
-import { signoutUser } from "@fb/service/auth.service";
+import { toast } from "@backpackapp-io/react-native-toast";
 import { MenuProps } from "@navigation/navigationTypes";
 import { ContainerScroll, Row } from "@styledComponents";
 import { TitleText } from "components/customText";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Divider, Icon } from "react-native-paper";
+import { signOutAndResetStores } from "utils/authUtils";
 import { useRight } from "utils/rights";
 
 const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
@@ -62,7 +63,13 @@ export default function MenuScreen({ navigation }: MenuProps) {
       <Divider />
       <Item text="Détails" />
       <Divider />
-      <Item text="Se déconnecter" onPress={signoutUser} />
+      <Item
+        text="Se déconnecter"
+        onPress={async () => {
+          await signOutAndResetStores();
+          toast.success("Déconnexion réussie", { position: 2 });
+        }}
+      />
       <Divider />
     </ContainerScroll>
   );

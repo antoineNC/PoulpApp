@@ -1,23 +1,25 @@
 import { useCallback, useEffect, useState } from "react";
 import { User } from "firebase/auth";
-import { signoutUser, subscribeUserState } from "firebase/service/auth.service";
+import { subscribeUserState } from "firebase/service/auth.service";
 import { getCurrentUser } from "firebase/service/user.service";
 import { actionSession } from "@context/sessionStore";
+import { getAuthErrMessage, signOutAndResetStores } from "utils/authUtils";
+import { toast } from "@backpackapp-io/react-native-toast";
 
 export function useAuthState(initialState: boolean) {
   const [done, setDone] = useState(initialState);
   const handleAuth = useCallback(async (userAuth: User | null) => {
     try {
       if (userAuth) {
-        const { role, userId } = await getCurrentUser(userAuth.uid);
-        actionSession.login({ role, userId });
-      } else {
-        await signoutUser();
-        actionSession.logout();
+        const sessionCredential = await getCurrentUser(userAuth.uid);
+        actionSession.login(sessionCredential);
       }
+    } catch (err) {
+      const msg = getAuthErrMessage(err);
+      toast.error(`Erreur lors de la reconnexion. ${msg}`, { position: 2 });
+      await signOutAndResetStores();
+    } finally {
       setDone(true);
-    } catch (e: any) {
-      throw new Error(e);
     }
   }, []);
 
