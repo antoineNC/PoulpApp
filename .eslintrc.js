@@ -1,7 +1,8 @@
 // https://docs.expo.dev/guides/using-eslint/
 module.exports = {
-  extends: "expo",
+  extends: ["expo"],
   rules: {
-    "no-console": "warn",
+    "no-console": ["warn", { allow: ["warn", "error"] }],
+    // "prettier/prettier": "warn",
   },
 };

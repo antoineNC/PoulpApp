@@ -6,6 +6,7 @@ import {
   MD3DarkTheme,
   PaperProvider,
   adaptNavigationTheme,
+  ActivityIndicator,
 } from "react-native-paper";
 import {
   DarkTheme as NavigationDarkTheme,
@@ -60,7 +61,8 @@ export default function App() {
     };
     loadTheme();
   }, []);
-  let theme = isThemeDark ? CombinedDarkTheme : CombinedLightTheme;
+
+  const theme = isThemeDark ? CombinedDarkTheme : CombinedLightTheme;
 
   const preferences = useMemo(
     () => ({
@@ -77,7 +79,7 @@ export default function App() {
   }, [authIsDone]);
 
   if (!authIsDone) {
-    return null;
+    return <ActivityIndicator animating={true} />;
   }
 
   return (
