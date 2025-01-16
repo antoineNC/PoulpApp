@@ -49,7 +49,7 @@ async function registerUser({
 }) {
   try {
     if (code !== Constants.expoConfig?.extra?.codeENSC) {
-      throw new Error("register/invalid-code");
+      throw new Error("auth/invalid-code");
     }
     const userCredential = await createUserWithEmailAndPassword(
       auth,

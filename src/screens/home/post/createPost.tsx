@@ -4,7 +4,7 @@ import { createPost } from "@fb/service/post.service";
 import { CreatePostProps } from "@navigation/navigationTypes";
 import { PostFormFields } from "types/post.type";
 import { notificationToast } from "utils/toast";
-import { getPostErrMessage } from "utils/errorUtils";
+import { getErrorMessage } from "utils/errorUtils";
 import { PostForm } from "./postForm";
 
 export default function CreatePostScreen({ navigation }: CreatePostProps) {
@@ -16,7 +16,7 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
       await createPost(data);
       notificationToast("success", "Post créé avec succès.");
     } catch (e) {
-      const msg = getPostErrMessage(e);
+      const msg = getErrorMessage(e);
       notificationToast("error", msg);
     } finally {
       setLoading(false);

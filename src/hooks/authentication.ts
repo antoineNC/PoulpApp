@@ -4,7 +4,7 @@ import { User } from "firebase/auth";
 import { subscribeUserState } from "@fb/service/auth.service";
 import { getCurrentUser } from "@fb/service/user.service";
 import { actionSession } from "@context/sessionStore";
-import { getAuthErrMessage, signOutAndResetStores } from "utils/errorUtils";
+import { getErrorMessage, signOutAndResetStores } from "utils/errorUtils";
 import { notificationToast } from "utils/toast";
 
 export function useAuthState(initialState: boolean) {
@@ -16,7 +16,7 @@ export function useAuthState(initialState: boolean) {
         actionSession.login(sessionCredential);
       }
     } catch (err) {
-      const msg = getAuthErrMessage(err);
+      const msg = getErrorMessage(err);
       notificationToast("error", `Erreur lors de la reconnexion. ${msg}`);
       await signOutAndResetStores();
     } finally {

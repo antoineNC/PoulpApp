@@ -12,7 +12,7 @@ import CustomField from "components/form/formField";
 import { ContainerScroll } from "@styledComponents";
 import { authStyles } from "@styles";
 import { FieldParams } from "types/form.type";
-import { getAuthErrMessage } from "utils/errorUtils";
+import { getErrorMessage } from "utils/errorUtils";
 import { notificationToast } from "utils/toast";
 
 type FieldNames = {
@@ -75,7 +75,7 @@ export default function RegisterScreen({
       actionSession.login(sessionCredential);
       notificationToast("success", "Votre compte a bien été créé.");
     } catch (e) {
-      const msg = getAuthErrMessage(e);
+      const msg = getErrorMessage(e);
       notificationToast("error", msg);
     } finally {
       setLoading(false);

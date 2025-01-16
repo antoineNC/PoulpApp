@@ -155,7 +155,7 @@ async function updatePost(props: PostFormFields, id: string) {
     const postRef = doc(postCollection, id);
     const snapshot = await getDoc(postRef);
     if (!snapshot.exists()) {
-      throw new Error("post/not-found", { cause: id });
+      throw new Error("post/not-found");
     }
     const postData = snapshot.data() as FirestorePost;
     const updatedFields: UpdatePostFields = {

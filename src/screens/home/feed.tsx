@@ -21,7 +21,7 @@ import {
 import { useUnit } from "effector-react";
 import { $postStore, actionPost } from "@context/postStore";
 import { useGetPost } from "hooks/post";
-import { getPostErrMessage } from "utils/errorUtils";
+import { getErrorMessage } from "utils/errorUtils";
 import { notificationToast } from "utils/toast";
 
 export default function FeedScreen({ navigation }: FeedProps) {
@@ -61,7 +61,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
       const { postList, lastVisibleId } = await getInitialPost();
       actionPost.setPostList({ posts: postList, lastVisibleId });
     } catch (error) {
-      const msg = getPostErrMessage(error);
+      const msg = getErrorMessage(error);
       notificationToast("error", msg);
     } finally {
       setRefreshing(false);
