@@ -55,7 +55,7 @@ export default function UpdatePostScreen({
         throw new Error("post/not-found");
       }
       await updatePost(data, post.id);
-      notificationToast("success", "Post mis à jour avec succès.");
+      notificationToast("success", "Post mis à jour.");
     } catch (e) {
       const msg = getPostErrMessage(e);
       notificationToast("error", msg);

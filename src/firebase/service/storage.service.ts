@@ -8,8 +8,6 @@ import {
 import uuid from "react-native-uuid";
 
 import { app } from "@fb-config";
-import { getStorageErrMessage } from "utils/errorUtils";
-import { notificationToast } from "utils/toast";
 
 const storage = getStorage(app);
 
@@ -17,13 +15,14 @@ export const assetsRef = ref(storage, "Assets");
 export const imgPostRef = ref(storage, "ImgPosts");
 export const imgClubPartnerRef = ref(storage, "ImgClubPartenariat");
 
-function getImgURL(storageRef: StorageReference, id: string) {
+async function getImgURL(storageRef: StorageReference, id: string) {
   try {
     const imgRef = ref(storageRef, `/${id}`);
-    return getDownloadURL(imgRef);
+    const url = await getDownloadURL(imgRef);
+    return url;
   } catch (error) {
-    const msg = getStorageErrMessage(error);
-    notificationToast("error", msg);
+    console.error("Error getting image URL: ", error);
+    return "";
   }
 }
 

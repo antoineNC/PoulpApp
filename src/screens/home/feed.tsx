@@ -21,6 +21,8 @@ import {
 import { useUnit } from "effector-react";
 import { $postStore, actionPost } from "@context/postStore";
 import { useGetPost } from "hooks/post";
+import { getPostErrMessage } from "utils/errorUtils";
+import { notificationToast } from "utils/toast";
 
 export default function FeedScreen({ navigation }: FeedProps) {
   const { posts, lastVisibleId } = useUnit($postStore);
@@ -55,9 +57,15 @@ export default function FeedScreen({ navigation }: FeedProps) {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    const { postList, lastVisibleId } = await getInitialPost();
-    actionPost.setPostList({ posts: postList, lastVisibleId });
-    setRefreshing(false);
+    try {
+      const { postList, lastVisibleId } = await getInitialPost();
+      actionPost.setPostList({ posts: postList, lastVisibleId });
+    } catch (error) {
+      const msg = getPostErrMessage(error);
+      notificationToast("error", msg);
+    } finally {
+      setRefreshing(false);
+    }
   }, []);
 
   const onPressOffice = (officeId: string) =>
@@ -75,6 +83,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
       await deletePost(id);
       const { postList, lastVisibleId } = await getInitialPost();
       actionPost.setPostList({ posts: postList, lastVisibleId });
+      notificationToast("success", "Le post a été supprimé.");
     } finally {
       setLoading(false);
     }

@@ -44,6 +44,15 @@ export function getPostErrMessage(error: unknown) {
   switch (msg) {
     case "post/not-found":
       return "Le post n'existe pas.";
+    case "storage/object-not-found":
+      return "L'élément n'existe pas";
+    case "storage/unauthorized":
+      return "Accès non autorisé";
+    case "storage/canceled":
+      // User canceled the upload
+      return "Téléchargement annulé";
+    case "storage/unknown":
+      return `[storage]Erreur inconnue. ${msg}`;
     default:
       return `[post]Erreur. ${msg}`;
   }
@@ -54,7 +63,7 @@ export function getStorageErrMessage(error: unknown) {
   switch (msg) {
     case "storage/object-not-found":
       // File doesn't exist
-      throw "L'élément n'existe pas";
+      return "L'élément n'existe pas";
     case "storage/unauthorized":
       // User doesn't have permission to access the object
       return "Accès non autorisé";
