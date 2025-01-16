@@ -6,7 +6,7 @@ import { $officeStore } from "@context/officeStore";
 import { UpdatePostProps } from "@navigation/navigationTypes";
 import { Post, PostFormFields } from "types/post.type";
 import { notificationToast } from "utils/toast";
-import { getErrorMessage } from "utils/errorUtils";
+import { handleError } from "utils/errorUtils";
 import { PostForm } from "./postForm";
 
 export default function UpdatePostScreen({
@@ -22,8 +22,7 @@ export default function UpdatePostScreen({
         const result = await getPost(postId);
         setPost(result);
       } catch (e) {
-        const msg = getErrorMessage(e);
-        notificationToast("error", msg);
+        handleError(e);
         navigation.goBack();
       }
     };
@@ -46,8 +45,7 @@ export default function UpdatePostScreen({
       await updatePost(data, post.id);
       notificationToast("success", "Post mis à jour.");
     } catch (e) {
-      const msg = getErrorMessage(e);
-      notificationToast("error", msg);
+      handleError(e);
     } finally {
       setLoading(false);
       navigation.goBack();

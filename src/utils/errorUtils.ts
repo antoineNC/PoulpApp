@@ -75,7 +75,15 @@ export function getErrorMessage(error: unknown) {
       default:
         break;
     }
+  } else if (code[0] === "student") {
+    switch (code[1]) {
+      case "not-found":
+        return "L'étudiant n'existe pas.";
+      default:
+        break;
+    }
   }
+
   return "Une erreur est survenue. Veuillez réessayer ou contacter le support.";
 }
 

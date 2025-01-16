@@ -9,7 +9,7 @@ import { loginUser } from "@fb/service/auth.service";
 import { AuthParamList } from "@navigation/navigationTypes";
 import { actionSession } from "@context/sessionStore";
 import { FieldParams } from "types/form.type";
-import { getErrorMessage } from "utils/errorUtils";
+import { handleError } from "utils/errorUtils";
 import { notificationToast } from "utils/toast";
 import CustomField from "components/form/formField";
 import { ContainerScroll } from "@styledComponents";
@@ -51,8 +51,7 @@ export default function LoginScreen({
       actionSession.login(sessionCredential);
       notificationToast("success", "Connexion réussie !");
     } catch (e) {
-      const msg = getErrorMessage(e);
-      notificationToast("error", msg);
+      handleError(e);
     } finally {
       setLoading(false);
     }

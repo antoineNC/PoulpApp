@@ -7,6 +7,8 @@ import { Container } from "@styledComponents";
 import { $sessionStore } from "@context/sessionStore";
 import Spinner from "react-native-loading-spinner-overlay";
 import { updateStudentAdhesion } from "@fb/service/student.service";
+import { handleError } from "utils/errorUtils";
+import { notificationToast } from "utils/toast";
 
 export default function ListAdherent() {
   const { userId } = useUnit($sessionStore);
@@ -31,6 +33,9 @@ export default function ListAdherent() {
     setLoading(true);
     try {
       await updateStudentAdhesion(officeId, studentId, isAdherent);
+      notificationToast("success", "Adhésion mise à jour");
+    } catch (e) {
+      handleError(e);
     } finally {
       setLoading(false);
     }
