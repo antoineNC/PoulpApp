@@ -136,7 +136,7 @@ async function createPost(props: PostFormFields) {
       );
       createFields["imageId"] = imageId;
     }
-    if (props.date.start) {
+    if (props.date?.start) {
       const start = Timestamp.fromDate(props.date.start);
       createFields["date"]["start"] = start;
       if (props.date.end) {
@@ -188,7 +188,7 @@ async function updatePost(props: PostFormFields, id: string) {
       }
     }
 
-    if (props.date.start) {
+    if (props.date?.start) {
       const start = Timestamp.fromDate(props.date.start);
       updatedFields["date"]["start"] = start;
       if (props.date.end) {

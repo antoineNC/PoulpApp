@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { useStoreMap } from "effector-react";
 
 import { getPost, updatePost } from "@fb/service/post.service";
@@ -21,6 +20,7 @@ export default function UpdatePostScreen({
     const func = async () => {
       try {
         const result = await getPost(postId);
+
         setPost(result);
       } catch (e) {
         const msg = getPostErrMessage(e);
@@ -36,16 +36,6 @@ export default function UpdatePostScreen({
     keys: [post?.id],
     fn: (officeStore) =>
       officeStore.officeList.find((office) => office.id === post?.editorId),
-  });
-  const formParams = useForm<PostFormFields>({
-    defaultValues: {
-      title: post?.title,
-      description: post?.description,
-      editor: { value: post?.editorId, label: editor?.name },
-      tags: post?.tags,
-      date: post?.date,
-      imageFile: post?.imageUrl,
-    },
   });
 
   const onSubmit = async (data: PostFormFields) => {
@@ -64,8 +54,23 @@ export default function UpdatePostScreen({
       navigation.goBack();
     }
   };
+  if (!post || !editor) {
+    return null;
+  }
 
+  const defaultValues = {
+    title: post.title,
+    description: post.description,
+    editor: { value: post.editorId, label: editor.name },
+    tags: post.tags,
+    date: post.date,
+    imageFile: post.imageUrl,
+  };
   return (
-    <PostForm formParams={formParams} loading={loading} onSubmit={onSubmit} />
+    <PostForm
+      defaultValues={defaultValues}
+      loading={loading}
+      onSubmit={onSubmit}
+    />
   );
 }

@@ -52,7 +52,7 @@ export function TextInputForm<T extends FieldValues>({
           onSubmitEditing={
             lastInput ? async (e) => await submit(e) : () => setFocus(index + 1)
           }
-          style={{ flex: 1 }}
+          style={{ flex: 1, maxHeight: 200 }}
         />
         {options?.tooltip && (
           <Tooltip

@@ -114,6 +114,9 @@ export const PostItem = ({
             >
               {post.description}
             </BodyText>
+            {lengthMore && (
+              <LinkText>{textShown ? "Voir moins" : "Voir plus"}</LinkText>
+            )}
           </TouchableOpacity>
         )}
       </View>

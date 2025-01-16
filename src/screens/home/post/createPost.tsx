@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 
 import { createPost } from "@fb/service/post.service";
 import { CreatePostProps } from "@navigation/navigationTypes";
@@ -10,7 +9,6 @@ import { PostForm } from "./postForm";
 
 export default function CreatePostScreen({ navigation }: CreatePostProps) {
   const [loading, setLoading] = useState(false);
-  const formParams = useForm<PostFormFields>();
 
   const onSubmit = async (data: PostFormFields) => {
     try {
@@ -26,12 +24,5 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
     }
   };
 
-  return (
-    <PostForm
-      create
-      formParams={formParams}
-      loading={loading}
-      onSubmit={onSubmit}
-    />
-  );
+  return <PostForm create loading={loading} onSubmit={onSubmit} />;
 }
