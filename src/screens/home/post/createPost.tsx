@@ -1,9 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+
+import { createPost } from "@fb/service/post.service";
 import { CreatePostProps } from "@navigation/navigationTypes";
 import { PostFormFields } from "types/post.type";
-import { createPost } from "@fb/service/post.service";
-import React from "react";
+import { notificationToast } from "utils/toast";
+import { getPostErrMessage } from "utils/errorUtils";
 import { PostForm } from "./postForm";
 
 export default function CreatePostScreen({ navigation }: CreatePostProps) {
@@ -14,8 +16,10 @@ export default function CreatePostScreen({ navigation }: CreatePostProps) {
     try {
       setLoading(true);
       await createPost(data);
+      notificationToast("success", "Post créé avec succès.");
     } catch (e) {
-      throw new Error("[submit createpost]: " + e);
+      const msg = getPostErrMessage(e);
+      notificationToast("error", msg);
     } finally {
       setLoading(false);
       navigation.goBack();

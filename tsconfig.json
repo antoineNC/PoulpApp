@@ -6,9 +6,8 @@
     "noUnusedParameters": true,
     "baseUrl": "./src",
     "paths": {
-      "@assets/*": ["../assets/*"],
       "@firebase/auth": ["../node_modules/@firebase/auth/dist/index.rn.d.ts"],
-      "@firebaseApi": ["firebase/firebaseApi.ts"],
+      "@assets/*": ["../assets/*"],
       "@screens/*": ["screens/*"],
       "@context/*": ["store/*"],
       "@navigation/*": ["navigation/*"],

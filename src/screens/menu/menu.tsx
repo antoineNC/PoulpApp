@@ -1,12 +1,13 @@
-import { toast } from "@backpackapp-io/react-native-toast";
-import { MenuProps } from "@navigation/navigationTypes";
-import { ContainerScroll, Row } from "@styledComponents";
-import { TitleText } from "components/customText";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Divider, Icon } from "react-native-paper";
-import { signOutAndResetStores } from "utils/authUtils";
+
+import { MenuProps } from "@navigation/navigationTypes";
+import { ContainerScroll, Row } from "@styledComponents";
+import { TitleText } from "components/customText";
+import { signOutAndResetStores } from "utils/errorUtils";
 import { useRight } from "utils/rights";
+import { notificationToast } from "utils/toast";
 
 const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
   <TouchableOpacity onPress={onPress}>
@@ -67,7 +68,7 @@ export default function MenuScreen({ navigation }: MenuProps) {
         text="Se déconnecter"
         onPress={async () => {
           await signOutAndResetStores();
-          toast.success("Déconnexion réussie", { position: 2 });
+          notificationToast("success", "Déconnexion réussie");
         }}
       />
       <Divider />

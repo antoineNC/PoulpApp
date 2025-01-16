@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { UpdatePostProps } from "@navigation/navigationTypes";
-import { PostForm } from "./postForm";
-import { Post, PostFormFields } from "types/post.type";
-import { getPost, updatePost } from "@fb/service/post.service";
 import { useForm } from "react-hook-form";
 import { useStoreMap } from "effector-react";
+
+import { getPost, updatePost } from "@fb/service/post.service";
 import { $officeStore } from "@context/officeStore";
+import { UpdatePostProps } from "@navigation/navigationTypes";
+import { Post, PostFormFields } from "types/post.type";
+import { notificationToast } from "utils/toast";
+import { getPostErrMessage } from "utils/errorUtils";
+import { PostForm } from "./postForm";
 
 export default function UpdatePostScreen({
   navigation,
@@ -16,11 +19,17 @@ export default function UpdatePostScreen({
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const func = async () => {
-      const result = await getPost(postId);
-      setPost(result);
+      try {
+        const result = await getPost(postId);
+        setPost(result);
+      } catch (e) {
+        const msg = getPostErrMessage(e);
+        notificationToast("error", msg);
+        navigation.goBack();
+      }
     };
     func();
-  }, [postId]);
+  }, [navigation, postId]);
 
   const editor = useStoreMap({
     store: $officeStore,
@@ -43,11 +52,13 @@ export default function UpdatePostScreen({
     try {
       setLoading(true);
       if (!post) {
-        throw "Le post n'a pas bien été chargé";
+        throw new Error("post/not-found");
       }
-      await updatePost(data, post?.id);
+      await updatePost(data, post.id);
+      notificationToast("success", "Post mis à jour avec succès.");
     } catch (e) {
-      throw new Error("[submit updatepost]: " + e);
+      const msg = getPostErrMessage(e);
+      notificationToast("error", msg);
     } finally {
       setLoading(false);
       navigation.goBack();

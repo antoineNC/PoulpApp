@@ -18,13 +18,15 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
+import { MarkedDates } from "react-native-calendars/src/types";
+
 import {
   getImgURL,
   imgPostRef,
   uploadImage,
 } from "@fb/service/storage.service";
 import { storageUrl } from "@fb-config";
-import { deleteObject, ref } from "firebase/storage";
 import {
   Post,
   FirestorePost,
@@ -33,7 +35,6 @@ import {
   CreatePostFields,
 } from "types/post.type";
 import { AgendaItemType, CalendarSection } from "types/calendar.type";
-import { MarkedDates } from "react-native-calendars/src/types";
 import {
   formatDate,
   formatHour,
@@ -76,7 +77,7 @@ async function getPost(id: string) {
     }
     return postMapping(postDoc);
   } catch (e) {
-    throw new Error(`[get post] ${e}`);
+    throw e;
   }
 }
 
@@ -93,7 +94,7 @@ async function getInitialPost() {
     );
     return { postList, lastVisibleId: postList[postList.length - 1]?.id };
   } catch (e) {
-    throw new Error(`[get initial post] ${e}`);
+    throw e;
   }
 }
 
@@ -112,7 +113,7 @@ async function getMorePost(lastVisibleId: string) {
     );
     return { postList, lastVisibleId: postList[postList.length - 1]?.id };
   } catch (e) {
-    throw new Error(`[get more post] ${e}`);
+    throw e;
   }
 }
 
@@ -145,7 +146,7 @@ async function createPost(props: PostFormFields) {
     }
     await addDoc(postCollection, createFields);
   } catch (e) {
-    throw new Error("[create post]: " + e);
+    throw e;
   }
 }
 
@@ -154,7 +155,7 @@ async function updatePost(props: PostFormFields, id: string) {
     const postRef = doc(postCollection, id);
     const snapshot = await getDoc(postRef);
     if (!snapshot.exists()) {
-      throw "Cet élément n'existe pas";
+      throw new Error("post/not-found", { cause: id });
     }
     const postData = snapshot.data() as FirestorePost;
     const updatedFields: UpdatePostFields = {
@@ -197,7 +198,7 @@ async function updatePost(props: PostFormFields, id: string) {
     }
     await updateDoc(postRef, updatedFields);
   } catch (e) {
-    throw new Error("[updatepost]: " + e);
+    throw e;
   }
 }
 
@@ -205,15 +206,16 @@ async function deletePost(idPost: string) {
   try {
     const postRef = doc(postCollection, idPost);
     const postDoc = await getDoc(postRef);
-    if (postDoc.exists()) {
-      const postData = postDoc.data();
-      if (postData.imageId) {
-        deleteObject(ref(imgPostRef, postData?.imageId));
-      }
-      await deleteDoc(postRef);
+    if (!postDoc.exists()) {
+      throw new Error("post/not-found");
     }
+    const postData = postDoc.data();
+    if (postData.imageId) {
+      deleteObject(ref(imgPostRef, postData?.imageId));
+    }
+    await deleteDoc(postRef);
   } catch (e) {
-    throw new Error("[delete post]: " + e);
+    throw e;
   }
 }
 
@@ -262,7 +264,7 @@ async function getCalendarItems() {
 
     return { sections, markedDates };
   } catch (e) {
-    throw new Error(`[get calendar items] ${e}`);
+    throw e;
   }
 }
 
