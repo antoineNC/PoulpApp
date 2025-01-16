@@ -1,9 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+
+import { createPoint } from "@fb/service/point.service";
 import { CreateScoreProps } from "@navigation/navigationTypes";
 import { PointsFormFields } from "types/point.type";
-import { createPoint } from "@fb/service/point.service";
-import React from "react";
+import { handleError } from "utils/errorUtils";
+import { notificationToast } from "utils/toast";
 import { ScoreForm } from "./scoreForm";
 
 export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
@@ -33,8 +35,9 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
       };
       setLoading(true);
       await createPoint(formattedData);
+      notificationToast("success", "Score créé avec succès");
     } catch (e) {
-      throw new Error("[create score]: " + e);
+      handleError(e);
     } finally {
       setLoading(false);
       navigation.goBack();

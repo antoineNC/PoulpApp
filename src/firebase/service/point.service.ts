@@ -44,7 +44,7 @@ function subscribeAllPoint(setState: (officeList: Point[]) => void) {
       setState(allPointResolved);
     });
   } catch (e: any) {
-    throw new Error(`[get points] ${e}`);
+    throw e;
   }
 }
 
@@ -61,7 +61,7 @@ async function createPoint(props: PointsFormFields) {
   try {
     await addDoc(pointCollection, pointFields);
   } catch (e) {
-    throw new Error("[create point]: " + e);
+    throw e;
   }
 }
 
@@ -83,7 +83,7 @@ async function updatePoint(props: PointsFormFields, id: string) {
     };
     await updateDoc(pointRef, updatedFields);
   } catch (e) {
-    throw new Error("[update point]: " + e);
+    throw e;
   }
 }
 
@@ -95,7 +95,7 @@ async function deletePoint(idPoint: string) {
       await deleteDoc(pointRef);
     }
   } catch (e) {
-    throw new Error("[delete point]: " + e);
+    throw e;
   }
 }
 

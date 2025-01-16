@@ -1,11 +1,13 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { UpdateScoreProps } from "@navigation/navigationTypes";
 import { useStoreMap } from "effector-react";
+
+import { updatePoint } from "@fb/service/point.service";
+import { UpdateScoreProps } from "@navigation/navigationTypes";
 import { $pointStore } from "@context/pointStore";
 import { PointsFormFields } from "types/point.type";
-import { updatePoint } from "@fb/service/point.service";
-import React from "react";
+import { handleError } from "utils/errorUtils";
+import { notificationToast } from "utils/toast";
 import { ScoreForm } from "./scoreForm";
 
 export default function UpdateScoreScreen({
@@ -39,8 +41,9 @@ export default function UpdateScoreScreen({
       };
       setLoading(true);
       await updatePoint(formattedData, idPoint);
+      notificationToast("success", "Score mis à jour.");
     } catch (e) {
-      throw new Error("[update score]: " + e);
+      handleError(e);
     } finally {
       setLoading(false);
       navigation.goBack();

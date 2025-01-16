@@ -85,8 +85,12 @@ export default function UpdateOfficeScreen({
         {
           text: "OUI",
           onPress: async () => {
-            await deleteClub(id);
-            notificationToast("success", "Club supprimé.");
+            try {
+              await deleteClub(id);
+              notificationToast("success", "Club supprimé.");
+            } catch (e) {
+              handleError(e);
+            }
           },
         },
         { text: "NON" },
@@ -102,8 +106,12 @@ export default function UpdateOfficeScreen({
         {
           text: "OUI",
           onPress: async () => {
-            await deletePartnership(id);
-            notificationToast("success", "Partenariat supprimé.");
+            try {
+              await deletePartnership(id);
+              notificationToast("success", "Partenariat supprimé.");
+            } catch (e) {
+              handleError(e);
+            }
           },
         },
         { text: "NON" },
