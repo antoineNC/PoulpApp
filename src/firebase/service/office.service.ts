@@ -9,14 +9,14 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
+import { storageUrl } from "@fb-config";
 import {
   assetsRef,
   getImgURL,
   imgPostRef,
   uploadImage,
 } from "./storage.service";
-import { deleteObject, ref } from "firebase/storage";
-import { storageUrl } from "@fb-config";
 import {
   FirestoreOffice,
   Office,
@@ -56,7 +56,7 @@ function subscribeAllOffice(setState: (officeList: Office[]) => void) {
       setState(allOfficeResolved);
     });
   } catch (e) {
-    throw new Error(`[subscribeAllOffice] ${e}`);
+    throw e;
   }
 }
 
@@ -65,7 +65,7 @@ async function updateOffice(props: OfficeFormFields, id: string) {
     const officeRef = doc(userCollection, id);
     const officeDoc = await getDoc(officeRef);
     if (!officeDoc.exists()) {
-      throw "Cet élément n'existe pas";
+      throw new Error("office/not-found");
     }
     const officeData = officeDoc.data() as FirestoreOffice;
     const updatedFields: UpdateOfficeFields = {
@@ -85,19 +85,19 @@ async function updateOffice(props: OfficeFormFields, id: string) {
         );
         updatedFields["logoId"] = logoId;
         if (officeData.logoId) {
-          deleteObject(ref(assetsRef, officeData.logoId));
+          await deleteObject(ref(assetsRef, officeData.logoId));
         }
       } else {
         delete updatedFields.logoId;
       }
     } else {
       if (officeData.logoId) {
-        deleteObject(ref(imgPostRef, officeData.logoId));
+        await deleteObject(ref(imgPostRef, officeData.logoId));
       }
     }
     await updateDoc(officeRef, updatedFields);
   } catch (e) {
-    throw new Error("[updateOffice] " + e);
+    throw e;
   }
 }
 
@@ -110,7 +110,7 @@ function subscribeAllRole(setState: (roleOfficeList: RoleOffice[]) => void) {
       setState(allRole);
     });
   } catch (e) {
-    throw new Error("[subscribeAllRole] " + e);
+    throw e;
   }
 }
 

@@ -1,25 +1,26 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { FlatList, View, Alert } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useStoreMap } from "effector-react";
 import { IconButton, useTheme } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { UpdateOfficeProps } from "@navigation/navigationTypes";
-import { $officeStore } from "@context/officeStore";
-import { authStyles, officeStyles } from "@styles";
-import { ContainerScroll } from "@styledComponents";
-import { TextInputForm } from "components/form/textInput";
-import { ImagePickerForm } from "components/form/imagePicker";
-import { SmallCardItem } from "components/smallCardItem";
-import ListMemberForm from "../../components/form/listMemberForm";
-import { FloatingValidateBtn } from "components/validateButton";
-import { OfficeFormFields } from "types/office.type";
 import { updateOffice } from "@fb/service/office.service";
 import { deleteClub } from "@fb/service/club.service";
 import { deletePartnership } from "@fb/service/partnership.service";
-import React from "react";
+import { UpdateOfficeProps } from "@navigation/navigationTypes";
+import { $officeStore } from "@context/officeStore";
+import { OfficeFormFields } from "types/office.type";
+import { TextInputForm } from "components/form/textInput";
+import { ImagePickerForm } from "components/form/imagePicker";
+import { SmallCardItem } from "components/smallCardItem";
+import ListMemberForm from "components/form/listMemberForm";
+import { FloatingValidateBtn } from "components/validateButton";
 import { BodyText } from "components/customText";
+import { authStyles, officeStyles } from "@styles";
+import { ContainerScroll } from "@styledComponents";
+import { handleError } from "utils/errorUtils";
+import { notificationToast } from "utils/toast";
 
 export default function UpdateOfficeScreen({
   navigation,
@@ -67,8 +68,9 @@ export default function UpdateOfficeScreen({
     try {
       setLoading(true);
       await updateOffice(data, office.id);
+      notificationToast("success", "Bureau mis à jour.");
     } catch (e) {
-      throw new Error("[submit updateoffice]: " + e);
+      handleError(e);
     } finally {
       setLoading(false);
       navigation.goBack();
@@ -82,7 +84,10 @@ export default function UpdateOfficeScreen({
       [
         {
           text: "OUI",
-          onPress: async () => await deleteClub(id),
+          onPress: async () => {
+            await deleteClub(id);
+            notificationToast("success", "Club supprimé.");
+          },
         },
         { text: "NON" },
       ]
@@ -96,7 +101,10 @@ export default function UpdateOfficeScreen({
       [
         {
           text: "OUI",
-          onPress: async () => await deletePartnership(id),
+          onPress: async () => {
+            await deletePartnership(id);
+            notificationToast("success", "Partenariat supprimé.");
+          },
         },
         { text: "NON" },
       ]

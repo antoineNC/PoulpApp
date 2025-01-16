@@ -1,10 +1,11 @@
+import React from "react";
 import { Alert, FlatList, Linking, TouchableOpacity, View } from "react-native";
 import { useStoreMap } from "effector-react";
+
 import { ViewOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import { $studentStore } from "@context/studentStore";
 import { Row, ContainerScroll } from "@styledComponents";
-import React from "react";
 import { BodyText, LinkText, Title2Text } from "components/customText";
 import { SmallCardItem } from "components/smallCardItem";
 

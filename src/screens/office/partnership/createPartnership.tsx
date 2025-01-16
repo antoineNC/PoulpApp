@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 
+import { createPartnership } from "@fb/service/partnership.service";
 import { $officeStore } from "@context/officeStore";
 import { CreatePartnershipProps } from "@navigation/navigationTypes";
 import PartnershipForm from "./partnershipForm";
-import { useRight } from "utils/rights";
 import { PartnershipFormFields } from "types/partnership.type";
-import { createPartnership } from "@fb/service/partnership.service";
 import { FieldParams } from "types/form.type";
+import { useRight } from "utils/rights";
+import { handleError } from "utils/errorUtils";
+import { notificationToast } from "utils/toast";
 
 export default function CreatePartnershipScreen({
   navigation,
@@ -76,8 +78,9 @@ export default function CreatePartnershipScreen({
     try {
       setLoading(true);
       await createPartnership(data);
+      notificationToast("success", "Partenariat créé avec succès.");
     } catch (e) {
-      throw new Error("[submit create partner]: " + e);
+      handleError(e);
     } finally {
       setLoading(false);
       navigation.goBack();

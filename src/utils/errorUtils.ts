@@ -3,7 +3,7 @@ import { signOutUser } from "@fb/service/auth.service";
 import { resetAllStores } from "utils/storeUtils";
 import { notificationToast } from "./toast";
 
-export function getErrorCode(error: unknown) {
+function getErrorCode(error: unknown) {
   if (error instanceof FirebaseError) {
     return error.code;
   } else if (error instanceof Error) {
@@ -50,6 +50,7 @@ export function getErrorMessage(error: unknown) {
     }
   } else if (code[0] === "storage") {
     switch (code[1]) {
+      // erreur firebase
       case "object-not-found":
         return "L'élément n'existe pas";
       case "unauthorized":
@@ -67,9 +68,18 @@ export function getErrorMessage(error: unknown) {
     switch (code[1]) {
       case "not-found":
         return "Le bureau n'existe pas.";
+      case "partnership-not-found":
+        return "Le partenariat n'existe pas.";
+      case "club-not-found":
+        return "Le club n'existe pas.";
       default:
         break;
     }
   }
   return "Une erreur est survenue. Veuillez réessayer ou contacter le support.";
+}
+
+export function handleError(e: unknown) {
+  const msg = getErrorMessage(e);
+  notificationToast("error", msg);
 }

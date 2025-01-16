@@ -177,14 +177,14 @@ async function updatePost(props: PostFormFields, id: string) {
         );
         updatedFields["imageId"] = imageId;
         if (postData.imageId) {
-          deleteObject(ref(imgPostRef, postData.imageId));
+          await deleteObject(ref(imgPostRef, postData.imageId));
         }
       } else {
         delete updatedFields.imageId;
       }
     } else {
       if (postData.imageId) {
-        deleteObject(ref(imgPostRef, postData.imageId));
+        await deleteObject(ref(imgPostRef, postData.imageId));
       }
     }
 
@@ -211,7 +211,7 @@ async function deletePost(idPost: string) {
     }
     const postData = postDoc.data();
     if (postData.imageId) {
-      deleteObject(ref(imgPostRef, postData?.imageId));
+      await deleteObject(ref(imgPostRef, postData?.imageId));
     }
     await deleteDoc(postRef);
   } catch (e) {
