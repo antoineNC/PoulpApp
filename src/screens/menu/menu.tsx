@@ -5,6 +5,7 @@ import { Divider, Icon } from "react-native-paper";
 import { MenuProps } from "@navigation/navigationTypes";
 import { ContainerScroll, Row } from "@styledComponents";
 import { TitleText } from "components/customText";
+import { chevronRight } from "components/icon/icons";
 import { signOutAndResetStores } from "utils/errorUtils";
 import { useRight } from "utils/rights";
 import { notificationToast } from "utils/toast";
@@ -20,7 +21,7 @@ const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
       }}
     >
       <TitleText>{text}</TitleText>
-      <Icon size={20} source={"chevron-right"} />
+      <Icon size={20} source={chevronRight} />
     </Row>
   </TouchableOpacity>
 );

@@ -2,8 +2,10 @@ import { useState } from "react";
 import { View } from "react-native";
 import { FieldValues } from "react-hook-form";
 import { HelperText, IconButton, TextInput, Tooltip } from "react-native-paper";
+
 import { InputProps } from "types/form.type";
 import { Row } from "@styledComponents";
+import { eye, eyeOff, help } from "components/icon/icons";
 
 export function TextInputForm<T extends FieldValues>({
   field: { onBlur, onChange, ref, value },
@@ -38,12 +40,12 @@ export function TextInputForm<T extends FieldValues>({
             options?.secureText ? (
               hide ? (
                 <TextInput.Icon
-                  icon="eye"
+                  icon={eye}
                   onPress={() => setHide((prev) => !prev)}
                 />
               ) : (
                 <TextInput.Icon
-                  icon="eye-off"
+                  icon={eyeOff}
                   onPress={() => setHide((prev) => !prev)}
                 />
               )
@@ -60,7 +62,7 @@ export function TextInputForm<T extends FieldValues>({
             enterTouchDelay={0}
             leaveTouchDelay={3000}
           >
-            <IconButton icon={"help-circle-outline"} />
+            <IconButton icon={help} />
           </Tooltip>
         )}
       </Row>
