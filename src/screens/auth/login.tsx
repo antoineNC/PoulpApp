@@ -1,18 +1,19 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { useForm } from "react-hook-form";
 import { Button, useTheme } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Spinner from "react-native-loading-spinner-overlay";
 
+import { loginUser } from "@fb/service/auth.service";
 import { AuthParamList } from "@navigation/navigationTypes";
-import CustomField from "components/form/formField";
-import { ContainerScroll as Container } from "@styledComponents";
-import { authStyles } from "@styles";
-import { loginUser } from "firebase/service/auth.service";
 import { actionSession } from "@context/sessionStore";
 import { FieldParams } from "types/form.type";
-import React from "react";
+import { handleError } from "utils/errorUtils";
+import { notificationToast } from "utils/toast";
+import CustomField from "components/form/formField";
+import { ContainerScroll } from "@styledComponents";
+import { authStyles } from "@styles";
 
 type FieldNames = {
   email: string;
@@ -48,8 +49,9 @@ export default function LoginScreen({
     try {
       const sessionCredential = await loginUser(data);
       actionSession.login(sessionCredential);
-    } catch (e: any) {
-      throw new Error("[onsubmit login] :", e);
+      notificationToast("success", "Connexion réussie !");
+    } catch (e) {
+      handleError(e);
     } finally {
       setLoading(false);
     }
@@ -64,7 +66,7 @@ export default function LoginScreen({
           textStyle={{ color: colors.onBackground }}
         />
       )}
-      <Container style={authStyles.container}>
+      <ContainerScroll style={authStyles.container}>
         <View style={authStyles.formList}>
           {values.map((field, index) => (
             <CustomField<FieldNames>
@@ -92,7 +94,7 @@ export default function LoginScreen({
             onPress={() => navigation.navigate("signup")}
           />
         </View>
-      </Container>
+      </ContainerScroll>
     </>
   );
 }

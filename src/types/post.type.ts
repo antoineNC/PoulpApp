@@ -43,8 +43,8 @@ export type UpdatePostFields = {
 export type PostFormFields = {
   title: string;
   description?: string;
-  date: { start?: Date; end?: Date };
-  tags: string[];
+  date?: { start?: Date; end?: Date };
+  tags?: string[];
   editor: { value: string; label: string };
   imageFile?: string;
 };

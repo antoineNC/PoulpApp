@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { UpdatePostProps } from "@navigation/navigationTypes";
-import { PostForm } from "./postForm";
-import { Post, PostFormFields } from "types/post.type";
-import { getPost, updatePost } from "@fb/service/post.service";
-import { useForm } from "react-hook-form";
 import { useStoreMap } from "effector-react";
+
+import { getPost, updatePost } from "@fb/service/post.service";
 import { $officeStore } from "@context/officeStore";
+import { UpdatePostProps } from "@navigation/navigationTypes";
+import { Post, PostFormFields } from "types/post.type";
+import { notificationToast } from "utils/toast";
+import { handleError } from "utils/errorUtils";
+import { PostForm } from "./postForm";
 
 export default function UpdatePostScreen({
   navigation,
@@ -16,11 +18,16 @@ export default function UpdatePostScreen({
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const func = async () => {
-      const result = await getPost(postId);
-      setPost(result);
+      try {
+        const result = await getPost(postId);
+        setPost(result);
+      } catch (e) {
+        handleError(e);
+        navigation.goBack();
+      }
     };
     func();
-  }, [postId]);
+  }, [navigation, postId]);
 
   const editor = useStoreMap({
     store: $officeStore,
@@ -28,33 +35,39 @@ export default function UpdatePostScreen({
     fn: (officeStore) =>
       officeStore.officeList.find((office) => office.id === post?.editorId),
   });
-  const formParams = useForm<PostFormFields>({
-    defaultValues: {
-      title: post?.title,
-      description: post?.description,
-      editor: { value: post?.editorId, label: editor?.name },
-      tags: post?.tags,
-      date: post?.date,
-      imageFile: post?.imageUrl,
-    },
-  });
 
   const onSubmit = async (data: PostFormFields) => {
     try {
       setLoading(true);
       if (!post) {
-        throw "Le post n'a pas bien été chargé";
+        throw new Error("post/not-found");
       }
-      await updatePost(data, post?.id);
+      await updatePost(data, post.id);
+      notificationToast("success", "Post mis à jour.");
     } catch (e) {
-      throw new Error("[submit updatepost]: " + e);
+      handleError(e);
     } finally {
       setLoading(false);
       navigation.goBack();
     }
   };
+  if (!post || !editor) {
+    return null;
+  }
 
+  const defaultValues = {
+    title: post.title,
+    description: post.description,
+    editor: { value: post.editorId, label: editor.name },
+    tags: post.tags,
+    date: post.date,
+    imageFile: post.imageUrl,
+  };
   return (
-    <PostForm formParams={formParams} loading={loading} onSubmit={onSubmit} />
+    <PostForm
+      defaultValues={defaultValues}
+      loading={loading}
+      onSubmit={onSubmit}
+    />
   );
 }

@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
 
+import { createClub } from "@fb/service/club.service";
 import { $officeStore } from "@context/officeStore";
 import { CreateClubProps } from "@navigation/navigationTypes";
 import ClubForm from "./clubForm";
-import { useRight } from "utils/rights";
 import { ClubFormFields } from "types/club.type";
-import { createClub } from "@fb/service/club.service";
 import { FieldParams } from "types/form.type";
+import { useRight } from "utils/rights";
+import { notificationToast } from "utils/toast";
+import { handleError } from "utils/errorUtils";
 
 export default function CreateClubScreen({
   navigation,
@@ -74,8 +76,9 @@ export default function CreateClubScreen({
     try {
       setLoading(true);
       await createClub(data);
+      notificationToast("success", "Club créé avec succès.");
     } catch (e) {
-      throw new Error("[submit create club]: " + e);
+      handleError(e);
     } finally {
       setLoading(false);
       navigation.goBack();

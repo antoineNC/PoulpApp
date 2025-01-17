@@ -5,7 +5,7 @@ import { useUnit } from "effector-react";
 import TabBarContainer from "@navigation/tabBarContainer";
 import { AuthParamList } from "@navigation/navigationTypes";
 import LoginScreen from "@screens/auth/login";
-import SignupScreen from "@screens/auth/signup";
+import RegisterScreen from "@screens/auth/register";
 import { $sessionStore } from "@context/sessionStore";
 import { useTheme } from "react-native-paper";
 
@@ -35,7 +35,7 @@ export default function RootContainer({ theme }: { theme: Theme }) {
           />
           <AuthStack.Screen
             name="signup"
-            component={SignupScreen}
+            component={RegisterScreen}
             options={{ title: "Inscription" }}
           />
         </AuthStack.Navigator>

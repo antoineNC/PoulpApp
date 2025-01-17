@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
+
+import { updateClub } from "@fb/service/club.service";
 import { $officeStore } from "@context/officeStore";
 import { UpdateClubProps } from "@navigation/navigationTypes";
 import ClubForm from "./clubForm";
-import { useRight } from "utils/rights";
 import { ClubFormFields } from "types/club.type";
-import { updateClub } from "@fb/service/club.service";
 import { FieldParams } from "types/form.type";
+import { useRight } from "utils/rights";
+import { handleError } from "utils/errorUtils";
+import { notificationToast } from "utils/toast";
 
 export default function UpdateClubScreen({
   navigation,
@@ -85,8 +88,9 @@ export default function UpdateClubScreen({
     try {
       setLoading(true);
       await updateClub(data, clubId);
+      notificationToast("success", "Club mis à jour.");
     } catch (e) {
-      throw new Error("[submit update club]: " + e);
+      handleError(e);
     } finally {
       setLoading(false);
       navigation.goBack();

@@ -1,11 +1,13 @@
-import { signoutUser } from "@fb/service/auth.service";
-import { MenuProps } from "@navigation/navigationTypes";
-import { ContainerScroll, Row } from "@styledComponents";
-import { TitleText } from "components/customText";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Divider, Icon } from "react-native-paper";
+
+import { MenuProps } from "@navigation/navigationTypes";
+import { ContainerScroll, Row } from "@styledComponents";
+import { TitleText } from "components/customText";
+import { signOutAndResetStores } from "utils/errorUtils";
 import { useRight } from "utils/rights";
+import { notificationToast } from "utils/toast";
 
 const Item = ({ text, onPress }: { text: string; onPress?: () => void }) => (
   <TouchableOpacity onPress={onPress}>
@@ -62,7 +64,13 @@ export default function MenuScreen({ navigation }: MenuProps) {
       <Divider />
       <Item text="Détails" />
       <Divider />
-      <Item text="Se déconnecter" onPress={signoutUser} />
+      <Item
+        text="Se déconnecter"
+        onPress={async () => {
+          await signOutAndResetStores();
+          notificationToast("success", "Déconnexion réussie.");
+        }}
+      />
       <Divider />
     </ContainerScroll>
   );

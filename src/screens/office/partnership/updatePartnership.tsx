@@ -8,6 +8,8 @@ import { useRight } from "utils/rights";
 import { PartnershipFormFields } from "types/partnership.type";
 import { updatePartnership } from "@fb/service/partnership.service";
 import { FieldParams } from "types/form.type";
+import { handleError } from "utils/errorUtils";
+import { notificationToast } from "utils/toast";
 
 export default function UpdatePartnershipScreen({
   navigation,
@@ -94,8 +96,9 @@ export default function UpdatePartnershipScreen({
     try {
       setLoading(true);
       await updatePartnership(data, partnershipId);
+      notificationToast("success", "Partenariat mis à jour.");
     } catch (e) {
-      throw new Error("[submit update partner]: " + e);
+      handleError(e);
     } finally {
       setLoading(false);
       navigation.goBack();
