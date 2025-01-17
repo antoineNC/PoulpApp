@@ -23,7 +23,7 @@
     "eas-cli": "^14.2.0",
     "effector": "^23.2.0",
     "effector-react": "^23.2.0",
-    "expo": "^51.0.39",
+    "expo": "^52.0.18",
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.29",
     "expo-device": "~6.0.2",
