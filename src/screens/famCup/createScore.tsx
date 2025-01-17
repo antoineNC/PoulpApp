@@ -35,7 +35,7 @@ export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
       };
       setLoading(true);
       await createPoint(formattedData);
-      notificationToast("success", "Score créé avec succès");
+      notificationToast("success", "Score créé avec succès.");
     } catch (e) {
       handleError(e);
     } finally {

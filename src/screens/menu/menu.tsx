@@ -68,7 +68,7 @@ export default function MenuScreen({ navigation }: MenuProps) {
         text="Se déconnecter"
         onPress={async () => {
           await signOutAndResetStores();
-          notificationToast("success", "Déconnexion réussie");
+          notificationToast("success", "Déconnexion réussie.");
         }}
       />
       <Divider />

@@ -33,7 +33,7 @@ export default function ListAdherent() {
     setLoading(true);
     try {
       await updateStudentAdhesion(officeId, studentId, isAdherent);
-      notificationToast("success", "Adhésion mise à jour");
+      notificationToast("success", "Adhésion mise à jour.");
     } catch (e) {
       handleError(e);
     } finally {
