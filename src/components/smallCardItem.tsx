@@ -1,4 +1,5 @@
 import { Card, IconButton } from "react-native-paper";
+import { pencil, trash } from "./icon/icons";
 
 export const SmallCardItem = ({
   title,
@@ -32,8 +33,8 @@ export const SmallCardItem = ({
       />
       <Card.Title title={title} />
       <Card.Actions>
-        {onEdit && <IconButton icon="pencil" onPress={onEdit} />}
-        {onDelete && <IconButton icon="delete" onPress={onDelete} />}
+        {onEdit && <IconButton icon={pencil} onPress={onEdit} />}
+        {onDelete && <IconButton icon={trash} onPress={onDelete} />}
       </Card.Actions>
     </Card>
   );

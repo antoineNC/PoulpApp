@@ -1,7 +1,9 @@
+import { useContext } from "react";
 import {
   createNativeStackNavigator,
   NativeStackNavigationOptions,
 } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IconButton, useTheme } from "react-native-paper";
 import { useStoreMap } from "effector-react";
 
@@ -37,14 +39,13 @@ import ViewClubMenuScreen from "@screens/menu/viewClub";
 import ListPartnershipScreen from "@screens/menu/listPartnership";
 import ViewPartnershipMenuScreen from "@screens/menu/viewPartnership";
 import NotificationScreen from "@screens/menu/notification";
-import { Image, Row } from "@styledComponents";
-import { $officeStore } from "@context/officeStore";
 import { getCalendarItems } from "@fb/service/post.service";
-import { actionCalendar } from "@context/calendar.store";
-import { TitleText } from "components/customText";
-import { useContext } from "react";
+import { $officeStore } from "@context/officeStore";
+import { actionCalendar } from "@context/calendarStore";
 import { PreferencesContext } from "@context/themeContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image, Row } from "@styledComponents";
+import { TitleText } from "components/customText";
+import { calendar, lightDark, sync } from "components/icon/icons";
 
 const HomeStack = createNativeStackNavigator<HomeTabParamList>();
 const OfficeStack = createNativeStackNavigator<OfficeTabParamList>();
@@ -125,7 +126,7 @@ export function HomeNavigator({
           title: "Fil d'actualité",
           headerRight: ({ tintColor }) => (
             <IconButton
-              icon="calendar-month-outline"
+              icon={calendar}
               size={30}
               iconColor={tintColor}
               onPress={() =>
@@ -145,7 +146,7 @@ export function HomeNavigator({
           title: "Calendrier",
           headerRight: ({ tintColor }) => (
             <IconButton
-              icon={"sync"}
+              icon={sync}
               size={30}
               iconColor={tintColor}
               onPress={async () => {
@@ -286,9 +287,7 @@ export function MenuNavigator() {
         component={MenuScreen}
         options={{
           title: "Menu",
-          headerRight: () => (
-            <IconButton icon={"brightness-6"} onPress={toggle} />
-          ),
+          headerRight: () => <IconButton icon={lightDark} onPress={toggle} />,
         }}
       />
       <MenuStack.Screen

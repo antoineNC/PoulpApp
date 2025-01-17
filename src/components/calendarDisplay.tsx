@@ -6,12 +6,13 @@ import {
   ExpandableCalendar,
   LocaleConfig,
 } from "react-native-calendars";
+import { useUnit } from "effector-react";
+import { useTheme } from "react-native-paper";
+
+import { $calendarStore } from "@context/calendarStore";
 import { formatDate } from "utils/dateUtils";
 import { AgendaItemType } from "types/calendar.type";
-import { useUnit } from "effector-react";
-import { $calendarStore } from "@context/calendar.store";
 import { BodyText, TitleText } from "./customText";
-import { useTheme } from "react-native-paper";
 
 LocaleConfig.locales["fr"] = {
   monthNames: [

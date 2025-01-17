@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   NativeSyntheticEvent,
@@ -15,8 +15,8 @@ import { useRight } from "utils/rights";
 import { $officeStore } from "@context/officeStore";
 import { PostItemProps } from "types/post.type";
 import { DateType } from "types/date.type";
-import React from "react";
 import { BodyText, LinkText, TitleText } from "components/customText";
+import { calendar, pencil, trash } from "components/icon/icons";
 
 export const PostItem = ({
   post,
@@ -89,7 +89,7 @@ export const PostItem = ({
         {date.start && (
           <TouchableOpacity onPress={onCalendar} style={{ marginVertical: 5 }}>
             <Row style={{ columnGap: 10 }}>
-              <Icon source={"calendar-month-outline"} size={20} />
+              <Icon source={calendar} size={20} />
               <View>
                 {allDay ? (
                   <LinkText>{date.start} (toute la journée)</LinkText>
@@ -135,14 +135,14 @@ export const PostItem = ({
       )}
       <Row $justify="space-around">
         {hasRight("POST", "UPDATE", office?.id) && (
-          <Button mode="contained-tonal" icon="pencil" onPress={onUpdate}>
+          <Button mode="contained-tonal" icon={pencil} onPress={onUpdate}>
             Modifier
           </Button>
         )}
         {hasRight("POST", "DELETE", office?.id) && (
           <Button
             mode="contained-tonal"
-            icon="delete"
+            icon={trash}
             onPress={() =>
               Alert.alert(
                 "Suppression",

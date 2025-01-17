@@ -1,5 +1,5 @@
 import { createMaterialBottomTabNavigator } from "react-native-paper/react-navigation";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { Icon } from "react-native-paper";
 
 import {
   FamCupNavigator,
@@ -14,6 +14,7 @@ import { useSubPartnership } from "hooks/partnership";
 import { useSubPoint } from "hooks/point";
 import { useSubStudent } from "hooks/student";
 import { useCalendar } from "hooks/calendar";
+import { feed, menu, trophy } from "components/icon/icons";
 
 const TabBar = createMaterialBottomTabNavigator<TabBarParamList>();
 
@@ -33,7 +34,7 @@ export default function TabBarContainer() {
         options={{
           title: "Accueil",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="home" size={20} color={color} />
+            <Icon source={feed} size={20} color={color} />
           ),
         }}
       />
@@ -43,7 +44,7 @@ export default function TabBarContainer() {
         options={{
           title: "Bureaux",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="albums" size={20} color={color} />
+            <Icon source="account-hard-hat" size={20} color={color} />
           ),
         }}
       />
@@ -53,7 +54,7 @@ export default function TabBarContainer() {
         options={{
           title: "Coupe des Familles",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="trophy" size={20} color={color} />
+            <Icon source={trophy} size={20} color={color} />
           ),
         }}
       />
@@ -63,7 +64,7 @@ export default function TabBarContainer() {
         options={{
           title: "Menu",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="menu" size={20} color={color} />
+            <Icon source={menu} size={20} color={color} />
           ),
         }}
       />

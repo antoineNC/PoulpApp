@@ -18,6 +18,7 @@ import { ScoreProps } from "@navigation/navigationTypes";
 import { $pointStore } from "@context/pointStore";
 import { Container, Row } from "@styledComponents";
 import { BodyText, TitleText } from "components/customText";
+import { pencil, plus, trash } from "components/icon/icons";
 import { formatDay } from "utils/dateUtils";
 import { useRight } from "utils/rights";
 import { notificationToast } from "utils/toast";
@@ -203,7 +204,7 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
                 {hasRight("POINT", "UPDATE") && (
                   <Button
                     mode="contained-tonal"
-                    icon="pencil"
+                    icon={pencil}
                     onPress={() => onUpdate(item.id)}
                   >
                     Modifier
@@ -212,7 +213,7 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
                 {hasRight("POINT", "DELETE") && (
                   <Button
                     mode="contained-tonal"
-                    icon="delete"
+                    icon={trash}
                     onPress={() => onDelete(item.id)}
                   >
                     Supprimer
@@ -225,7 +226,7 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
       />
       {hasRight("POINT", "CREATE") && (
         <AnimatedFAB
-          icon={"plus"}
+          icon={plus}
           label={"Ajouter des points"}
           extended={isExtended}
           onPress={() => navigation.navigate("createScore")}

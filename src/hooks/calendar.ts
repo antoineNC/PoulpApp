@@ -1,6 +1,6 @@
-import { actionCalendar } from "@context/calendar.store";
-import { getCalendarItems } from "@fb/service/post.service";
 import { useEffect } from "react";
+import { actionCalendar } from "@context/calendarStore";
+import { getCalendarItems } from "@fb/service/post.service";
 
 export function useCalendar() {
   useEffect(() => {
