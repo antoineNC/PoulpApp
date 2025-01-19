@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { User } from "firebase/auth";
-
 import { subscribeUserState } from "@fb/service/auth.service";
 import { getCurrentUser } from "@fb/service/user.service";
 import { actionSession } from "@context/sessionStore";
