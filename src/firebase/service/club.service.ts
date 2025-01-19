@@ -10,6 +10,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
+import { storageUrl } from "@fb-config";
 import {
   assetsRef,
   getImgURL,
@@ -17,7 +18,6 @@ import {
   imgPostRef,
   uploadImage,
 } from "@fb/service/storage.service";
-import { storageUrl } from "@fb-config";
 import { formattedToday } from "utils/dateUtils";
 import {
   Club,
@@ -53,7 +53,7 @@ function subscribeAllClub(setState: (clubList: Club[]) => void) {
       setState(clubListResolved);
     });
   } catch (e) {
-    throw new Error(`[subscribeAllClub] ${e}`);
+    throw e;
   }
 }
 
@@ -77,7 +77,7 @@ async function createClub(props: ClubFormFields) {
     }
     await addDoc(clubCollection, clubFields);
   } catch (e) {
-    throw new Error("[createClub]: " + e);
+    throw e;
   }
 }
 
@@ -86,7 +86,7 @@ async function updateClub(props: ClubFormFields, id: string) {
     const clubRef = doc(clubCollection, id);
     const clubDoc = await getDoc(clubRef);
     if (!clubDoc.exists()) {
-      throw "Cet élément n'existe pas";
+      throw "office/club-not-found";
     }
     const clubData = clubDoc.data() as FirestoreClub;
     const updatedFields: UpdateClubFields = {
@@ -106,19 +106,19 @@ async function updateClub(props: ClubFormFields, id: string) {
         );
         updatedFields["logoId"] = logoId;
         if (clubData.logoId) {
-          deleteObject(ref(assetsRef, clubData.logoId));
+          await deleteObject(ref(assetsRef, clubData.logoId));
         }
       } else {
         delete updatedFields.logoId;
       }
     } else {
       if (clubData.logoId) {
-        deleteObject(ref(imgPostRef, clubData.logoId));
+        await deleteObject(ref(imgPostRef, clubData.logoId));
       }
     }
     await updateDoc(clubRef, updatedFields);
   } catch (e) {
-    throw new Error("[updateClub]: " + e);
+    throw e;
   }
 }
 
@@ -129,12 +129,12 @@ async function deleteClub(id: string) {
     if (clubDoc.exists()) {
       const clubData = clubDoc.data() as FirestoreClub;
       if (clubData.logoId) {
-        deleteObject(ref(imgClubPartnerRef, clubData.logoId));
+        await deleteObject(ref(imgClubPartnerRef, clubData.logoId));
       }
       await deleteDoc(clubRef);
     }
   } catch (e) {
-    throw new Error("[delete club]: " + e);
+    throw e;
   }
 }
 

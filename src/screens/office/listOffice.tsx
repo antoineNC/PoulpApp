@@ -7,6 +7,7 @@ import { Container, Image } from "@styledComponents";
 import { ListOfficeProps } from "@navigation/navigationTypes";
 import { useRight } from "utils/rights";
 import { BodyText, HeaderText } from "components/customText";
+import { pencil } from "components/icon/icons";
 
 export default function ListOfficeScreen({ navigation }: ListOfficeProps) {
   const { officeList } = useUnit($officeStore);
@@ -49,7 +50,7 @@ export default function ListOfficeScreen({ navigation }: ListOfficeProps) {
                 <Card.Actions>
                   <Button
                     mode="contained-tonal"
-                    icon="pencil"
+                    icon={pencil}
                     onPress={() =>
                       navigation.navigate("updateOffice", { officeId: item.id })
                     }

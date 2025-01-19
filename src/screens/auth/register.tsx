@@ -5,15 +5,15 @@ import { Button, useTheme } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Spinner from "react-native-loading-spinner-overlay";
 
-import { AuthParamList } from "@navigation/navigationTypes";
-import CustomField from "components/form/formField";
-import { ContainerScroll as Container } from "@styledComponents";
-import { authStyles } from "@styles";
 import { registerUser } from "@fb/service/auth.service";
 import { actionSession } from "@context/sessionStore";
+import { AuthParamList } from "@navigation/navigationTypes";
+import CustomField from "components/form/formField";
+import { ContainerScroll } from "@styledComponents";
+import { authStyles } from "@styles";
 import { FieldParams } from "types/form.type";
-import { toast } from "@backpackapp-io/react-native-toast";
-import { getAuthErrMessage } from "utils/authUtils";
+import { handleError } from "utils/errorUtils";
+import { notificationToast } from "utils/toast";
 
 type FieldNames = {
   firstName: string;
@@ -73,10 +73,9 @@ export default function RegisterScreen({
     try {
       const sessionCredential = await registerUser(data);
       actionSession.login(sessionCredential);
-      toast.success("Votre compte a bien été créé.", { position: 2 });
+      notificationToast("success", "Votre compte a bien été créé.");
     } catch (e) {
-      const msg = getAuthErrMessage(e);
-      toast.error(msg, { position: 2 });
+      handleError(e);
     } finally {
       setLoading(false);
     }
@@ -91,7 +90,7 @@ export default function RegisterScreen({
           textStyle={{ color: colors.onBackground }}
         />
       )}
-      <Container style={authStyles.container}>
+      <ContainerScroll style={authStyles.container}>
         <View style={authStyles.formList}>
           {values.map((field, index) => (
             <CustomField<FieldNames>
@@ -119,7 +118,7 @@ export default function RegisterScreen({
             onPress={() => navigation.navigate("login")}
           />
         </View>
-      </Container>
+      </ContainerScroll>
     </>
   );
 }

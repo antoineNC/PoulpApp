@@ -16,6 +16,7 @@ import { Container } from "@styledComponents";
 import { OfficeFormFields, RoleOffice } from "types/office.type";
 import { Student } from "types/student.type";
 import { BodyText } from "../customText";
+import { close, plus } from "components/icon/icons";
 
 export default function ListMemberForm({
   control,
@@ -121,7 +122,7 @@ export default function ListMemberForm({
                 />
               </View>
               <IconButton
-                icon={"window-close"}
+                icon={close}
                 mode="outlined"
                 iconColor={colors.error}
                 onPress={() => remove(index)}
@@ -137,7 +138,7 @@ export default function ListMemberForm({
         ))}
       </View>
       <IconButton
-        icon={"plus"}
+        icon={plus}
         mode="contained"
         style={{ width: "auto" }}
         onPress={() => append({ idRole: "", idStudent: "" })}

@@ -57,7 +57,7 @@ function subscribeAllPartnership(
       setState(partnerListResolved);
     });
   } catch (e) {
-    throw new Error(`[subscribeAllPartnership] ${e}`);
+    throw e;
   }
 }
 
@@ -83,7 +83,7 @@ async function createPartnership(props: PartnershipFormFields) {
     }
     await addDoc(partnerCollection, partnerFields);
   } catch (e) {
-    throw new Error("[createPartnership]: " + e);
+    throw e;
   }
 }
 
@@ -92,7 +92,7 @@ async function updatePartnership(props: PartnershipFormFields, id: string) {
     const partnerRef = doc(partnerCollection, id);
     const partnerDoc = await getDoc(partnerRef);
     if (!partnerDoc.exists()) {
-      throw "Cet élément n'existe pas";
+      throw "office/partnership-not-found";
     }
     const partnerData = partnerDoc.data() as FirestorePartnership;
     const updatedFields: UpdatePartnershipFields = {
@@ -114,19 +114,19 @@ async function updatePartnership(props: PartnershipFormFields, id: string) {
         );
         updatedFields["logoId"] = logoId;
         if (partnerData.logoId) {
-          deleteObject(ref(assetsRef, partnerData.logoId));
+          await deleteObject(ref(assetsRef, partnerData.logoId));
         }
       } else {
         delete updatedFields.logoId;
       }
     } else {
       if (partnerData.logoId) {
-        deleteObject(ref(imgPostRef, partnerData.logoId));
+        await deleteObject(ref(imgPostRef, partnerData.logoId));
       }
     }
     await updateDoc(partnerRef, updatedFields);
   } catch (e) {
-    throw new Error("[updatePartner]: " + e);
+    throw e;
   }
 }
 
@@ -137,12 +137,12 @@ async function deletePartnership(id: string) {
     if (partnerDoc.exists()) {
       const partnerData = partnerDoc.data() as FirestorePartnership;
       if (partnerData.logoId) {
-        deleteObject(ref(imgClubPartnerRef, partnerData?.logoId));
+        await deleteObject(ref(imgClubPartnerRef, partnerData?.logoId));
       }
       await deleteDoc(partnerRef);
     }
   } catch (e) {
-    throw new Error("[delete partnership]: " + e);
+    throw e;
   }
 }
 

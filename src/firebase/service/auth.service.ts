@@ -1,4 +1,3 @@
-import { auth } from "@fb-config";
 import {
   User,
   onAuthStateChanged,
@@ -6,9 +5,11 @@ import {
   signOut,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { getCurrentUser } from "./user.service";
-import { createStudent } from "./student.service";
 import Constants from "expo-constants";
+
+import { auth } from "@fb-config";
+import { getCurrentUser } from "@fb/service/user.service";
+import { createStudent } from "@fb/service/student.service";
 
 function subscribeUserState(observer: (user: User | null) => void) {
   return onAuthStateChanged(auth, (user) => observer(user));
@@ -48,7 +49,7 @@ async function registerUser({
 }) {
   try {
     if (code !== Constants.expoConfig?.extra?.codeENSC) {
-      throw new Error("register/invalid-code");
+      throw new Error("auth/invalid-code");
     }
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -69,7 +70,6 @@ async function signOutUser() {
   try {
     if (auth) await signOut(auth);
   } catch (e) {
-    console.error("Error signing out: ", e);
     throw e;
   }
 }

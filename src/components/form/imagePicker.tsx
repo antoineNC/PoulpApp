@@ -4,9 +4,11 @@ import { Button, useTheme } from "react-native-paper";
 import { FieldValues } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import ImageView from "react-native-image-viewing";
+
 import { Container, Row } from "@styledComponents";
 import { InputProps } from "types/form.type";
 import { BodyText } from "components/customText";
+import { camera, gallery, trash } from "components/icon/icons";
 
 export function ImagePickerForm<T extends FieldValues>({
   field: { value, onChange },
@@ -62,14 +64,14 @@ export function ImagePickerForm<T extends FieldValues>({
         <Button
           mode="contained-tonal"
           onPress={pickImageFromLibrary}
-          icon={"folder-image"}
+          icon={gallery}
         >
           Choisir dans la galerie
         </Button>
         <Button
           mode="contained-tonal"
           onPress={pickImageFromCamera}
-          icon={"camera"}
+          icon={camera}
         >
           Prendre photo
         </Button>
@@ -80,7 +82,7 @@ export function ImagePickerForm<T extends FieldValues>({
             <Image source={{ uri: image }} style={styles.image} />
           </TouchableOpacity>
           <Button
-            icon="delete-circle"
+            icon={trash}
             onPress={deletePickChoice}
             style={{ marginVertical: 10 }}
             buttonColor={colors.errorContainer}

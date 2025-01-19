@@ -40,7 +40,7 @@ function subscribeAllStudent(setState: (studentList: Student[]) => void) {
       setState(allStudent);
     });
   } catch (e) {
-    throw new Error(`[subscribeAllStudent] ${e}`);
+    throw e;
   }
 }
 
@@ -48,11 +48,11 @@ async function getStudent(id: string) {
   try {
     const studentDoc = await getDoc(doc(userCollection, id));
     if (!studentDoc.exists()) {
-      throw Error(`L'étudiant.e ${id} n'existe pas.`);
+      throw "student/not-found";
     }
     const studentData = studentDoc.data();
     if (studentData.role !== "STUDENT") {
-      throw Error(`L'étudiant.e ${id} n'existe pas.`);
+      throw "student/not-found";
     }
     const student: Student = {
       id: studentDoc.id,
@@ -63,7 +63,7 @@ async function getStudent(id: string) {
     };
     return student;
   } catch (e) {
-    throw new Error("[get student] " + e);
+    throw e;
   }
 }
 
@@ -88,7 +88,7 @@ async function updateStudentAdhesion(
     const studentRef = doc(userCollection, studentId);
     const studentDoc = await getDoc(studentRef);
     if (!studentDoc.exists()) {
-      throw Error(`L'étudiant.e ${studentId} n'existe pas.`);
+      throw "student/not-found";
     }
     if (isAdherent) {
       await updateDoc(studentRef, { adhesion: arrayUnion(officeId) });
@@ -98,7 +98,7 @@ async function updateStudentAdhesion(
       });
     }
   } catch (e) {
-    throw new Error("[set student adhesion]: " + e);
+    throw e;
   }
 }
 

@@ -1,11 +1,12 @@
-import { Controller, UseFormReturn } from "react-hook-form";
-import { ContainerScroll } from "@styledComponents";
+import React from "react";
 import { View } from "react-native";
+import { Controller, UseFormReturn } from "react-hook-form";
+
+import { ContainerScroll } from "@styledComponents";
 import { officeStyles } from "@styles";
+import { PointsFormFields } from "types/point.type";
 import { FloatingValidateBtn } from "components/validateButton";
 import { DatePicker } from "components/form/datePicker";
-import { PointsFormFields } from "types/point.type";
-import React from "react";
 import { TextInputForm } from "components/form/textInput";
 import { BodyText } from "components/customText";
 

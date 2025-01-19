@@ -11,14 +11,18 @@ import { useUnit } from "effector-react";
 import { AnimatedFAB, Button, Divider, useTheme } from "react-native-paper";
 import { CartesianChart, Bar } from "victory-native";
 import { useFont } from "@shopify/react-native-skia";
+
+import inter from "@assets/fonts/inter-variable.ttf";
+import { deletePoint } from "@fb/service/point.service";
 import { ScoreProps } from "@navigation/navigationTypes";
 import { $pointStore } from "@context/pointStore";
+import { Container, Row } from "@styledComponents";
+import { BodyText, TitleText } from "components/customText";
+import { pencil, plus, trash } from "components/icon/icons";
 import { formatDay } from "utils/dateUtils";
 import { useRight } from "utils/rights";
-import inter from "@assets/fonts/inter-variable.ttf";
-import { Container, Row } from "@styledComponents";
-import { deletePoint } from "@fb/service/point.service";
-import { BodyText, TitleText } from "components/customText";
+import { notificationToast } from "utils/toast";
+import { handleError } from "utils/errorUtils";
 
 export default function ScoreScreen({ navigation }: ScoreProps) {
   const listPoint = useUnit($pointStore);
@@ -101,6 +105,26 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
     setIsExtended(currentScrollPosition <= 0);
   };
 
+  const onDelete = (id: string) => {
+    Alert.alert("Suppression", "Veux-tu vraiment supprimer ces points ?", [
+      {
+        text: "Oui, supprimer",
+        onPress: async () => {
+          try {
+            await deletePoint(id);
+            notificationToast("success", "Points supprimés.");
+          } catch (e) {
+            handleError(e);
+          }
+        },
+      },
+      { text: "Annuler" },
+    ]);
+  };
+
+  const onUpdate = (id: string) =>
+    navigation.navigate("updateScore", { idPoint: id });
+
   return (
     <Container>
       <View style={{ height: 250 }}>
@@ -180,10 +204,8 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
                 {hasRight("POINT", "UPDATE") && (
                   <Button
                     mode="contained-tonal"
-                    icon="pencil"
-                    onPress={() =>
-                      navigation.navigate("updateScore", { idPoint: item.id })
-                    }
+                    icon={pencil}
+                    onPress={() => onUpdate(item.id)}
                   >
                     Modifier
                   </Button>
@@ -191,20 +213,8 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
                 {hasRight("POINT", "DELETE") && (
                   <Button
                     mode="contained-tonal"
-                    icon="delete"
-                    onPress={() =>
-                      Alert.alert(
-                        "Suppression",
-                        "Veux-tu vraiment supprimer ces points ?",
-                        [
-                          {
-                            text: "Oui, supprimer",
-                            onPress: () => deletePoint(item.id),
-                          },
-                          { text: "Annuler" },
-                        ]
-                      )
-                    }
+                    icon={trash}
+                    onPress={() => onDelete(item.id)}
                   >
                     Supprimer
                   </Button>
@@ -216,7 +226,7 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
       />
       {hasRight("POINT", "CREATE") && (
         <AnimatedFAB
-          icon={"plus"}
+          icon={plus}
           label={"Ajouter des points"}
           extended={isExtended}
           onPress={() => navigation.navigate("createScore")}

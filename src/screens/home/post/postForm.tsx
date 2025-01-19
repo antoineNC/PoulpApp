@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { useUnit } from "effector-react";
-import { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Spinner from "react-native-loading-spinner-overlay";
 import { $officeStore } from "@context/officeStore";
 import CustomField from "components/form/formField";
@@ -14,18 +14,21 @@ import React from "react";
 import { useTheme } from "react-native-paper";
 
 export const PostForm = ({
-  formParams,
+  defaultValues,
   loading,
   onSubmit,
   create,
 }: {
-  formParams: UseFormReturn<PostFormFields>;
+  defaultValues?: PostFormFields;
   loading: boolean;
   onSubmit: (data: PostFormFields) => void;
   create?: boolean;
 }) => {
   const { colors } = useTheme();
   const { officeList } = useUnit($officeStore);
+  const formParams = useForm<PostFormFields>({
+    defaultValues,
+  });
   const { control, handleSubmit, setFocus } = formParams;
   const officeChoices = officeList.map((office) => ({
     value: office.id,

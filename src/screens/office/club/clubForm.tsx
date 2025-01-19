@@ -1,12 +1,12 @@
+import React from "react";
+import { View } from "react-native";
+import { Control, UseFormSetFocus } from "react-hook-form";
+import Spinner from "react-native-loading-spinner-overlay";
+import { useTheme } from "react-native-paper";
 import { ContainerScroll } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
 import CustomField from "components/form/formField";
 import { FloatingValidateBtn } from "components/validateButton";
-import React from "react";
-import { Control, UseFormSetFocus } from "react-hook-form";
-import { View } from "react-native";
-import Spinner from "react-native-loading-spinner-overlay";
-import { useTheme } from "react-native-paper";
 import { ClubFormFields } from "types/club.type";
 import { FieldParams } from "types/form.type";
 

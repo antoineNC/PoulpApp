@@ -14,6 +14,7 @@ import { FloatingValidateBtn } from "components/validateButton";
 import { PartnershipFormFields } from "types/partnership.type";
 import { FieldParams } from "types/form.type";
 import { BodyText } from "components/customText";
+import { close, plus } from "components/icon/icons";
 
 const PartnershipForm = ({
   create,
@@ -95,7 +96,7 @@ const PartnershipForm = ({
                   defaultValue={benefit.value}
                 />
                 <IconButton
-                  icon={"window-close"}
+                  icon={close}
                   mode="contained"
                   iconColor={colors.error}
                   onPress={() => remove(index)}
@@ -104,7 +105,7 @@ const PartnershipForm = ({
             </View>
           ))}
           <IconButton
-            icon={"plus"}
+            icon={plus}
             mode="outlined"
             style={{ width: "auto" }}
             onPress={() => append({ value: "" })}

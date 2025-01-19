@@ -9,7 +9,7 @@ async function getCurrentUser(id: string) {
   try {
     const userRef = await getDoc(doc(userCollection, id));
     if (!userRef.exists()) {
-      throw new Error("user/no-data");
+      throw new Error("auth/no-data");
     }
     const { role } = userRef.data();
     return { role, userId: userRef.id };
