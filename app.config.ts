@@ -8,27 +8,37 @@ export default {
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
-    splash: {
-      image: "./assets/splash.png",
-      resizeMode: "contain",
-      backgroundColor: "#52234E",
-    },
     assetBundlePatterns: ["**/*"],
     ios: {
       supportsTablet: true,
     },
     android: {
-      adaptiveIcon: {
-        foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#ffffff",
-      },
+      // adaptiveIcon: {
+      //   foregroundImage: "./assets/adaptive-icon.png",
+      //   backgroundColor: "#ffffff",
+      // },
       package: "com.ensc.poulpapp",
       googleServicesFile: process.env.GOOGLE_SERVICES_FILE,
     },
     web: {
       favicon: "./assets/favicon.png",
     },
-    plugins: ["expo-secure-store"],
+    plugins: [
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          backgroundColor: "#52234E",
+          image: "./assets/splash.png",
+          resizeMode: "contain",
+          // dark: {
+          //   image: "./assets/splash-icon-dark.png",
+          //   backgroundColor: "#000000",
+          // },
+          // imageWidth: 200,
+        },
+      ],
+    ],
     newArchEnabled: true,
     extra: {
       eas: {
