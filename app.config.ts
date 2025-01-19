@@ -13,10 +13,10 @@ export default {
       supportsTablet: true,
     },
     android: {
-      // adaptiveIcon: {
-      //   foregroundImage: "./assets/adaptive-icon.png",
-      //   backgroundColor: "#ffffff",
-      // },
+      adaptiveIcon: {
+        foregroundImage: "./assets/adaptive-icon.png",
+        backgroundColor: "#52234E",
+      },
       package: "com.ensc.poulpapp",
       googleServicesFile: process.env.GOOGLE_SERVICES_FILE,
     },
@@ -30,7 +30,7 @@ export default {
         {
           backgroundColor: "#52234E",
           image: "./assets/splash.png",
-          resizeMode: "contain",
+          resizeMode: "center",
           // dark: {
           //   image: "./assets/splash-icon-dark.png",
           //   backgroundColor: "#000000",
