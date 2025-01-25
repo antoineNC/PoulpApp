@@ -21,6 +21,7 @@ import { PreferencesContext } from "@context/themeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Toasts } from "@backpackapp-io/react-native-toast";
+import { StatusBar } from "expo-status-bar";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -88,6 +89,7 @@ export default function App() {
         <SafeAreaProvider onLayout={onLayoutRootView}>
           <GestureHandlerRootView>
             <RootContainer theme={theme} />
+            <StatusBar style={isThemeDark ? "light" : "dark"} />
             <Toasts overrideDarkMode={isThemeDark} />
           </GestureHandlerRootView>
         </SafeAreaProvider>
