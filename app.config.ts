@@ -4,15 +4,10 @@ export default {
   expo: {
     name: "PoulpApp",
     slug: "PoulpApp",
-    version: "1.0.0",
+    version: "0.1.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
-    splash: {
-      image: "./assets/splash.png",
-      resizeMode: "contain",
-      backgroundColor: "#52234E",
-    },
     assetBundlePatterns: ["**/*"],
     ios: {
       supportsTablet: true,
@@ -20,7 +15,7 @@ export default {
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#52234E",
       },
       package: "com.ensc.poulpapp",
       googleServicesFile: process.env.GOOGLE_SERVICES_FILE,
@@ -28,7 +23,18 @@ export default {
     web: {
       favicon: "./assets/favicon.png",
     },
-    plugins: ["expo-secure-store"],
+    plugins: [
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          backgroundColor: "#52234E",
+          image: "./assets/splash.png",
+          resizeMode: "contain",
+          imageWidth: 200,
+        },
+      ],
+    ],
     newArchEnabled: true,
     extra: {
       eas: {
