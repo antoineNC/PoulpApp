@@ -30,12 +30,8 @@ export default {
         {
           backgroundColor: "#52234E",
           image: "./assets/splash.png",
-          resizeMode: "center",
-          // dark: {
-          //   image: "./assets/splash-icon-dark.png",
-          //   backgroundColor: "#000000",
-          // },
-          // imageWidth: 200,
+          resizeMode: "contain",
+          imageWidth: 200,
         },
       ],
     ],
