@@ -93,6 +93,10 @@ export default function LoginScreen({
             children="Pas de compte ? Inscris-toi ici"
             onPress={() => navigation.navigate("signup")}
           />
+          <Button
+            children="Mot de passe oublié ? Réinitialise-le ici"
+            onPress={() => navigation.navigate("forgotPassword")}
+          />
         </View>
       </ContainerScroll>
     </>

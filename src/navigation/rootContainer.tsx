@@ -8,6 +8,7 @@ import LoginScreen from "@screens/auth/login";
 import RegisterScreen from "@screens/auth/register";
 import { $sessionStore } from "@context/sessionStore";
 import { useTheme } from "react-native-paper";
+import ForgotPasswordScreen from "@screens/auth/forgotPassword";
 
 const AuthStack = createNativeStackNavigator<AuthParamList>();
 
@@ -37,6 +38,11 @@ export default function RootContainer({ theme }: { theme: Theme }) {
             name="signup"
             component={RegisterScreen}
             options={{ title: "Inscription" }}
+          />
+          <AuthStack.Screen
+            name="forgotPassword"
+            component={ForgotPasswordScreen}
+            options={{ title: "Mot de passe oublié" }}
           />
         </AuthStack.Navigator>
       )}
