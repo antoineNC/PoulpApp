@@ -2,9 +2,8 @@ import { useState } from "react";
 import { View } from "react-native";
 import { useForm } from "react-hook-form";
 import { Button, Text } from "react-native-paper";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { AuthParamList } from "@navigation/navigationTypes";
+import { forgotPassword } from "@fb/service/auth.service";
 import CustomField from "components/form/formField";
 import { ContainerScroll } from "@styledComponents";
 import { authStyles } from "@styles";
@@ -15,16 +14,14 @@ type FieldNames = {
   email: string;
 };
 
-export default function ForgotPasswordScreen({
-  navigation,
-}: NativeStackScreenProps<AuthParamList>) {
+export default function ForgotPasswordScreen() {
   const [loading, setLoading] = useState(false);
   const { control, handleSubmit } = useForm<FieldNames>();
 
   const onSubmit = async (data: FieldNames) => {
     setLoading(true);
     try {
-      //   await forgotPassword(data);
+      await forgotPassword(data);
       notificationToast(
         "success",
         "Un email de réinitialisation vous a été envoyé !"
@@ -38,11 +35,11 @@ export default function ForgotPasswordScreen({
 
   return (
     <ContainerScroll style={authStyles.container}>
-      <Text>
-        Entrez votre email pour recevoir le lien de réinitialisation du mot de
-        passe.
-      </Text>
       <View style={authStyles.formList}>
+        <Text>
+          Entrez votre email pour recevoir le lien de réinitialisation du mot de
+          passe.
+        </Text>
         <CustomField<FieldNames>
           control={control}
           name="email"
@@ -56,18 +53,16 @@ export default function ForgotPasswordScreen({
           submit={handleSubmit(onSubmit)}
         />
       </View>
-      <Button
-        mode="contained"
-        children="Envoyer"
-        onPress={handleSubmit(onSubmit)}
-        uppercase
-        loading={loading}
-      />
-      <Button
-        mode="contained"
-        children="Retour"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={authStyles.buttonContainer}>
+        <Button
+          mode="contained"
+          children="Envoyer"
+          onPress={handleSubmit(onSubmit)}
+          uppercase
+          loading={loading}
+        />
+        <Text>Pensez à vérifier vos spams si vous ne recevez pas l'email.</Text>
+      </View>
     </ContainerScroll>
   );
 }

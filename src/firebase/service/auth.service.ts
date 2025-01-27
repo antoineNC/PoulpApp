@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import Constants from "expo-constants";
 
@@ -66,6 +67,14 @@ async function registerUser({
   }
 }
 
+async function forgotPassword({ email }: { email: string }) {
+  try {
+    await sendPasswordResetEmail(auth, email);
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function signOutUser() {
   try {
     if (auth) await signOut(auth);
@@ -74,4 +83,10 @@ async function signOutUser() {
   }
 }
 
-export { subscribeUserState, loginUser, registerUser, signOutUser };
+export {
+  subscribeUserState,
+  loginUser,
+  registerUser,
+  forgotPassword,
+  signOutUser,
+};
