@@ -1,29 +1,28 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  Alert,
   NativeSyntheticEvent,
   TextLayoutEventData,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useStoreMap } from "effector-react";
-import { Button, Icon } from "react-native-paper";
+import { Icon, IconButton } from "react-native-paper";
 import ImageView from "react-native-image-viewing";
+
 import { Image, Row } from "@styledComponents";
+import { $officeStore } from "@context/officeStore";
 import { displayDate } from "utils/dateUtils";
 import { useRight } from "utils/rights";
-import { $officeStore } from "@context/officeStore";
 import { PostItemProps } from "types/post.type";
 import { DateType } from "types/date.type";
 import { BodyText, LinkText, TitleText } from "components/customText";
-import { calendar, pencil, trash } from "components/icon/icons";
+import { calendar, dotsVertical } from "components/icon/icons";
 
 export const PostItem = ({
   post,
   onPressOffice,
   onPressCalendar,
-  onPressUpdate,
-  onPressDelete,
+  toggleBottomsheet,
 }: PostItemProps) => {
   const { hasRight } = useRight();
   const [date, setDate] = useState<DateType>({});
@@ -61,8 +60,6 @@ export const PostItem = ({
 
   const onOffice = () => office && onPressOffice(office.id);
   const onCalendar = () => onPressCalendar();
-  const onUpdate = () => onPressUpdate();
-  const onDelete = () => onPressDelete();
 
   return (
     <View style={{ rowGap: 15 }}>
@@ -85,6 +82,13 @@ export const PostItem = ({
                 ))}
             </Row>
           </View>
+          {hasRight("POST", "DELETE", office?.id) && (
+            <IconButton
+              icon={dotsVertical}
+              size={20}
+              onPress={toggleBottomsheet}
+            />
+          )}
         </Row>
         {date.start && (
           <TouchableOpacity onPress={onCalendar} style={{ marginVertical: 5 }}>
@@ -133,34 +137,6 @@ export const PostItem = ({
           />
         </View>
       )}
-      <Row $justify="space-around">
-        {hasRight("POST", "UPDATE", office?.id) && (
-          <Button mode="contained-tonal" icon={pencil} onPress={onUpdate}>
-            Modifier
-          </Button>
-        )}
-        {hasRight("POST", "DELETE", office?.id) && (
-          <Button
-            mode="contained-tonal"
-            icon={trash}
-            onPress={() =>
-              Alert.alert(
-                "Suppression",
-                "Veux-tu vraiment supprimer ce post ?",
-                [
-                  {
-                    text: "Oui, supprimer",
-                    onPress: onDelete,
-                  },
-                  { text: "Annuler" },
-                ]
-              )
-            }
-          >
-            Supprimer
-          </Button>
-        )}
-      </Row>
     </View>
   );
 };

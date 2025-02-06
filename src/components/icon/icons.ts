@@ -4,6 +4,7 @@ const calendar: IconSource = "calendar-month-outline";
 const camera: IconSource = "camera";
 const chevronRight: IconSource = "chevron-right";
 const close: IconSource = "window-close";
+const dotsVertical: IconSource = "dots-vertical";
 const eye: IconSource = "eye";
 const eyeOff: IconSource = "eye-off";
 const feed: IconSource = "newspaper-variant";
@@ -34,4 +35,5 @@ export {
   feed,
   menu,
   chevronRight,
+  dotsVertical,
 };

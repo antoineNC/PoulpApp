@@ -53,6 +53,5 @@ export type PostItemProps = {
   post: Post;
   onPressOffice: (officeId: string) => void;
   onPressCalendar: () => void;
-  onPressUpdate: () => void;
-  onPressDelete: () => void;
+  toggleBottomsheet: () => void;
 };
