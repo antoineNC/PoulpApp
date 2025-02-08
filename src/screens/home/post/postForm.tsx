@@ -1,17 +1,18 @@
+import React from "react";
 import { View } from "react-native";
 import { useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
+import { useTheme } from "react-native-paper";
 import Spinner from "react-native-loading-spinner-overlay";
+
 import { $officeStore } from "@context/officeStore";
-import CustomField from "components/form/formField";
-import { FloatingValidateBtn } from "components/validateButton";
 import { ContainerScroll } from "@styledComponents";
 import { authStyles, officeStyles } from "@styles";
-import { postTags } from "data";
+import CustomField from "components/form/formField";
+import { FloatingValidateBtn } from "components/validateButton";
 import { PostFormFields } from "types/post.type";
 import { FieldParams } from "types/form.type";
-import React from "react";
-import { useTheme } from "react-native-paper";
+import { postTags } from "data";
 
 export const PostForm = ({
   defaultValues,

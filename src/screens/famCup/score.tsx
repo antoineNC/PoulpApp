@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FlatList,
   View,
@@ -6,11 +6,23 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import { useUnit } from "effector-react";
-import { AnimatedFAB, Button, Divider, useTheme } from "react-native-paper";
+import {
+  AnimatedFAB,
+  Divider,
+  Icon,
+  IconButton,
+  useTheme,
+} from "react-native-paper";
 import { CartesianChart, Bar } from "victory-native";
 import { useFont } from "@shopify/react-native-skia";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { BottomSheetDefaultBackdropProps } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
 
 import inter from "@assets/fonts/inter-variable.ttf";
 import { deletePoint } from "@fb/service/point.service";
@@ -18,7 +30,7 @@ import { ScoreProps } from "@navigation/navigationTypes";
 import { $pointStore } from "@context/pointStore";
 import { Container, Row } from "@styledComponents";
 import { BodyText, TitleText } from "components/customText";
-import { pencil, plus, trash } from "components/icon/icons";
+import { dotsVertical, pencil, plus, trash } from "components/icon/icons";
 import { formatDay } from "utils/dateUtils";
 import { useRight } from "utils/rights";
 import { notificationToast } from "utils/toast";
@@ -29,6 +41,8 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
   const { colors } = useTheme();
   const { hasRight } = useRight();
   const font = useFont(inter, 12);
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const [scoreId, setScoreId] = useState<string | null>(null);
   const [isExtended, setIsExtended] = useState(true);
   const [score, setScore] = useState<{ family: string; score: number }[]>([
     {
@@ -105,13 +119,14 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
     setIsExtended(currentScrollPosition <= 0);
   };
 
-  const onDelete = (id: string) => {
+  const onDelete = () => {
+    if (!scoreId) return;
     Alert.alert("Suppression", "Veux-tu vraiment supprimer ces points ?", [
       {
         text: "Oui, supprimer",
         onPress: async () => {
           try {
-            await deletePoint(id);
+            await deletePoint(scoreId);
             notificationToast("success", "Points supprimés.");
           } catch (e) {
             handleError(e);
@@ -122,8 +137,24 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
     ]);
   };
 
-  const onUpdate = (id: string) =>
-    navigation.navigate("updateScore", { idPoint: id });
+  const onUpdate = () => {
+    if (!scoreId) return;
+    navigation.navigate("updateScore", { idPoint: scoreId });
+    bottomSheetRef.current?.close();
+  };
+
+  const renderBackdrop = useCallback(
+    (
+      props: React.JSX.IntrinsicAttributes & BottomSheetDefaultBackdropProps
+    ) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+      />
+    ),
+    []
+  );
 
   return (
     <Container>
@@ -176,8 +207,22 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
           const date = formatDay(item.date);
           return (
             <View key={index} style={{ paddingHorizontal: 15 }}>
-              <TitleText>{item.title}</TitleText>
-              <BodyText>{date}</BodyText>
+              <Row>
+                <View style={{ flex: 1 }}>
+                  <TitleText>{item.title}</TitleText>
+                  <BodyText>{date}</BodyText>
+                </View>
+                {hasRight("POINT", "DELETE") && (
+                  <IconButton
+                    icon={dotsVertical}
+                    size={20}
+                    onPress={() => {
+                      setScoreId(item.id);
+                      bottomSheetRef.current?.expand();
+                    }}
+                  />
+                )}
+              </Row>
               <Row $justify="space-between" $padding="10px 0">
                 <View style={{ alignItems: "center" }}>
                   <BodyText>Bleu</BodyText>
@@ -200,30 +245,45 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
                   <BodyText>{item.green}</BodyText>
                 </View>
               </Row>
-              <Row $justify="space-around" style={{ marginBottom: 10 }}>
-                {hasRight("POINT", "UPDATE") && (
-                  <Button
-                    mode="contained-tonal"
-                    icon={pencil}
-                    onPress={() => onUpdate(item.id)}
-                  >
-                    Modifier
-                  </Button>
-                )}
-                {hasRight("POINT", "DELETE") && (
-                  <Button
-                    mode="contained-tonal"
-                    icon={trash}
-                    onPress={() => onDelete(item.id)}
-                  >
-                    Supprimer
-                  </Button>
-                )}
-              </Row>
             </View>
           );
         }}
       />
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        enablePanDownToClose={true}
+        backdropComponent={renderBackdrop}
+        containerStyle={{ zIndex: 1 }}
+        backgroundStyle={{ backgroundColor: colors.background }}
+        handleIndicatorStyle={{ backgroundColor: colors.primary }}
+      >
+        <BottomSheetView>
+          <TouchableOpacity onPress={onUpdate}>
+            <Row
+              style={{
+                margin: 20,
+                columnGap: 10,
+              }}
+            >
+              <Icon size={20} source={pencil} />
+              <TitleText>Modifier</TitleText>
+            </Row>
+          </TouchableOpacity>
+          <Divider />
+          <TouchableOpacity onPress={onDelete}>
+            <Row
+              style={{
+                margin: 20,
+                columnGap: 10,
+              }}
+            >
+              <Icon size={20} source={trash} />
+              <TitleText>Supprimer</TitleText>
+            </Row>
+          </TouchableOpacity>
+        </BottomSheetView>
+      </BottomSheet>
       {hasRight("POINT", "CREATE") && (
         <AnimatedFAB
           icon={plus}

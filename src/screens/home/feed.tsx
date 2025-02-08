@@ -84,13 +84,16 @@ export default function FeedScreen({ navigation }: FeedProps) {
       screen: "viewOffice",
       params: { officeId },
     });
+
   const onPressCalendar = (date?: Date) =>
     navigation.navigate("calendar", { postDate: date?.valueOf() });
+
   const onPressUpdate = () => {
     if (!postId) return;
     navigation.navigate("updatePost", { postId });
     bottomSheetRef.current?.close();
   };
+
   const onPressDelete = () =>
     Alert.alert("Suppression", "Veux-tu vraiment supprimer ce post ?", [
       {
@@ -99,6 +102,7 @@ export default function FeedScreen({ navigation }: FeedProps) {
       },
       { text: "Annuler" },
     ]);
+
   const onConfirmDelete = async () => {
     if (!postId) return;
     bottomSheetRef.current?.close();
