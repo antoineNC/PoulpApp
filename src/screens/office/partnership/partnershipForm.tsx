@@ -16,6 +16,7 @@ import { FieldParams } from "types/form.type";
 import { BodyText } from "components/customText";
 import { close, plus } from "components/icon/icons";
 
+// TODO : move to components
 const PartnershipForm = ({
   create,
   loading,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 
 import { $officeStore } from "@context/officeStore";
@@ -16,7 +16,7 @@ export default function UpdatePartnershipScreen({
   route,
 }: UpdatePartnershipProps) {
   const { partnershipId } = route.params;
-  const { isAdmin } = useRight();
+  const { isAdmin, hasRight } = useRight();
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
   const partnership = useStoreMap({
@@ -35,6 +35,12 @@ export default function UpdatePartnershipScreen({
         (office) => office.id === partnership?.officeId
       ),
   });
+
+  useEffect(() => {
+    if (!hasRight("OFFICE", "UPDATE", office?.id))
+      navigation.navigate("homeContainer", { screen: "feed" });
+  }, [hasRight, navigation, office?.id]);
+
   const officeChoices = officeList.map((office) => ({
     value: office.id,
     label: office.name,

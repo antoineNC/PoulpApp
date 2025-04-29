@@ -18,6 +18,7 @@ import { DateType } from "types/date.type";
 import { BodyText, LinkText, TitleText } from "components/customText";
 import { calendar, pencil, trash } from "components/icon/icons";
 
+// TODO : move to components
 export const PostItem = ({
   post,
   onPressOffice,

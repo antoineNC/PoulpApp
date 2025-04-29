@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { createPoint } from "@fb/service/point.service";
@@ -7,8 +7,15 @@ import { PointsFormFields } from "types/point.type";
 import { handleError } from "utils/errorUtils";
 import { notificationToast } from "utils/toast";
 import { ScoreForm } from "./scoreForm";
+import { useRight } from "utils/rights";
 
 export default function CreateScoreScreen({ navigation }: CreateScoreProps) {
+  const { hasRight } = useRight();
+  useEffect(() => {
+    if (!hasRight("POINT", "CREATE"))
+      navigation.navigate("homeContainer", { screen: "feed" });
+  }, [hasRight, navigation]);
+
   const [loading, setLoading] = useState(false);
   const formParams = useForm<PointsFormFields>({
     defaultValues: {

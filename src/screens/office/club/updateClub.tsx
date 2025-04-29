@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
 
@@ -17,7 +17,7 @@ export default function UpdateClubScreen({
   route,
 }: UpdateClubProps) {
   const { clubId } = route.params;
-  const { isAdmin } = useRight();
+  const { isAdmin, hasRight } = useRight();
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
   const club = useStoreMap({
@@ -32,6 +32,12 @@ export default function UpdateClubScreen({
     fn: (officeStore) =>
       officeStore.officeList.find((office) => office.id === club?.officeId),
   });
+
+  useEffect(() => {
+    if (!hasRight("OFFICE", "UPDATE", office?.id))
+      navigation.navigate("homeContainer", { screen: "feed" });
+  }, [hasRight, navigation, office?.id]);
+
   const officeChoices = officeList.map((office) => ({
     value: office.id,
     label: office.name,
