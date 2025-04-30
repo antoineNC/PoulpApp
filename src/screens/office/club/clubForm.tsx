@@ -10,6 +10,7 @@ import { FloatingValidateBtn } from "components/validateButton";
 import { ClubFormFields } from "types/club.type";
 import { FieldParams } from "types/form.type";
 
+// TODO : move to components
 const ClubForm = ({
   create,
   loading,

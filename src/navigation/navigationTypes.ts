@@ -22,7 +22,7 @@ export type AuthParamList = {
 export type TabBarParamList = {
   homeContainer: NavigatorScreenParams<HomeTabParamList>;
   officeContainer: NavigatorScreenParams<OfficeTabParamList>;
-  famCupContainer: undefined;
+  famCupContainer: NavigatorScreenParams<FamCupTabParamList>;
   menuContainer: NavigatorScreenParams<MenuTabParamList>;
 };
 export type TabBarScreenProps<T extends keyof TabBarParamList> =
@@ -79,7 +79,6 @@ export type FamCupTabParamList = {
   score: undefined;
   createScore: undefined;
   updateScore: { idPoint: string };
-  feed: undefined;
 };
 export type FamCupTabScreenProps<T extends keyof FamCupTabParamList> =
   CompositeScreenProps<
@@ -110,6 +109,8 @@ export type MenuTabScreenProps<T extends keyof MenuTabParamList> =
   >;
 
 export type MenuProps = MenuTabScreenProps<"menu">;
+export type ListAdherentProps = MenuTabScreenProps<"listAdherent">;
+export type ListAdhesionProps = MenuTabScreenProps<"listAdhesion">;
 export type CalendarMenuProps = MenuTabScreenProps<"calendar">;
 export type ListClubProps = MenuTabScreenProps<"listClub">;
 export type ViewClubMenuProps = MenuTabScreenProps<"viewClub">;

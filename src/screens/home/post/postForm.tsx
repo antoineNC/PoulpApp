@@ -13,6 +13,7 @@ import { FieldParams } from "types/form.type";
 import React from "react";
 import { useTheme } from "react-native-paper";
 
+// TODO : move to components
 export const PostForm = ({
   defaultValues,
   loading,

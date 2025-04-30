@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 import { useForm } from "react-hook-form";
 
@@ -17,8 +17,14 @@ export default function CreateClubScreen({
   route,
 }: CreateClubProps) {
   const { officeId } = route.params;
+
+  const { isAdmin, hasRight } = useRight();
+  useEffect(() => {
+    if (!hasRight("OFFICE", "UPDATE", officeId))
+      navigation.navigate("homeContainer", { screen: "feed" });
+  }, [hasRight, navigation, officeId]);
+
   const { officeList } = useUnit($officeStore);
-  const { isAdmin } = useRight();
   const [loading, setLoading] = useState(false);
 
   const office = useStoreMap({

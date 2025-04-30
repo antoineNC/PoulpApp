@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, View, Alert } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useStoreMap } from "effector-react";
@@ -22,12 +22,20 @@ import { BodyText } from "components/customText";
 import { plus } from "components/icon/icons";
 import { handleError } from "utils/errorUtils";
 import { notificationToast } from "utils/toast";
+import { useRight } from "utils/rights";
 
 export default function UpdateOfficeScreen({
   navigation,
   route,
 }: UpdateOfficeProps) {
   const { officeId } = route.params;
+
+  const { hasRight } = useRight();
+  useEffect(() => {
+    if (!hasRight("OFFICE", "UPDATE", officeId))
+      navigation.navigate("homeContainer", { screen: "feed" });
+  }, [hasRight, navigation, officeId]);
+
   const { colors } = useTheme();
   const [loading, setLoading] = useState(false);
   const office = useStoreMap({

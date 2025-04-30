@@ -10,6 +10,7 @@ import { DatePicker } from "components/form/datePicker";
 import { TextInputForm } from "components/form/textInput";
 import { BodyText } from "components/customText";
 
+// TODO : move to components
 export function ScoreForm({
   formParams,
   onSubmit,

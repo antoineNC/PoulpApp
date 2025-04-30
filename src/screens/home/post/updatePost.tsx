@@ -8,12 +8,14 @@ import { Post, PostFormFields } from "types/post.type";
 import { notificationToast } from "utils/toast";
 import { handleError } from "utils/errorUtils";
 import { PostForm } from "./postForm";
+import { useRight } from "utils/rights";
 
 export default function UpdatePostScreen({
   navigation,
   route,
 }: UpdatePostProps) {
   const { postId } = route.params;
+  const { hasRight } = useRight();
   const [post, setPost] = useState<Post>();
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -35,6 +37,10 @@ export default function UpdatePostScreen({
     fn: (officeStore) =>
       officeStore.officeList.find((office) => office.id === post?.editorId),
   });
+
+  useEffect(() => {
+    if (!hasRight("POST", "UPDATE", editor?.id)) navigation.navigate("feed");
+  }, [editor?.id, hasRight, navigation]);
 
   const onSubmit = async (data: PostFormFields) => {
     try {

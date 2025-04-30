@@ -1,17 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, FlatList } from "react-native";
-import { useUnit } from "effector-react";
 import { Checkbox, Searchbar, useTheme } from "react-native-paper";
-import { $studentStore } from "@context/studentStore";
-import { Container } from "@styledComponents";
-import { $sessionStore } from "@context/sessionStore";
+import { useUnit } from "effector-react";
 import Spinner from "react-native-loading-spinner-overlay";
+
+import { ListAdherentProps } from "@navigation/navigationTypes";
 import { updateStudentAdhesion } from "@fb/service/student.service";
+import { $studentStore } from "@context/studentStore";
+import { $sessionStore } from "@context/sessionStore";
 import { handleError } from "utils/errorUtils";
 import { notificationToast } from "utils/toast";
+import { useRight } from "utils/rights";
+import { Container } from "@styledComponents";
 
-export default function ListAdherent() {
+export default function ListAdherent({ navigation }: ListAdherentProps) {
   const { userId } = useUnit($sessionStore);
+
+  const { hasRight } = useRight();
+  useEffect(() => {
+    if (!hasRight("OFFICE", "UPDATE", userId))
+      navigation.navigate("homeContainer", { screen: "feed" });
+  }, [hasRight, navigation, userId]);
+
   const { colors } = useTheme();
   const officeId = userId;
   const studentList = useUnit($studentStore);

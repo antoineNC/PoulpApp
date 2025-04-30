@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStoreMap, useUnit } from "effector-react";
 
 import { createPartnership } from "@fb/service/partnership.service";
@@ -16,7 +16,13 @@ export default function CreatePartnershipScreen({
   route,
 }: CreatePartnershipProps) {
   const { officeId } = route.params;
-  const { isAdmin } = useRight();
+
+  const { isAdmin, hasRight } = useRight();
+  useEffect(() => {
+    if (!hasRight("OFFICE", "UPDATE", officeId))
+      navigation.navigate("homeContainer", { screen: "feed" });
+  }, [hasRight, navigation, officeId]);
+
   const { officeList } = useUnit($officeStore);
   const [loading, setLoading] = useState(false);
   const office = useStoreMap({
