@@ -1,17 +1,11 @@
-import React, { useState } from "react";
-import { Linking, TouchableOpacity, View } from "react-native";
+import { Alert, Linking, TouchableOpacity, View } from "react-native";
+import { Body, ContainerScroll, Image, Row } from "@styledComponents";
 import ImageView from "react-native-image-viewing";
 import { useStoreMap } from "effector-react";
-
 import { $officeStore } from "@context/officeStore";
-import { useDialog } from "@context/dialog/dialogContext";
-import {
-  BodyText,
-  HeaderText,
-  LinkText,
-  Title2Text,
-} from "components/customText";
-import { Body, ContainerScroll, Image, Row } from "@styledComponents";
+import { useState } from "react";
+import React from "react";
+import { BodyText, HeaderText, LinkText, Title2Text } from "./customText";
 
 export default function PartnershipDisplay({
   id,
@@ -21,7 +15,6 @@ export default function PartnershipDisplay({
   onPress: (officeId: string) => void;
 }) {
   const [showImage, setShowImage] = useState(false);
-  const { showDialog } = useDialog();
   const partnership = useStoreMap({
     store: $officeStore,
     keys: [id],
@@ -49,7 +42,7 @@ export default function PartnershipDisplay({
       // by some browser in the mobile
       await Linking.openURL(url);
     } else {
-      showDialog({ title: `Nous ne parvenons pas à ouvrir ce lien: ${url}` });
+      Alert.alert(`Don't know how to open this URL: ${url}`);
     }
   };
   return (
