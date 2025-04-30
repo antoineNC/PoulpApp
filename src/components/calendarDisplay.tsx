@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import {
   AgendaList,
   CalendarProvider,
@@ -13,6 +13,7 @@ import { $calendarStore } from "@context/calendarStore";
 import { formatDate } from "utils/dateUtils";
 import { AgendaItemType } from "types/calendar.type";
 import { BodyText, TitleText } from "./customText";
+import { useDialog } from "@context/dialog/dialogContext";
 
 LocaleConfig.locales["fr"] = {
   monthNames: [
@@ -59,27 +60,31 @@ LocaleConfig.defaultLocale = "fr";
 
 export default function CalendarDisplay({ postDate }: { postDate?: Date }) {
   const { sections, markedDates } = useUnit($calendarStore);
+  const { showDialog } = useDialog();
   const { colors } = useTheme();
   const today = formatDate(postDate || new Date());
 
-  const renderItem = useCallback((item: AgendaItemType) => {
-    const itemPressed = () => {
-      Alert.alert(item.title, item.description);
-    };
+  const renderItem = useCallback(
+    (item: AgendaItemType) => {
+      const itemPressed = () => {
+        showDialog({ title: item.title, message: item.description });
+      };
 
-    return (
-      <TouchableOpacity onPress={itemPressed} style={styles.item}>
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <BodyText>{item.startHour}</BodyText>
-          {item.duration && <BodyText>{item.duration}</BodyText>}
-        </View>
-        <View style={{ flex: 5 }}>
-          <TitleText style={styles.itemTitleText}>{item.title}</TitleText>
-          <BodyText numberOfLines={2}>{item.description}</BodyText>
-        </View>
-      </TouchableOpacity>
-    );
-  }, []);
+      return (
+        <TouchableOpacity onPress={itemPressed} style={styles.item}>
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <BodyText>{item.startHour}</BodyText>
+            {item.duration && <BodyText>{item.duration}</BodyText>}
+          </View>
+          <View style={{ flex: 5 }}>
+            <TitleText style={styles.itemTitleText}>{item.title}</TitleText>
+            <BodyText numberOfLines={2}>{item.description}</BodyText>
+          </View>
+        </TouchableOpacity>
+      );
+    },
+    [showDialog]
+  );
 
   return (
     <CalendarProvider date={today} showTodayButton>

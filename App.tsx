@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   MD3LightTheme,
   MD3DarkTheme,
@@ -12,16 +14,15 @@ import {
   DarkTheme as NavigationDarkTheme,
   DefaultTheme as NavigationDefaultTheme,
 } from "@react-navigation/native";
-import defaultCustomColor from "styles/defaultColorScheme.json";
-import darkCustomColor from "styles/darkColorScheme.json";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Toasts } from "@backpackapp-io/react-native-toast";
 
 import RootContainer from "navigation/rootContainer";
 import { useAuthState } from "hooks/authentication";
 import { PreferencesContext } from "@context/themeContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Toasts } from "@backpackapp-io/react-native-toast";
-import { StatusBar } from "expo-status-bar";
+import { DialogProvider } from "@context/dialog/dialogProvider";
+import defaultCustomColor from "styles/defaultColorScheme.json";
+import darkCustomColor from "styles/darkColorScheme.json";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -88,9 +89,11 @@ export default function App() {
       <PaperProvider theme={theme}>
         <SafeAreaProvider onLayout={onLayoutRootView}>
           <GestureHandlerRootView>
-            <RootContainer theme={theme} />
-            <StatusBar style={isThemeDark ? "light" : "dark"} />
-            <Toasts overrideDarkMode={isThemeDark} />
+            <DialogProvider>
+              <RootContainer theme={theme} />
+              <StatusBar style={isThemeDark ? "light" : "dark"} />
+              <Toasts overrideDarkMode={isThemeDark} />
+            </DialogProvider>
           </GestureHandlerRootView>
         </SafeAreaProvider>
       </PaperProvider>
