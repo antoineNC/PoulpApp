@@ -1,4 +1,4 @@
-import { Alert, Linking, TouchableOpacity, View } from "react-native";
+import { Linking, TouchableOpacity, View } from "react-native";
 import { Body, Container, Image, Row } from "@styledComponents";
 import ImageView from "react-native-image-viewing";
 import { useStoreMap } from "effector-react";
@@ -6,6 +6,7 @@ import { $officeStore } from "@context/officeStore";
 import { useState } from "react";
 import React from "react";
 import { BodyText, HeaderText, LinkText } from "./customText";
+import { useDialog } from "@context/dialog/dialogContext";
 
 export default function ClubDisplay({
   id,
@@ -15,6 +16,7 @@ export default function ClubDisplay({
   onPress: (officeId: string) => void;
 }) {
   const [showImage, setShowImage] = useState(false);
+  const { showDialog } = useDialog();
   const club = useStoreMap({
     store: $officeStore,
     keys: [id],
@@ -39,7 +41,7 @@ export default function ClubDisplay({
       // by some browser in the mobile
       await Linking.openURL(url);
     } else {
-      Alert.alert(`Nous ne parvenons pas à ouvrir ce lien: ${url}`);
+      showDialog({ title: `Nous ne parvenons pas à ouvrir ce lien: ${url}` });
     }
   };
   return (

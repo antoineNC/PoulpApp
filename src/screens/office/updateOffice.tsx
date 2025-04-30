@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, View, Alert } from "react-native";
+import { FlatList, View } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useStoreMap } from "effector-react";
 import { IconButton, useTheme } from "react-native-paper";
@@ -10,6 +10,7 @@ import { deleteClub } from "@fb/service/club.service";
 import { deletePartnership } from "@fb/service/partnership.service";
 import { UpdateOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
+import { useDialog } from "@context/dialog/dialogContext";
 import { OfficeFormFields } from "types/office.type";
 import { authStyles, officeStyles } from "@styles";
 import { ContainerScroll } from "@styledComponents";
@@ -31,6 +32,7 @@ export default function UpdateOfficeScreen({
   const { officeId } = route.params;
 
   const { hasRight } = useRight();
+  const { showDialog } = useDialog();
   useEffect(() => {
     if (!hasRight("OFFICE", "UPDATE", officeId))
       navigation.navigate("homeContainer", { screen: "feed" });
@@ -87,10 +89,10 @@ export default function UpdateOfficeScreen({
   };
 
   const onDeleteClub = async (id: string) => {
-    Alert.alert(
-      "Supprimer un club",
-      "Voulez-vous vraiment supprimer définitivement ce club ?",
-      [
+    showDialog({
+      title: "Supprimer un club",
+      message: "Voulez-vous vraiment supprimer définitivement ce club ?",
+      buttons: [
         {
           text: "OUI",
           onPress: async () => {
@@ -103,15 +105,15 @@ export default function UpdateOfficeScreen({
           },
         },
         { text: "NON" },
-      ]
-    );
+      ],
+    });
   };
 
   const onDeletePartnership = async (id: string) => {
-    Alert.alert(
-      "Supprimer un partenariat",
-      "Voulez-vous vraiment supprimer définitivement ce partenariat ?",
-      [
+    showDialog({
+      title: "Supprimer un partenariat",
+      message: "Voulez-vous vraiment supprimer définitivement ce partenariat ?",
+      buttons: [
         {
           text: "OUI",
           onPress: async () => {
@@ -124,8 +126,8 @@ export default function UpdateOfficeScreen({
           },
         },
         { text: "NON" },
-      ]
-    );
+      ],
+    });
   };
   return (
     <>
