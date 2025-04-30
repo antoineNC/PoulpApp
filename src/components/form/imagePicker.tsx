@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import { FieldValues } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
@@ -9,6 +9,7 @@ import { Container, Row } from "@styledComponents";
 import { InputProps } from "types/form.type";
 import { BodyText } from "components/customText";
 import { camera, gallery, trash } from "components/icon/icons";
+import { useDialog } from "@context/dialog/dialogContext";
 
 export function ImagePickerForm<T extends FieldValues>({
   field: { value, onChange },
@@ -16,6 +17,7 @@ export function ImagePickerForm<T extends FieldValues>({
 }: InputProps<T>) {
   const image = value;
   const { colors } = useTheme();
+  const { showDialog } = useDialog();
   const [showImage, setShowImage] = useState(false);
   const pickImageFromLibrary = async () => {
     // No permissions request is necessary for launching the image library
@@ -41,10 +43,10 @@ export function ImagePickerForm<T extends FieldValues>({
     }
   };
   const deletePickChoice = () => {
-    Alert.alert(
-      "Supprimer image",
-      "Voulez-vous vraiment supprimer cette image ?",
-      [
+    showDialog({
+      title: "Supprimer image",
+      message: "Voulez-vous vraiment supprimer cette image ?",
+      buttons: [
         {
           text: "Oui",
           onPress: () => {
@@ -53,8 +55,7 @@ export function ImagePickerForm<T extends FieldValues>({
         },
         { text: "Non" },
       ],
-      { cancelable: true }
-    );
+    });
   };
 
   return (
