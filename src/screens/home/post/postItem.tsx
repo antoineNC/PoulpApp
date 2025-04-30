@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  Alert,
   NativeSyntheticEvent,
   TextLayoutEventData,
   TouchableOpacity,
@@ -12,7 +13,6 @@ import { Image, Row } from "@styledComponents";
 import { displayDate } from "utils/dateUtils";
 import { useRight } from "utils/rights";
 import { $officeStore } from "@context/officeStore";
-import { useDialog } from "@context/dialog/dialogContext";
 import { PostItemProps } from "types/post.type";
 import { DateType } from "types/date.type";
 import { BodyText, LinkText, TitleText } from "components/customText";
@@ -27,7 +27,6 @@ export const PostItem = ({
   onPressDelete,
 }: PostItemProps) => {
   const { hasRight } = useRight();
-  const { showDialog } = useDialog();
   const [date, setDate] = useState<DateType>({});
   const [allDay, setAllDay] = useState(false);
   const [textShown, setTextShown] = useState(false);
@@ -146,17 +145,17 @@ export const PostItem = ({
             mode="contained-tonal"
             icon={trash}
             onPress={() =>
-              showDialog({
-                title: "Suppression",
-                message: "Veux-tu vraiment supprimer ce post ?",
-                buttons: [
+              Alert.alert(
+                "Suppression",
+                "Veux-tu vraiment supprimer ce post ?",
+                [
                   {
                     text: "Oui, supprimer",
                     onPress: onDelete,
                   },
                   { text: "Annuler" },
-                ],
-              })
+                ]
+              )
             }
           >
             Supprimer

@@ -1,11 +1,10 @@
 import React from "react";
-import { FlatList, Linking, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Linking, TouchableOpacity, View } from "react-native";
 import { useStoreMap } from "effector-react";
 
 import { ViewOfficeProps } from "@navigation/navigationTypes";
 import { $officeStore } from "@context/officeStore";
 import { $studentStore } from "@context/studentStore";
-import { useDialog } from "@context/dialog/dialogContext";
 import { Row, ContainerScroll } from "@styledComponents";
 import { BodyText, LinkText, Title2Text } from "components/customText";
 import { SmallCardItem } from "components/smallCardItem";
@@ -15,7 +14,6 @@ export default function ViewOfficeScreen({
   route,
 }: ViewOfficeProps) {
   const { officeId } = route.params;
-  const { showDialog } = useDialog();
   const office = useStoreMap({
     store: $officeStore,
     keys: [officeId],
@@ -66,7 +64,7 @@ export default function ViewOfficeScreen({
       // by some browser in the mobile
       await Linking.openURL("mailto:" + url);
     } else {
-      showDialog({ title: `Nous ne parvenons pas à ouvrir ce lien: ${url}` });
+      Alert.alert(`Nous ne parvenons pas à ouvrir ce lien: ${url}`);
     }
   };
   return (

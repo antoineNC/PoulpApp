@@ -5,6 +5,7 @@ import {
   StyleSheet,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Alert,
 } from "react-native";
 import { useUnit } from "effector-react";
 import { AnimatedFAB, Button, Divider, useTheme } from "react-native-paper";
@@ -15,7 +16,6 @@ import inter from "@assets/fonts/inter-variable.ttf";
 import { deletePoint } from "@fb/service/point.service";
 import { ScoreProps } from "@navigation/navigationTypes";
 import { $pointStore } from "@context/pointStore";
-import { useDialog } from "@context/dialog/dialogContext";
 import { Container, Row } from "@styledComponents";
 import { BodyText, TitleText } from "components/customText";
 import { pencil, plus, trash } from "components/icon/icons";
@@ -27,7 +27,6 @@ import { handleError } from "utils/errorUtils";
 export default function ScoreScreen({ navigation }: ScoreProps) {
   const listPoint = useUnit($pointStore);
   const { colors } = useTheme();
-  const { showDialog } = useDialog();
   const { hasRight } = useRight();
   const font = useFont(inter, 12);
   const [isExtended, setIsExtended] = useState(true);
@@ -107,24 +106,20 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
   };
 
   const onDelete = (id: string) => {
-    showDialog({
-      title: "Suppression",
-      message: "Veux-tu vraiment supprimer ces points ?",
-      buttons: [
-        {
-          text: "Oui, supprimer",
-          onPress: async () => {
-            try {
-              await deletePoint(id);
-              notificationToast("success", "Points supprimés.");
-            } catch (e) {
-              handleError(e);
-            }
-          },
+    Alert.alert("Suppression", "Veux-tu vraiment supprimer ces points ?", [
+      {
+        text: "Oui, supprimer",
+        onPress: async () => {
+          try {
+            await deletePoint(id);
+            notificationToast("success", "Points supprimés.");
+          } catch (e) {
+            handleError(e);
+          }
         },
-        { text: "Annuler" },
-      ],
-    });
+      },
+      { text: "Annuler" },
+    ]);
   };
 
   const onUpdate = (id: string) =>
