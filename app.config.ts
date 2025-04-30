@@ -4,7 +4,7 @@ export default {
   expo: {
     name: "PoulpApp",
     slug: "PoulpApp",
-    version: "0.1.1",
+    version: "0.1.2",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
