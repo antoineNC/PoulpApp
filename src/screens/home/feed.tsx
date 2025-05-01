@@ -23,6 +23,7 @@ import { $postStore, actionPost } from "@context/postStore";
 import { useGetPost } from "hooks/post";
 import { handleError } from "utils/errorUtils";
 import { notificationToast } from "utils/toast";
+import { plus } from "components/icon/icons";
 
 export default function FeedScreen({ navigation }: FeedProps) {
   const { posts, lastVisibleId } = useUnit($postStore);
@@ -102,6 +103,13 @@ export default function FeedScreen({ navigation }: FeedProps) {
         data={posts}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View style={{ height: 40 }} />}
+        ListFooterComponent={<View style={{ marginVertical: 40 }} />}
+        onEndReached={onEndReachedHandle}
+        onEndReachedThreshold={1}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         renderItem={({ item }) => (
           <PostItem
             post={item}
@@ -111,17 +119,10 @@ export default function FeedScreen({ navigation }: FeedProps) {
             onPressDelete={() => onPressDelete(item.id)}
           />
         )}
-        ItemSeparatorComponent={() => <View style={{ height: 40 }} />}
-        ListFooterComponent={<View style={{ marginVertical: 40 }} />}
-        onEndReached={onEndReachedHandle}
-        onEndReachedThreshold={1}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
       />
       {hasRight("POST", "CREATE") && (
         <AnimatedFAB
-          icon={"plus"}
+          icon={plus}
           label={"Créer un post"}
           extended={isExtended}
           onPress={() => navigation.navigate("createPost")}
