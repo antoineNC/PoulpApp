@@ -22,6 +22,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Toasts } from "@backpackapp-io/react-native-toast";
 import { StatusBar } from "expo-status-bar";
+import { fr, registerTranslation } from "react-native-paper-dates";
+registerTranslation("fr", fr);
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,

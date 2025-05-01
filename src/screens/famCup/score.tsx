@@ -165,6 +165,7 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
       <FlatList
         onScroll={onScroll}
         data={listPoint}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={{
           rowGap: 10,
           marginHorizontal: 10,

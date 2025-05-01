@@ -78,7 +78,12 @@ export const PostForm = ({
 
   return (
     <>
-      <ContainerScroll style={officeStyles.container}>
+      <ContainerScroll
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        contentInsetAdjustmentBehavior="always"
+        style={officeStyles.container}
+      >
         {loading && (
           <Spinner
             visible={loading}

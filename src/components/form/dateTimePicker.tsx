@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Checkbox, HelperText, Switch, useTheme } from "react-native-paper";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { Container, Row } from "@styledComponents";
-import { formatDay, formatHour } from "utils/dateUtils";
+import { formatHour } from "utils/dateUtils";
 import { FieldValues } from "react-hook-form";
 import { InputProps } from "types/form.type";
 import React from "react";
 import { setHours, setMinutes, setSeconds } from "date-fns";
 import { BodyText, LabelText } from "components/customText";
+import { DatePickerInput, TimePickerModal } from "react-native-paper-dates";
 
 export function DateTimeFormPicker<T extends FieldValues>({
   field: { value, onChange },
@@ -16,24 +16,39 @@ export function DateTimeFormPicker<T extends FieldValues>({
   label,
   options,
 }: InputProps<T>) {
-  // FIXME : composant avec validation pour éviter de rerender a cause de la valeur qui change
   const startDate: Date = value?.start || new Date();
   const endDate: Date = value?.end || startDate;
   const { colors, roundness } = useTheme();
-  const [startPicker, setStartPicker] = useState(false);
-  const [endPicker, setEndPicker] = useState(false);
-  const [modePicker, setModePicker] = useState<"date" | "time">("date");
+  const [startTimeVisible, setstartTimeVisible] = useState(false);
+  const [endTimeVisible, setEndTimeVisible] = useState(false);
   const [allDay, setAllDay] = useState(options?.allDay || !value?.end);
   const [isDate, setIsDate] = useState(value?.start ? true : false);
 
-  const handleStart = (date: Date) => {
-    onChange({ ...value, start: date });
-    setStartPicker(false);
+  const onChangeDate = (d: Date, period: "start" | "end") => {
+    const newDate = d;
+    if (period === "start") {
+      newDate.setHours(startDate.getHours(), startDate.getMinutes());
+      onChange({ ...value, start: newDate });
+    } else {
+      newDate.setHours(endDate.getHours(), endDate.getMinutes());
+      onChange({ ...value, end: newDate });
+    }
   };
-
-  const handleEnd = (date: Date) => {
-    onChange({ ...value, end: date });
-    setEndPicker(false);
+  const onChangeTime = (
+    time: { hours: number; minutes: number },
+    period: "start" | "end"
+  ) => {
+    if (period === "start") {
+      const newDate = startDate;
+      newDate.setHours(time.hours, time.minutes);
+      onChange({ ...value, start: newDate });
+      setstartTimeVisible(false);
+    } else {
+      const newDate = endDate;
+      newDate.setHours(time.hours, time.minutes);
+      onChange({ ...value, end: newDate });
+      setEndTimeVisible(false);
+    }
   };
 
   const handleIsDate = (value: boolean) => {
@@ -109,32 +124,29 @@ export function DateTimeFormPicker<T extends FieldValues>({
           <View>
             <Row style={styles.rowContainer}>
               {!allDay && <BodyText style={{ flex: 1 }}>Début :</BodyText>}
-              <Row $justify="space-evenly" style={{ flex: 5 }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setModePicker("date");
-                    setStartPicker(true);
-                  }}
-                >
-                  <View
-                    style={[
-                      styles.dateContainer,
-                      {
-                        borderRadius: roundness,
-                        borderColor: colors.onBackground,
-                      },
-                    ]}
-                  >
-                    <BodyText>{formatDay(startDate)}</BodyText>
-                  </View>
-                </TouchableOpacity>
+              <Row
+                $justify="space-evenly"
+                style={{
+                  flex: 5,
+                }}
+              >
+                <DatePickerInput
+                  locale="fr"
+                  value={startDate}
+                  onChange={(d) => d && onChangeDate(d, "start")}
+                  inputMode="start"
+                  mode="outlined"
+                  startWeekOnMonday
+                  presentationStyle="overFullScreen"
+                />
                 {!allDay && (
                   <>
-                    <BodyText>{" à "}</BodyText>
+                    <BodyText style={{ marginHorizontal: 15 }}>
+                      {" à "}
+                    </BodyText>
                     <TouchableOpacity
                       onPress={() => {
-                        setModePicker("time");
-                        setStartPicker(true);
+                        setstartTimeVisible(true);
                       }}
                     >
                       <View
@@ -154,14 +166,17 @@ export function DateTimeFormPicker<T extends FieldValues>({
               </Row>
             </Row>
             {/* Start Date picker */}
-            {startPicker && (
-              <DateTimePicker
-                value={startDate}
-                onChange={(_, date) => date && handleStart(date)}
-                mode={modePicker}
-                is24Hour
-              />
-            )}
+            <TimePickerModal
+              locale="fr"
+              visible={startTimeVisible}
+              onDismiss={() => setstartTimeVisible(false)}
+              onConfirm={(params) => onChangeTime(params, "start")}
+              hours={startDate.getHours()}
+              minutes={startDate.getMinutes()}
+              cancelLabel="Annuler"
+              confirmLabel="Confirmer"
+              animationType="fade"
+            />
           </View>
           {!allDay && (
             <View>
@@ -169,29 +184,20 @@ export function DateTimeFormPicker<T extends FieldValues>({
               <Row style={styles.rowContainer}>
                 <BodyText style={{ flex: 1 }}>Fin :</BodyText>
                 <Row $justify="space-evenly" style={{ flex: 5 }}>
+                  <DatePickerInput
+                    locale="fr"
+                    value={endDate}
+                    onChange={(d) => d && onChangeDate(d, "end")}
+                    inputMode="end"
+                    mode="outlined"
+                    startWeekOnMonday
+                    presentationStyle="overFullScreen"
+                    style={{ flex: 1 }}
+                  />
+                  <BodyText style={{ marginHorizontal: 15 }}>{" à "}</BodyText>
                   <TouchableOpacity
                     onPress={() => {
-                      setModePicker("date");
-                      setEndPicker(true);
-                    }}
-                  >
-                    <View
-                      style={[
-                        styles.dateContainer,
-                        {
-                          borderRadius: roundness,
-                          borderColor: colors.onBackground,
-                        },
-                      ]}
-                    >
-                      <BodyText>{formatDay(endDate)}</BodyText>
-                    </View>
-                  </TouchableOpacity>
-                  <BodyText>{" à "}</BodyText>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setModePicker("time");
-                      setEndPicker(true);
+                      setEndTimeVisible(true);
                     }}
                   >
                     <View
@@ -209,14 +215,17 @@ export function DateTimeFormPicker<T extends FieldValues>({
                 </Row>
               </Row>
               {/* End Date picker */}
-              {endPicker && (
-                <DateTimePicker
-                  value={endDate}
-                  onChange={(_, date) => date && handleEnd(date)}
-                  mode={modePicker}
-                  is24Hour
-                />
-              )}
+              <TimePickerModal
+                locale="fr"
+                visible={endTimeVisible}
+                onDismiss={() => setEndTimeVisible(false)}
+                onConfirm={(params) => onChangeTime(params, "end")}
+                hours={endDate.getHours()}
+                minutes={endDate.getMinutes()}
+                cancelLabel="Annuler"
+                confirmLabel="Confirmer"
+                animationType="fade"
+              />
             </View>
           )}
         </View>
