@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   FlatList,
   View,
@@ -30,54 +30,46 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
   const { hasRight } = useRight();
   const font = useFont(inter, 12);
   const [isExtended, setIsExtended] = useState(true);
-  const [score, setScore] = useState<{ family: string; score: number }[]>([
-    {
-      family: "Rouge",
-      score: 0,
-    },
-    {
-      family: "Jaune",
-      score: 0,
-    },
-    {
-      family: "Bleu",
-      score: 0,
-    },
-    {
-      family: "Orange",
-      score: 0,
-    },
-    {
-      family: "Vert",
-      score: 0,
-    },
-  ]);
-
-  useEffect(() => {
-    const newScore = {
-      red: 0,
-      yellow: 0,
-      blue: 0,
-      orange: 0,
-      green: 0,
-    };
-    listPoint.forEach((point) => {
-      newScore.blue += point.blue;
-      newScore.yellow += point.yellow;
-      newScore.orange += point.orange;
-      newScore.red += point.red;
-      newScore.green += point.green;
-    });
-    setScore([
-      { family: "Bleu", score: newScore.blue },
-      { family: "Jaune", score: newScore.yellow },
-      { family: "Orange", score: newScore.orange },
-      { family: "Rouge", score: newScore.red },
-      { family: "Vert", score: newScore.green },
-    ]);
+  const computedScore = useMemo(() => {
+    return listPoint.reduce<{
+      blue: number;
+      yellow: number;
+      orange: number;
+      red: number;
+      green: number;
+    }>(
+      (acc, point) => {
+        const sum = {
+          blue: acc.blue + point.blue,
+          yellow: acc.yellow + point.yellow,
+          orange: acc.orange + point.orange,
+          red: acc.red + point.red,
+          green: acc.green + point.green,
+        };
+        return sum;
+      },
+      {
+        blue: 0,
+        yellow: 0,
+        orange: 0,
+        red: 0,
+        green: 0,
+      }
+    );
   }, [listPoint]);
 
-  const maxScore = Math.max(...score.map((el) => el.score));
+  const [score] = useState([
+    { family: "Bleu", score: computedScore.blue },
+    { family: "Jaune", score: computedScore.yellow },
+    { family: "Orange", score: computedScore.orange },
+    { family: "Rouge", score: computedScore.red },
+    { family: "Vert", score: computedScore.green },
+  ]);
+
+  const maxScore = useMemo(
+    () => Math.max(...score.map((el) => el.score)),
+    [score]
+  );
 
   const getColor = useCallback((family: string) => {
     switch (family) {
@@ -143,21 +135,24 @@ export default function ScoreScreen({ navigation }: ScoreProps) {
           domain={{ y: [0, maxScore + 5] }}
         >
           {({ points, chartBounds }) => {
-            return points.score.map((point, index) => (
-              <Bar
-                key={index}
-                points={[point]}
-                chartBounds={chartBounds}
-                color={getColor(point.xValue.toString())}
-                roundedCorners={{ topLeft: 3, topRight: 3 }}
-                barWidth={60}
-                labels={{
-                  font,
-                  position: "top",
-                  color: colors.onBackground,
-                }}
-              />
-            ));
+            return points.score.map((point, index) => {
+              const color = getColor(point.xValue.toString());
+              return (
+                <Bar
+                  key={index}
+                  points={[point]}
+                  chartBounds={chartBounds}
+                  color={color}
+                  roundedCorners={{ topLeft: 3, topRight: 3 }}
+                  barWidth={60}
+                  labels={{
+                    font,
+                    position: "top",
+                    color: colors.onBackground,
+                  }}
+                />
+              );
+            });
           }}
         </CartesianChart>
       </View>
